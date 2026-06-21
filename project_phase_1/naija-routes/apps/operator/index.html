@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — Naija Routes Operator Portal</title>
+  <link rel="stylesheet" href="css/operator.css">
+</head>
+<body>
+
+<!-- Sidebar Overlay (mobile) -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-text">🚌 NaijaRoutes</div>
+    <div class="sidebar-logo-sub">Operator Portal</div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Operations</div>
+    <a href="index.html" class="nav-item active"><span class="nav-icon">📊</span> Dashboard</a>
+    <a href="bookings.html" class="nav-item"><span class="nav-icon">🎫</span> Bookings <span class="nav-badge">8</span></a>
+    <a href="#" class="nav-item"><span class="nav-icon">🗓</span> Schedules</a>
+    <a href="#" class="nav-item"><span class="nav-icon">🚌</span> Fleet</a>
+    <a href="#" class="nav-item"><span class="nav-icon">👤</span> Drivers</a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Routes &amp; Revenue</div>
+    <a href="routes.html" class="nav-item"><span class="nav-icon">🗺</span> Routes</a>
+    <a href="#" class="nav-item"><span class="nav-icon">📈</span> Analytics</a>
+    <a href="#" class="nav-item"><span class="nav-icon">💳</span> Payouts</a>
+    <a href="#" class="nav-item"><span class="nav-icon">⭐</span> Reviews</a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Account</div>
+    <a href="#" class="nav-item"><span class="nav-icon">🏢</span> Company Profile</a>
+    <a href="#" class="nav-item"><span class="nav-icon">🔔</span> Notifications</a>
+    <a href="#" class="nav-item"><span class="nav-icon">⚙</span> Settings</a>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+  <!-- MOBILE TOPBAR -->
+  <div class="mobile-topbar">
+    <div class="mobile-logo-text">Naija<span>Routes</span> Operator</div>
+    <button class="mobile-hamburger" id="mobileHamburger">☰</button>
+  </div>
+
+  <!-- DESKTOP TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="page-title">Dashboard Overview</div>
+      <div class="date-badge">📅 Wednesday, 25 December 2025</div>
+    </div>
+    <div class="topbar-right">
+      <div class="notif-btn">🔔<div class="notif-dot"></div></div>
+      <div class="op-info">
+        <div class="op-avatar">AB</div>
+        <div>
+          <div class="op-name-text">ABC Transport Ltd</div>
+          <div class="op-type">Verified Operator · Lagos</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- KPI CARDS -->
+    <div class="kpi-grid">
+      <div class="kpi-card green">
+        <div class="kpi-label">Revenue Today</div>
+        <div class="kpi-val green">₦428,000</div>
+        <div class="kpi-change up">↑ +18% vs yesterday</div>
+        <div class="kpi-sparkline" style="color:var(--green)">
+          <div class="bar" style="height:40%;background:var(--green-l)"></div>
+          <div class="bar" style="height:60%;background:var(--green-l)"></div>
+          <div class="bar" style="height:45%;background:var(--green-l)"></div>
+          <div class="bar" style="height:80%;background:var(--green-l)"></div>
+          <div class="bar" style="height:55%;background:var(--green-l)"></div>
+          <div class="bar" style="height:90%;background:var(--green)"></div>
+        </div>
+      </div>
+      <div class="kpi-card gold">
+        <div class="kpi-label">Bookings Today</div>
+        <div class="kpi-val gold">84</div>
+        <div class="kpi-change up">↑ +22 vs yesterday</div>
+        <div class="kpi-sparkline" style="color:var(--gold)">
+          <div class="bar" style="height:30%;background:var(--gold-l)"></div>
+          <div class="bar" style="height:50%;background:var(--gold-l)"></div>
+          <div class="bar" style="height:70%;background:var(--gold-l)"></div>
+          <div class="bar" style="height:45%;background:var(--gold-l)"></div>
+          <div class="bar" style="height:65%;background:var(--gold-l)"></div>
+          <div class="bar" style="height:100%;background:var(--gold)"></div>
+        </div>
+      </div>
+      <div class="kpi-card blue">
+        <div class="kpi-label">Occupancy Rate</div>
+        <div class="kpi-val blue">87%</div>
+        <div class="kpi-change up">↑ +5% this week</div>
+        <div class="kpi-sparkline" style="color:var(--blue)">
+          <div class="bar" style="height:60%;background:var(--blue-l)"></div>
+          <div class="bar" style="height:75%;background:var(--blue-l)"></div>
+          <div class="bar" style="height:65%;background:var(--blue-l)"></div>
+          <div class="bar" style="height:80%;background:var(--blue-l)"></div>
+          <div class="bar" style="height:70%;background:var(--blue-l)"></div>
+          <div class="bar" style="height:87%;background:var(--blue)"></div>
+        </div>
+      </div>
+      <div class="kpi-card red">
+        <div class="kpi-label">Cancellations</div>
+        <div class="kpi-val red">3</div>
+        <div class="kpi-change down">↑ +1 vs yesterday</div>
+        <div class="kpi-sparkline" style="color:var(--red)">
+          <div class="bar" style="height:20%;background:var(--red-l)"></div>
+          <div class="bar" style="height:40%;background:var(--red-l)"></div>
+          <div class="bar" style="height:15%;background:var(--red-l)"></div>
+          <div class="bar" style="height:30%;background:var(--red-l)"></div>
+          <div class="bar" style="height:20%;background:var(--red-l)"></div>
+          <div class="bar" style="height:30%;background:var(--red)"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TWO-COL -->
+    <div class="two-col">
+      <!-- Revenue Chart -->
+      <div class="chart-card">
+        <div class="card-header">
+          <div class="card-title">Revenue — Last 7 Days</div>
+          <div class="card-period-btns">
+            <button class="period-btn">7D</button>
+            <button class="period-btn active">30D</button>
+            <button class="period-btn">90D</button>
+          </div>
+        </div>
+        <div class="bar-chart">
+          <div class="bar-group"><div class="bar" style="height:55%;background:var(--green-l)"></div><div class="bar-label">Mon</div></div>
+          <div class="bar-group"><div class="bar" style="height:70%;background:var(--green-l)"></div><div class="bar-label">Tue</div></div>
+          <div class="bar-group"><div class="bar" style="height:45%;background:var(--green-l)"></div><div class="bar-label">Wed</div></div>
+          <div class="bar-group"><div class="bar" style="height:85%;background:var(--green-l)"></div><div class="bar-label">Thu</div></div>
+          <div class="bar-group"><div class="bar" style="height:95%;background:var(--green-l)"></div><div class="bar-label">Fri</div></div>
+          <div class="bar-group"><div class="bar" style="height:100%;background:var(--green)"></div><div class="bar-label">Sat</div></div>
+          <div class="bar-group"><div class="bar" style="height:88%;background:var(--green)"></div><div class="bar-label">Sun</div></div>
+        </div>
+      </div>
+
+      <!-- Right column -->
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <!-- Fleet Status -->
+        <div class="chart-card">
+          <div class="card-header">
+            <div class="card-title">Fleet Status</div>
+            <span style="font-size:12px;color:var(--muted);">12 vehicles</span>
+          </div>
+          <div style="display:flex;gap:12px;margin-bottom:16px;">
+            <div style="flex:1;text-align:center;background:var(--green-l);border-radius:8px;padding:12px;">
+              <div style="font-size:24px;font-weight:800;color:var(--green);">8</div>
+              <div style="font-size:11px;color:var(--green);font-weight:700;">On Route</div>
+            </div>
+            <div style="flex:1;text-align:center;background:var(--gold-l);border-radius:8px;padding:12px;">
+              <div style="font-size:24px;font-weight:800;color:var(--gold);">3</div>
+              <div style="font-size:11px;color:var(--gold);font-weight:700;">Parked</div>
+            </div>
+            <div style="flex:1;text-align:center;background:var(--red-l);border-radius:8px;padding:12px;">
+              <div style="font-size:24px;font-weight:800;color:var(--red);">1</div>
+              <div style="font-size:11px;color:var(--red);font-weight:700;">Maint.</div>
+            </div>
+          </div>
+          <div class="fleet-grid">
+            <div class="fleet-item"><div class="fleet-status-dot dot-moving"></div><div><div class="fleet-plate">LSD-481-KA</div><div class="fleet-route-info">Lgs → Abuja</div></div></div>
+            <div class="fleet-item"><div class="fleet-status-dot dot-moving"></div><div><div class="fleet-plate">LSD-392-DE</div><div class="fleet-route-info">Lgs → Ibadan</div></div></div>
+            <div class="fleet-item"><div class="fleet-status-dot dot-parked"></div><div><div class="fleet-plate">LSD-771-BB</div><div class="fleet-route-info">Jibowu Park</div></div></div>
+            <div class="fleet-item"><div class="fleet-status-dot dot-maint"></div><div><div class="fleet-plate">LSD-203-GH</div><div class="fleet-route-info">Workshop</div></div></div>
+          </div>
+        </div>
+
+        <!-- Payout Summary -->
+        <div class="payout-card">
+          <div class="payout-title">Pending Settlement</div>
+          <div class="payout-amount">₦1,284,000</div>
+          <div class="payout-detail">Period: Dec 18–24, 2025 · 420 bookings</div>
+          <button class="payout-btn">Request Payout →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Mobile sidebar toggle
+  const overlay = document.getElementById('sidebarOverlay');
+  const sidebar = document.getElementById('sidebar');
+  const hamburger = document.getElementById('mobileHamburger');
+
+  hamburger.addEventListener('click', () => {
+    sidebar.classList.add('open');
+    overlay.classList.add('open');
+  });
+
+  overlay.addEventListener('click', () => {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('open');
+  });
+</script>
+</body>
+</html>

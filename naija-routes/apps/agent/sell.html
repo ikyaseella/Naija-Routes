@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sell Ticket — Naija Routes</title>
+  <link rel="stylesheet" href="css/agent.css">
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="app-header">
+  <div class="agent-info">
+    <div class="agent-avatar">TU</div>
+    <div>
+      <div class="agent-name">Tunde Adeyemi</div>
+      <div class="agent-park">📍 Jibowu Motor Park, Lagos</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="online-badge"><div class="online-dot"></div> Online</div>
+    <div class="header-time">09:42 AM</div>
+  </div>
+</div>
+
+<!-- NAV TABS -->
+<div class="nav-tabs">
+  <a href="index.html" class="nav-tab">📊 Dashboard</a>
+  <a href="sell.html" class="nav-tab active">🎫 Sell Ticket</a>
+  <a href="scan.html" class="nav-tab">📷 Scan QR</a>
+  <a href="#" class="nav-tab">🏢 Onboard</a>
+  <a href="reconcile.html" class="nav-tab">💰 Reconcile</a>
+</div>
+
+<div class="main">
+  <!-- SELL TICKET FORM -->
+  <div class="sell-form">
+    <div class="form-title">🎫 Issue Ticket</div>
+    <div class="form-grid">
+      <div class="form-field">
+        <label>Operator</label>
+        <select>
+          <option>ABC Transport</option>
+          <option>GUO Motors</option>
+          <option>Peace Mass Transit</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>Route</label>
+        <select>
+          <option>Lagos → Abuja (06:00)</option>
+          <option>Lagos → Ibadan (07:00)</option>
+          <option>Lagos → PH (05:30)</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>Passenger Name</label>
+        <input type="text" placeholder="Full name">
+      </div>
+      <div class="form-field">
+        <label>Phone Number</label>
+        <input type="tel" placeholder="08012345678">
+      </div>
+      <div class="form-field">
+        <label>Seat Number</label>
+        <input type="text" placeholder="Auto-assign" value="12A">
+      </div>
+      <div class="form-field">
+        <label>Amount (₦)</label>
+        <input type="text" value="8,500" style="font-family:'Space Mono',monospace;color:var(--gold);">
+      </div>
+    </div>
+    <div class="section-title" style="margin-bottom:10px;">Payment Method</div>
+    <div class="payment-methods">
+      <div class="pay-chip active">💵 Cash</div>
+      <div class="pay-chip">💳 POS/Card</div>
+      <div class="pay-chip">📲 Transfer</div>
+      <div class="pay-chip">📟 USSD</div>
+    </div>
+    <button class="issue-btn">🎫 Issue Ticket &amp; Print QR</button>
+  </div>
+</div>
+
+<script>
+  // Pay chip switching
+  document.querySelectorAll('.pay-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('.pay-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

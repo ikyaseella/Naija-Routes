@@ -1,0 +1,795 @@
+🚌
+NAIJA ROUTES
+Product Requirements Document
+Nigeria's Road Transport & Logistics Aggregator
+Version
+1.0 — Initial Release
+Status
+Draft — For Review
+Date
+13 June 2026
+Owner
+Product & Engineering Team
+Classification
+Confidential
+Table of Contents
+1. Executive Summary5
+2. Business Problems We Must Solve6
+2.1  The Fragmentation Problem6
+2.2  The Offline Motor Park Problem6
+2.3  The Trust & Safety Problem6
+2.4  The Payment Problem6
+2.5  The Information Asymmetry Problem7
+2.6  The Multi-Language & Accessibility Problem7
+2.7  The Logistics & Cargo Problem7
+2.8  The Operator Business Intelligence Problem7
+3. Product Vision & Objectives9
+3.1  Vision Statement9
+3.2  Strategic Objectives9
+4. User Personas10
+4.1  Primary Personas10
+5. Feature Specifications11
+5.1  Core Feature Modules11
+5.2  Non-Functional Requirements12
+6. Technology Stack13
+6.1  Frontend Stack — Current Phase (Web)13
+6.1b  Frontend Stack — Future Mobile Phase (iOS & Android)14
+6.2  Backend Stack15
+6.3  Infrastructure & DevOps16
+6.4  Nigerian-Specific Integrations17
+7. Project Structure (Monorepo)18
+8. Core Data Models20
+9. API Design Principles & Key Endpoints21
+9.1  Key API Endpoints21
+10. Phased Delivery Roadmap23
+11. Recommended Team Structure24
+11.1  MVP Team (Phase 0–1)24
+11.2  Engineering Standards24
+12. Business Model & Revenue Streams25
+13. Risk Register26
+14. Success Metrics & KPIs27
+14.1  North Star Metric27
+15. Immediate Next Steps28
+1. Executive Summary
+Naija Routes is Nigeria's first end-to-end road transport and logistics aggregator — a platform that unifies hundreds of fragmented bus operators, cargo companies, and informal motor parks into a single, trusted digital marketplace. Travellers search state-to-state routes, compare operators, and book tickets with full digital receipts. Cargo shippers track consignments in real time. Operators gain instant digital presence without upfront IT investment, managed by on-ground agents who onboard and serve them.
+This document defines the full product scope: business problems, user personas, feature specifications, technology architecture, project structure, and go-to-market considerations for building and launching Naija Routes.
+2. Business Problems We Must Solve
+Nigeria's intercity road transport sector moves over 11 million passengers daily and handles the majority of domestic freight — yet it remains almost entirely offline, unstructured, and opaque. The following critical problems must be solved for Naija Routes to succeed.
+2.1  The Fragmentation Problem
+Nigeria has over 200 registered transport operators and thousands of informal motor parks. There is no single place to discover, compare, or book routes across operators. Travellers must physically visit parks or rely on unreliable word-of-mouth. Operators cannot reach digital customers even when they want to.
+Problem
+Who Suffers
+Business Impact
+No unified route discovery
+Travellers, new operators
+Market stays fragmented; no platform wins
+200+ operators, zero aggregation
+All stakeholders
+No network effects; users bounce
+Informal parks are invisible online
+Park owners, operators
+Massive supply locked offline
+No standardised pricing data
+Travellers, cargo shippers
+Price gouging, trust erosion
+2.2  The Offline Motor Park Problem
+The majority of Nigeria's bus operators manage their business entirely offline — tickets are paper, manifests are handwritten, and no digital record exists. This creates ghost passengers, revenue leakage, safety risks, and zero accountability. Bringing these parks online requires a human-mediated agent model, not a self-serve app.
+No digital ticketing → revenue leakage and no audit trail
+Paper manifests → impossible to verify passenger identity or track loads
+Zero data → operators can't make informed business decisions
+No online presence → operators are invisible to the 43% of Nigerians with smartphones
+2.3  The Trust & Safety Problem
+Nigerian travellers have deep trust deficits with transport providers — fake tickets, overloaded vehicles, no journey tracking, and no recourse when things go wrong. Building trust is the #1 adoption barrier.
+Counterfeit tickets are rampant in major motor parks
+No live tracking means families cannot monitor loved ones in transit
+No rating system allows bad operators to remain on the market indefinitely
+Cargo goes missing with no documentation, no accountability
+2.4  The Payment Problem
+Nigeria's payment landscape is complex: significant populations remain unbanked or prefer cash; USSD banking is common; card infrastructure is unreliable in rural areas; and POS failures are frequent. A single payment method will exclude large user segments.
+Cash-only parks cannot issue digital receipts or be aggregated
+Poor card infrastructure outside Lagos/Abuja/Port Harcourt
+Travellers distrust pre-payment without a guarantee of service
+Cargo clients require invoice-based B2B payment flows, not consumer checkout
+2.5  The Information Asymmetry Problem
+Travellers have no reliable information on departure times, seat availability, bus conditions, or operator reputation before arriving at a park. This results in wasted journeys, poor decisions, and repeated bad experiences.
+Schedules change without notice and are never published online
+No independent rating or review system exists for operators
+Cargo transit times are unknown; shippers cannot plan supply chains
+2.6  The Multi-Language & Accessibility Problem
+Nigeria has over 500 languages and three dominant regional languages: Yoruba, Hausa, and Igbo — alongside Nigerian Pidgin, which is the true lingua franca. English-only products exclude the majority of potential transport users, particularly in the North.
+English-only interfaces lock out rural and lower-income users
+Low-literacy users need voice, icon-driven, or USSD fallback interfaces
+Diaspora Nigerians booking travel for family need English + local language support
+2.7  The Logistics & Cargo Problem
+Nigeria's SME ecosystem sends and receives physical goods via road daily — but cargo is booked verbally, with no tracking, no insurance, and no digital record. This represents a massive untapped B2B revenue opportunity adjacent to passenger transport.
+SMEs lose an estimated 8–15% of cargo value annually to loss, damage, or theft
+No digital waybill or consignment note standard exists
+Cargo space on buses is under-utilised due to zero visibility
+2.8  The Operator Business Intelligence Problem
+Operators have no data on their own performance — no occupancy rates, no route profitability analysis, no customer retention data, no competitor benchmarking. This is partly why the industry stagnates despite scale.
+Operators cannot identify their most profitable routes
+Fleet utilisation cannot be optimised without load data
+No tools exist for operators to forecast demand around public holidays or events
+3. Product Vision & Objectives
+3.1  Vision Statement
+"To be the operating system of Nigerian road mobility — connecting every traveller, operator, park agent, and cargo shipper through one trusted, intelligent platform."
+3.2  Strategic Objectives
+OKR
+Objective
+Key Result (12-month)
+O1
+Aggregate supply at scale
+500+ operators onboarded; 1,000+ active routes
+O2
+Build traveller trust
+4.2+ average rating; <2% disputed bookings
+O3
+Monetise transactions
+₦500M GMV in Year 1
+O4
+Enable hybrid payments
+Cash, card, transfer, USSD, wallet all live by Month 3
+O5
+Launch cargo vertical
+100+ SME cargo clients; 50,000 waybills issued Year 1
+O6
+Agent network scale
+200 trained agents across 12 states by Month 6
+4. User Personas
+4.1  Primary Personas
+Persona
+Profile
+Pain Points
+What They Need
+🧑‍💼 Urban Traveller (Emeka, Lagos)
+25–40, smartphone user, travels monthly state-to-state for work or family
+Wastes 2hrs at park; can't compare prices; no digital ticket
+Search routes, compare, pay online, get QR ticket, track bus
+👩‍🌾 Rural Traveller (Fatima, Kano)
+30–55, feature phone or basic Android, lower literacy, pays cash
+No internet or data; can't use apps; reliant on touts
+USSD booking, agent-assisted purchase, Hausa language UI
+📦 Cargo Shipper (Chukwuemeka, Onitsha)
+35–55, SME owner sending goods Lagos↔Onitsha weekly
+Goods lost, no tracking, no receipts, unreliable ETA
+Digital waybill, live tracking, insurance option, B2B invoicing
+🚌 Transport Operator (Alhaji Musa, Abuja)
+45–65, owns 5–20 buses, manages manually, cash-only
+No digital presence, can't scale, no revenue data
+Simple dashboard, agent manages bookings, payout reports
+🧑‍💻 Park Agent (Tunde, Ibadan)
+20–35, local to motor park, employed by Naija Routes
+No tools to register operators; cash handling is manual
+Agent app, QR scanner, cash reconciliation, commission tracking
+🏢 Corporate Client (Zenith Bank logistics team)
+Travel manager, books staff travel in bulk
+Manual booking, no central billing, compliance risk
+Corporate account, bulk booking, invoice, duty-of-care tracking
+5. Feature Specifications
+5.1  Core Feature Modules
+Feature Module
+Description
+Priority
+Phase
+Route Search Engine
+Multi-operator search by origin/destination/date. Returns ranked results by price, departure time, operator rating, and seat availability in real time.
+P0
+MVP
+Digital Booking & QR Tickets
+End-to-end booking flow with seat selection where supported. Generates QR-coded digital ticket, PDF receipt, and SMS confirmation.
+P0
+MVP
+Hybrid Payment Gateway
+Card (Paystack/Flutterwave), bank transfer, USSD (*901#), mobile wallet (OPay, PalmPay), and cash-via-agent. All methods confirmed before ticket issued.
+P0
+MVP
+Agent Onboarding App
+Mobile-first PWA for park agents. Registers operators, loads schedules, sells tickets, scans QR codes, and reconciles cash daily.
+P0
+MVP
+Live Bus Tracking
+GPS device integration (OBD/SIM-based) on buses. Passenger-facing map with ETA. Family sharing link. Offline caching for low-signal routes.
+P1
+Phase 2
+Operator Dashboard
+Web dashboard for transport operators: route management, seat inventory, revenue analytics, driver management, and passenger manifests.
+P1
+Phase 2
+Cargo Module
+Cargo booking with itemised waybill, pickup/delivery addresses, weight/dimension input, pricing calculator, and consignment tracking.
+P1
+Phase 2
+Multi-Language Support
+Full UI in English, Yoruba, Hausa, Igbo, and Nigerian Pidgin. Language auto-detected by device locale; user can override.
+P1
+Phase 2
+Ratings & Reviews
+Post-journey rating for operator, driver, vehicle condition, and punctuality. Operators with <3.5 average flagged for review.
+P1
+Phase 2
+Corporate Accounts
+Multi-user accounts with travel policy enforcement, bulk booking, consolidated invoicing, and monthly statements.
+P2
+Phase 3
+USSD Interface
+Full booking and ticket issuance via USSD code for feature phone users. Works without internet. Integrated with NCC-approved short codes.
+P2
+Phase 3
+Insurance Integration
+Optional travel insurance upsell at checkout (AXA Mansard / Leadway partnership). Claim filing in-app.
+P2
+Phase 3
+Demand Forecasting (AI)
+ML-powered occupancy forecasting and dynamic pricing recommendations for operators. Route performance insights.
+P3
+Phase 4
+Super App Layer
+Hotel booking, food/drinks at parks, inter-city taxi feeder connections, and loyalty programme. Revenue diversification.
+P3
+Phase 4
+5.2  Non-Functional Requirements
+Requirement
+Specification
+Performance
+Search results < 1.5s P95. Page load < 2s on 3G. Ticket generation < 500ms.
+Availability
+99.9% uptime SLA. Graceful degradation to read-only mode during maintenance windows.
+Scalability
+Horizontal auto-scaling. Handle 50,000 concurrent users at peak (Christmas, Eid, Easter).
+Security
+PCI-DSS compliance for payment data. AES-256 encryption at rest. TLS 1.3 in transit. OWASP Top 10 mitigated.
+Offline Support
+Progressive Web App with offline ticket display. Agent app works offline and syncs on reconnect.
+Accessibility
+WCAG 2.1 AA compliance. Screen reader support. Large tap targets for lower-literacy users.
+Data Residency
+All user data stored on Nigerian infrastructure (AWS Lagos af-south-1 or Google Cloud).
+6. Technology Stack
+The stack is chosen for three constraints unique to Nigeria: high mobile traffic with low bandwidth; a large JavaScript developer talent pool; and the need to integrate with local payment processors, telecoms, and logistics APIs. The current phase uses HTML, CSS, and vanilla JavaScript for rapid delivery and low onboarding cost. The architecture is deliberately API-first so the backend, database, and infrastructure layers remain completely unchanged when a React Native mobile app is added in a future phase.
+6.1  Frontend Stack — Current Phase (Web)
+Layer
+Technology
+Rationale
+Future Mobile Path
+Core Language
+HTML5 + CSS3 + Vanilla JS (ES2022+)
+Zero framework overhead; works on low-end Android devices common in Nigeria; every developer knows it
+API calls reused as-is by mobile app
+Build Tool
+Vite 5
+Instant dev server; optimised production bundles; ES module native; replaces Webpack complexity
+Vite for web; Expo for mobile
+CSS Architecture
+CSS Custom Properties + BEM
+Design tokens defined as CSS variables — colours, spacing, type; easy to port to React Native StyleSheet later
+Tokens become RN StyleSheet constants
+Module Structure
+ES Modules (one file per feature)
+booking.js, search.js, auth.js, tracking.js — clear separation, no bundler lock-in
+Each module maps to a React Native screen
+Maps & Tracking
+Leaflet.js + OpenStreetMap
+Free; 38KB; excellent Nigeria road data via OSM; tile caching for offline use
+React Native Maps + Mapbox SDK
+QR Code Generation
+qrcode.js (browser)
+Generates ticket QR codes client-side; no server round-trip; works offline after load
+react-native-qrcode-svg
+QR Code Scanning
+html5-qrcode
+Camera-based QR scanning for agent app in browser; no native install required
+Expo Camera + expo-barcode-scanner
+Internationalisation
+i18next + browser detection
+JSON translation files for EN, Yoruba, Hausa, Igbo, Pidgin; same JSON files reused in mobile
+react-i18next (same JSON files)
+PWA / Offline
+Workbox CLI + Service Worker
+Offline ticket display; agent app syncs on reconnect; installable on Android home screen
+React Native is natively offline-capable
+HTTP Client
+Fetch API + custom wrapper
+Native browser API; wrapper adds auth headers, retry logic, error handling; no Axios dependency
+Same wrapper logic ported to React Native
+Testing
+Vitest + Playwright
+Vitest for JS unit tests; Playwright for E2E booking and payment flows in browser
+Detox for React Native E2E testing
+Hosting (Web)
+Netlify + Vercel
+Free tiers; Git-based deploy; global CDN with Nigerian PoPs; instant rollback on bad deploy
+Mobile: Expo EAS Build + App Stores
+6.1b  Frontend Stack — Future Mobile Phase (iOS & Android)
+When the mobile app is introduced in Phase 3, the backend API, authentication, payment integrations, and database remain completely unchanged. Only a new client application is added that consumes the same REST endpoints already serving the web frontend.
+Layer
+Technology
+Notes
+Framework
+React Native + Expo SDK
+Single codebase ships both iOS and Android. EAS Build handles OTA updates without App Store resubmission.
+Navigation
+Expo Router (file-based)
+Same mental model as web routing; deep linking for ticket QR scan URLs works natively out of the box.
+Styling
+React Native StyleSheet + token port
+CSS design tokens from web are ported directly to RN StyleSheet constants — consistent brand across platforms.
+State Management
+Zustand + TanStack Query
+Zustand for local state; TanStack Query for API caching and optimistic UI — same patterns familiar to the web team.
+Push Notifications
+Expo Notifications + Firebase FCM
+Departure alerts, booking confirmations, cargo updates — critical for traveller engagement in Nigeria.
+Offline Storage
+MMKV (react-native-mmkv)
+10x faster than AsyncStorage; stores tickets, recent searches, and agent cash records offline reliably.
+Maps
+React Native Maps + Mapbox SDK
+Native map rendering performance; offline tile packs for rural Nigeria routes with no mobile signal.
+Payments
+Paystack React Native SDK
+Official Paystack mobile SDK. Same merchant account as web platform — unified daily settlement.
+QR Scanner
+Expo Camera + expo-barcode-scanner
+Native camera-based QR scanning for agent boarding; significantly faster and more reliable than browser-based scanning.
+App Distribution
+Expo EAS + Google Play + App Store
+Managed CI build pipeline; TestFlight and Internal Testing tracks for QA; phased production rollout.
+6.2  Backend Stack
+The backend is built API-first from day one. Every feature is exposed via a versioned REST endpoint — meaning the Phase 3 mobile app simply consumes the same API with zero backend changes required. This is the key architectural decision that protects the mobile migration investment.
+Layer
+Technology
+Rationale
+Future Path
+Runtime
+Node.js 20 LTS
+JavaScript server-side; same language as frontend; all Nigerian payment SDKs support it natively
+Bun runtime when stable
+API Framework
+Express.js 5
+Most widely known Node.js framework; huge middleware ecosystem; easy to hire for in Nigeria
+Fastify migration at 10k+ req/s
+API Language
+JavaScript (ES2022+ modules)
+No TypeScript compilation step in MVP; JSDoc for type hints; migrate to TS at Series A
+TypeScript in Phase 3
+AI / ML Services
+Python 3.12 + FastAPI
+Separate microservice for demand forecasting, fraud detection, NLP chatbot; Python owns the ML ecosystem
+LLM agent integration
+Database (Primary)
+PostgreSQL 16 (Supabase)
+ACID compliance for bookings and payments; Row Level Security; Realtime subscriptions; mobile SDK available
+CockroachDB for geo-dist
+Database (Cache)
+Redis (Upstash serverless)
+Route search caching; seat lock TTL during booking (10 min); session store; generous free tier
+Redis Cluster at scale
+Database (Analytics)
+ClickHouse Cloud
+Columnar store for operator dashboards; route and revenue analytics; 100M+ row queries sub-second
+Apache Doris if cost-sensitive
+Queue / Jobs
+BullMQ (Redis-backed)
+Async ticket PDF generation; SMS dispatch queue; payment webhook retry; cargo status updates
+Kafka at 10M+ events/day
+Real-time
+Socket.io
+Seat availability; live bus tracking broadcast; agent notifications; handles poor Nigerian connections
+Supabase Realtime at scale
+File Storage
+Cloudflare R2
+Ticket PDFs; waybill documents; operator KYC scans. S3-compatible; zero egress fees vs AWS
+AWS S3 if compliance required
+Authentication
+Supabase Auth + JWT
+Phone OTP natively; custom JWT claims for agent/operator roles; Supabase mobile SDK available for Phase 3
+Keycloak for enterprise SSO
+Email / SMS
+Termii (SMS) + Resend (email)
+Termii: best Nigerian SMS deliverability at 99.2%; Resend: transactional email with delivery tracking
+Add WhatsApp via 360dialog
+Search
+Typesense (self-hosted)
+Sub-50ms route search; Nigerian city name fuzzy matching; typo tolerance; completely free to self-host
+Algolia at Series A
+Monitoring
+OpenTelemetry + Grafana Cloud
+Distributed tracing; custom business metrics (bookings/min, payment failures, API latency by region)
+Datadog if budget permits
+6.3  Infrastructure & DevOps
+Layer
+Technology
+Notes
+Cloud Provider
+AWS (af-south-1 Lagos)
+Primary region. Nigerian data residency. EC2/ECS + RDS + ElastiCache
+CDN
+Cloudflare
+DDoS protection; Nigerian PoPs in Lagos/Johannesburg; image optimisation
+Containers
+Docker + AWS ECS Fargate
+No server management; auto-scaling; pay-per-use. Migrate to EKS at Series A
+CI/CD
+GitHub Actions + AWS CodeDeploy
+Automated test → staging → production pipeline. Blue/green deployments
+IaC
+Terraform + Terragrunt
+All infrastructure as code; staging mirrors production exactly
+Secrets
+AWS Secrets Manager
+Rotated credentials for DB, payment APIs, SMS providers
+Error Tracking
+Sentry
+Frontend + backend error capture with Nigerian user context
+Feature Flags
+Unleash (self-hosted)
+Progressive rollouts; A/B testing; kill switches for payments
+6.4  Nigerian-Specific Integrations
+Integration
+Provider
+Purpose
+Payment — Card/Transfer
+Paystack + Flutterwave
+Primary payment processors. Paystack for simplicity; Flutterwave for remittance
+Payment — USSD
+Interswitch Quickteller
+USSD banking integration *901# for no-data users
+Payment — Wallet
+OPay, PalmPay, Kuda APIs
+Mobile wallet acceptance via aggregator (Squad/VFD)
+SMS Gateway
+Termii
+OTP delivery, booking confirmations, departure alerts. 99.2% deliverability
+WhatsApp
+360dialog / Twilio
+Booking confirmations and chatbot on WhatsApp — Nigeria's #1 messaging app
+GPS Tracking
+Teltonika FMB920 OBD
+Low-cost OBD GPS device for bus tracking. SIM from Airtel M2M
+Identity (NIN)
+NIBSS NIN Verification
+Operator KYC; driver verification; cargo shipper identity
+BVN Verification
+NIBSS / Paystack Identity
+Payment fraud prevention; financial identity matching
+Maps (Nigeria tiles)
+Mapbox + OpenStreetMap
+OSM has better Nigerian road data; Mapbox renders it fast
+NCC USSD
+NCC-licensed aggregator
+USSD short code (*NNN#) via approved aggregator (AfriCom/iSON)
+7. Project Structure (Monorepo)
+The project uses a Turborepo monorepo with pnpm workspaces. This enables shared types, UI components, and configuration across all apps while maintaining independent deployment of each service. The structure scales from MVP to enterprise without restructuring.
+naija-routes/ ├── apps/ │   ├── web/                         # HTML/CSS/JS — Consumer-facing website & PWA │   │   ├── index.html               # Landing page & route search │   │   ├── search.html              # Search results listing │   │   ├── booking.html             # Seat selection & checkout │   │   ├── ticket.html              # Digital ticket & QR code display │   │   ├── tracking.html            # Live bus tracking map (Leaflet.js) │   │   ├── account.html             # Profile, booking history │   │   ├── cargo.html               # Cargo booking & waybill tracking │   │   ├── css/ │   │   │   ├── tokens.css           # Design tokens: colours, spacing, type scale │   │   │   ├── base.css             # Reset, typography, layout primitives │   │   │   ├── components.css       # Cards, buttons, forms, modals │   │   │   └── pages/               # Per-page overrides │   │   ├── js/ │   │   │   ├── core/ │   │   │   │   ├── api.js           # Fetch wrapper (auth headers, retry, errors) │   │   │   │   ├── auth.js          # OTP login, JWT storage, session management │   │   │   │   ├── router.js        # Client-side page routing │   │   │   │   └── i18n.js          # Language detection & translation loader │   │   │   ├── modules/ │   │   │   │   ├── search.js        # Route search, filter, sort logic │   │   │   │   ├── booking.js       # Seat selection & booking flow state │   │   │   │   ├── payment.js       # Paystack popup, status polling │   │   │   │   ├── ticket.js        # QR code generation, PDF download │   │   │   │   ├── tracking.js      # Leaflet map, Socket.io GPS updates │   │   │   │   ├── cargo.js         # Cargo booking form & waybill display │   │   │   │   ├── reviews.js       # Post-journey rating submission │   │   │   │   └── notifications.js # Push notification subscription │   │   │   └── main.js             # App bootstrap, global event listeners │   │   ├── locales/ │   │   │   ├── en.json              # English │   │   │   ├── yo.json              # Yoruba │   │   │   ├── ha.json              # Hausa │   │   │   ├── ig.json              # Igbo │   │   │   └── pcm.json             # Nigerian Pidgin │   │   ├── sw.js                    # Service Worker (Workbox) — offline tickets │   │   └── assets/                  # Icons, images, fonts │   │ │   ├── agent/                       # HTML/CSS/JS — Park agent PWA (offline-first) │   │   ├── index.html               # Agent dashboard & daily summary │   │   ├── scan.html                # QR ticket scanner (camera) │   │   ├── sell.html                # Walk-up ticket sales terminal │   │   ├── onboard.html             # Operator registration wizard │   │   ├── reconcile.html           # End-of-day cash reconciliation │   │   ├── css/ │   │   │   └── agent.css            # Large tap targets, high contrast for outdoor use │   │   ├── js/ │   │   │   ├── scanner.js           # html5-qrcode camera integration │   │   │   ├── sell.js              # Offline-first ticket sale (IndexedDB queue) │   │   │   ├── sync.js              # Background sync — push offline sales to API │   │   │   ├── reconcile.js         # Daily cash tally & API submission │   │   │   └── onboard.js           # Operator KYC form, document upload │   │   └── sw.js                    # Agent service worker (aggressive offline caching) │   │ │   ├── operator/                    # HTML/CSS/JS — Operator web dashboard │   │   ├── index.html               # Dashboard: revenue, bookings, occupancy │   │   ├── routes.html              # Route & schedule management │   │   ├── fleet.html               # Vehicle & driver management │   │   ├── bookings.html            # Passenger manifest & reservation list │   │   ├── analytics.html           # Chart.js revenue & occupancy graphs │   │   ├── payouts.html             # Settlement history & bank details │   │   ├── css/operator.css │   │   └── js/ │   │       ├── dashboard.js         # KPI widgets, real-time booking counter │   │       ├── schedule.js          # CRUD for routes and departure times │   │       ├── analytics.js         # Chart.js graphs, date range filters │   │       └── manifest.js          # Passenger manifest export (PDF/CSV) │   │ │   └── mobile/                      # [PHASE 3] React Native + Expo — iOS & Android │       │                            # *** Folder reserved. Not built in Phase 1-2. *** │       │                            # Consumes the same REST API — zero backend changes. │       ├── app/                     # Expo Router screens (mirrors web HTML pages 1:1) │       │   ├── (auth)/              # Login, OTP verification │       │   ├── (booking)/           # Search → Results → Seats → Checkout │       │   ├── (ticket)/            # QR ticket display, push notifications │       │   ├── (tracking)/          # Native map, live GPS streaming │       │   ├── (cargo)/             # Cargo booking, waybill tracking │       │   └── (account)/           # Profile, history, language settings │       ├── components/              # Shared RN UI components │       ├── locales/                 # Symlinked from /shared/locales (same JSON) │       ├── hooks/                   # useFetch, useAuth, useBooking, useTracking │       └── app.json                 # Expo config: bundle ID, permissions, splash │ ├── server/                          # Node.js + Express.js — Backend REST API │   ├── src/ │   │   ├── app.js                   # Express app: middleware, route mounting │   │   ├── server.js                # HTTP + Socket.io server bootstrap │   │   ├── config/ │   │   │   ├── database.js          # Supabase/PostgreSQL client │   │   │   ├── redis.js             # Upstash Redis connection │   │   │   ├── storage.js           # Cloudflare R2 S3-compatible client │   │   │   └── env.js               # Environment variable validation (dotenv) │   │   ├── middleware/ │   │   │   ├── auth.js              # JWT verification, role-based access control │   │   │   ├── rateLimit.js         # Per-route rate limiting (express-rate-limit) │   │   │   ├── validate.js          # Request body validation (Joi schemas) │   │   │   ├── errorHandler.js      # Global error handler + Sentry reporting │   │   │   └── cors.js              # CORS: allows web, agent, operator, mobile origins │   │   ├── routes/                  # Express routers — one file per resource domain │   │   │   ├── auth.routes.js       # POST /auth/otp/send, /auth/otp/verify │   │   │   ├── search.routes.js     # GET /routes/search │   │   │   ├── booking.routes.js    # POST /bookings, GET /bookings/:id │   │   │   ├── payment.routes.js    # POST /pay, POST /webhooks/paystack │   │   │   ├── ticket.routes.js     # GET /tickets/:id, POST /scan/:hash │   │   │   ├── tracking.routes.js   # GPS ingestion, vehicle status │   │   │   ├── cargo.routes.js      # Cargo booking & waybill endpoints │   │   │   ├── operator.routes.js   # Operator CRUD, schedule management │   │   │   ├── agent.routes.js      # Agent sales, reconciliation, commission │   │   │   ├── review.routes.js     # Review submission & retrieval │   │   │   └── admin.routes.js      # KYC approval, operator management │   │   ├── services/                # Business logic (no Express dependency) │   │   │   ├── booking.service.js   # Booking state machine, seat locking (Redis TTL) │   │   │   ├── payment.service.js   # Paystack integration, webhook verification │   │   │   ├── ticket.service.js    # QR hash generation, PDF creation (PDFKit) │   │   │   ├── sms.service.js       # Termii SMS sending & OTP templating │   │   │   ├── email.service.js     # Resend transactional email │   │   │   ├── search.service.js    # Typesense query builder, result ranking │   │   │   ├── tracking.service.js  # GPS event processing, Socket.io broadcast │   │   │   └── cargo.service.js     # Waybill number generation, cargo tracking │   │   ├── jobs/                    # BullMQ background workers │   │   │   ├── ticketPdf.job.js     # Async PDF generation after payment confirms │   │   │   ├── smsDispatch.job.js   # Queued SMS with automatic retry │   │   │   ├── paymentRetry.job.js  # Poll Paystack for pending payment status │   │   │   └── cargoUpdate.job.js   # Trigger cargo status change notifications │   │   ├── sockets/ │   │   │   ├── tracking.socket.js   # Live GPS broadcast to vehicle tracking rooms │   │   │   └── seats.socket.js      # Real-time seat availability updates │   │   └── utils/ │   │       ├── qrCode.js            # QR hash generation & scan validation │   │       ├── waybill.js           # Waybill number format: NR-YYYYMMDD-XXXX │   │       └── currency.js          # Kobo ⇔ Naira conversion helpers │   ├── migrations/                  # Numbered SQL migration files │   ├── seeds/                       # Dev data: operators, routes, test schedules │   └── tests/                       # Jest unit + Supertest integration tests │ ├── ml-service/                      # Python 3.12 + FastAPI — AI/ML microservice │   ├── app/ │   │   ├── main.py                  # FastAPI app entry point │   │   ├── forecasting/             # Demand & occupancy prediction │   │   ├── pricing/                 # Dynamic pricing recommendations │   │   ├── fraud/                   # Payment & booking fraud detection │   │   └── nlp/                     # Route name NLP, chatbot intent parsing │   └── models/                      # Serialised trained model files (.pkl, .onnx) │ ├── ussd-service/                    # Node.js — USSD session handler │   └── src/ │       ├── sessions/                # Redis-backed USSD session state machine │       └── flows/                   # Booking, ticket lookup, agent cash flows │ ├── shared/ │   ├── constants.js                 # Booking statuses, payment methods, user roles │   ├── validators.js                # Shared validation: Nigerian phone, NIN, plates │   └── locales/                     # Master i18n source (web & mobile both reference) │ ├── infrastructure/ │   ├── terraform/                   # AWS infrastructure as code (IaC) │   │   ├── environments/            # dev / staging / production variable configs │   │   └── modules/                 # ECS, RDS, ElastiCache, R2, CloudFront modules │   ├── docker/ │   │   ├── Dockerfile.server        # Node.js backend production image │   │   ├── Dockerfile.ml            # Python ML service image │   │   └── docker-compose.yml       # Local dev: Postgres, Redis, all services │   └── nginx/nginx.conf             # Reverse proxy: routes /api/* to server, /* to web │ ├── scripts/ │   ├── migrate.js                   # Run pending DB migration files │   ├── seed.js                      # Populate dev DB with operators and test routes │   └── typesense-index.js           # Rebuild route search index in Typesense │ ├── docs/ │   ├── api/                         # OpenAPI 3.0 spec (auto-generates Swagger UI) │   ├── architecture/                # System diagrams & data flow charts │   └── agent-guide/                 # Printable guide for offline park agent training │ ├── .github/ │   └── workflows/ │       ├── ci.yml                   # Lint, test, build on every pull request │       └── deploy.yml               # Deploy to staging on PR merge; production on tag │ ├── .env.example                     # All required environment variables documented ├── docker-compose.yml               # Local dev stack (mirrors production services) └── package.json
+8. Core Data Models
+The following PostgreSQL entity schema defines the core domain. All tables include created_at, updated_at, and soft-delete deleted_at timestamps. Row Level Security (RLS) enforces access control at the database level.
+Entity
+Key Fields
+Relationships
+users
+id, phone, email, full_name, lang_pref, role (traveller|agent|operator|admin)
+has_many bookings, has_many reviews, belongs_to operator (optional)
+operators
+id, name, registration_no, nin_verified, rating_avg, states_served[], bank_account
+has_many routes, has_many vehicles, has_many drivers, has_many agents
+routes
+id, operator_id, origin, destination, origin_state, dest_state, distance_km, duration_hrs
+has_many schedules, belongs_to operator
+schedules
+id, route_id, departure_time, days_of_week[], base_price_kobo, vehicle_id, seats_total
+has_many bookings, belongs_to route & vehicle
+bookings
+id, user_id, schedule_id, seat_no, status (pending|confirmed|cancelled|completed), payment_ref
+belongs_to user & schedule, has_one ticket, has_one payment
+tickets
+id, booking_id, qr_code_hash, pdf_url, issued_at, scanned_at, scanned_by_agent_id
+belongs_to booking
+payments
+id, booking_id, amount_kobo, method (card|transfer|ussd|cash|wallet), provider_ref, status
+belongs_to booking
+vehicles
+id, operator_id, plate_no, type (bus|minibus|coaster), seats, gps_device_id
+belongs_to operator, has_many tracking_events
+tracking_events
+id, vehicle_id, lat, lng, speed_kmh, timestamp, event_type (moving|stopped|arrived)
+belongs_to vehicle (time-series, partitioned by month)
+cargo_bookings
+id, shipper_id, operator_id, origin, destination, weight_kg, description, waybill_no, status
+belongs_to shipper (user), belongs_to operator, has_many cargo_events
+agents
+id, user_id, park_id, commission_rate, cash_balance_kobo, status
+belongs_to user & park, has_many agent_transactions
+reviews
+id, user_id, booking_id, operator_rating, driver_rating, vehicle_rating, punctuality_rating, body
+belongs_to user & booking
+9. API Design Principles & Key Endpoints
+The API follows REST with JSON:API conventions for consistency. All endpoints are versioned (/api/v1/). Authentication uses Bearer JWT tokens. Rate limiting: 100 req/min for consumers, 1000 req/min for operators, unlimited for internal services.
+9.1  Key API Endpoints
+Method
+Endpoint
+Description
+POST
+/api/v1/auth/otp/send
+Send OTP to phone number for login/registration
+POST
+/api/v1/auth/otp/verify
+Verify OTP and return JWT access + refresh tokens
+GET
+/api/v1/routes/search?origin=Lagos&destination=Abuja&date=2025-12-25&passengers=1
+Search available routes. Returns sorted operator results with seat counts and pricing
+GET
+/api/v1/schedules/:id/seats
+Get real-time seat map for a specific schedule
+POST
+/api/v1/bookings
+Create a booking (locks seat for 10 minutes pending payment)
+POST
+/api/v1/bookings/:id/pay
+Initiate payment for a booking. Returns payment redirect or confirmation
+GET
+/api/v1/bookings/:id/ticket
+Get ticket with QR code and PDF download URL
+POST
+/api/v1/tickets/:qr_hash/scan
+Agent scans ticket at departure. Validates and marks as boarded
+GET
+/api/v1/tracking/vehicle/:id/live
+WebSocket endpoint — streams GPS location updates
+POST
+/api/v1/cargo/bookings
+Create a cargo booking with waybill number generation
+GET
+/api/v1/operators/:id/dashboard
+Operator dashboard data: revenue, occupancy, upcoming trips
+POST
+/api/v1/agents/reconcile
+Agent end-of-day cash reconciliation submission
+GET
+/api/v1/reviews/operator/:id
+Paginated reviews for an operator
+POST
+/api/v1/reviews
+Submit post-journey review (requires completed booking)
+GET
+/api/v1/admin/operators/pending
+Admin: list operators awaiting KYC approval
+10. Phased Delivery Roadmap
+Phase
+Timeline
+Deliverables
+Success Criteria
+Phase 0 Foundation
+Weeks 1–4
+Monorepo setup, design system, CI/CD pipeline, DB schema, auth service, Paystack integration
+All engineers onboarded; staging env live; auth working end-to-end
+Phase 1 MVP Launch
+Weeks 5–16
+Route search, multi-operator booking, digital tickets (QR+PDF), card payments, SMS confirmations, agent app (sell + scan), operator onboarding portal, 3-state pilot (Lagos, Abuja, Onitsha)
+500 bookings in first 30 days; 20 operators live; agent NPS > 70
+Phase 2 Core Growth
+Weeks 17–28
+Live bus tracking (GPS), cargo module + waybills, multi-language (Yoruba, Hausa, Igbo, Pidgin), ratings & reviews, USSD booking fallback, OPay/PalmPay wallets, operator analytics dashboard
+5,000 monthly bookings; 4.0+ operator rating; cargo GMV ₦5M/month
+Phase 3 Scale
+Weeks 29–44
+Corporate accounts + invoicing, insurance upsell, WhatsApp chatbot booking, push notifications, auto-scaling infra, agent network 200+ parks, West Africa route pilot (Ghana/Benin)
+50,000 monthly bookings; Series A metrics; 12 states covered
+Phase 4 Super App
+Weeks 45+
+Demand forecasting AI, dynamic pricing, park amenities booking, loyalty programme, open API for third-party operators, B-BBEE partnerships
+Market leader; 10M+ annualised GMV; profitable unit economics
+11. Recommended Team Structure
+11.1  MVP Team (Phase 0–1)
+Role
+Count
+Responsibilities
+Product Manager
+1
+PRD ownership, stakeholder alignment, sprint planning, operator partnerships
+Tech Lead / Architect
+1
+Architecture decisions, code review, stack governance, DevOps setup
+Frontend Engineer (Next.js)
+2
+Web app, operator dashboard, PWA; design system implementation
+Mobile Engineer (React Native)
+1
+iOS + Android app; push notifications; offline ticket display
+Backend Engineer (Node/Fastify)
+2
+API gateway, booking engine, payment integration, job queues
+DevOps Engineer
+1
+AWS infrastructure, CI/CD, monitoring, security hardening
+UX/UI Designer
+1
+User research, wireframes, design system; offline/low-literacy UX
+QA Engineer
+1
+Test automation, regression suite, payment scenario testing
+Field Agent Coordinator
+1
+Recruit, train, and manage park agents; offline onboarding kits
+11.2  Engineering Standards
+Git flow: feature branches → develop → staging → main (production)
+PR review: minimum 2 approvals for backend; 1 for frontend; automated for infra
+Sprint cadence: 2-week sprints; Monday planning, Friday demo + retrospective
+Code coverage target: 80% unit, 60% integration for booking and payment modules
+Performance budget: Lighthouse score > 85 on mobile; Core Web Vitals in green
+Security: SAST scan on every PR (Snyk); penetration test before each public launch
+12. Business Model & Revenue Streams
+Revenue Stream
+Rate
+Notes
+Booking Commission
+5–8% per ticket
+Primary revenue. Charged to operator on settlement. Competitive vs 15% tout commission.
+Cargo Commission
+4–6% per waybill
+Lower rate to attract SME volume. Insurance upsell increases LTV.
+Operator SaaS Subscription
+₦5,000–₦25,000/month
+Optional premium tier: advanced analytics, priority search placement, custom branding.
+Payment Processing Fee
+0.5% pass-through
+Paystack/Flutterwave charge 1.5%; Naija Routes absorbs difference as CAC tool.
+Insurance Commission
+15% of premium
+AXA/Leadway partnership. ₦500–₦2,000 per booking. High-margin upsell.
+Agent Cash Handling Fee
+1% of cash transactions
+Charged to operator for cash-collected bookings processed by agents.
+Corporate Account Fee
+₦50,000–₦200,000/month
+Enterprise SLA, invoicing, travel policy enforcement, HR integration.
+Advertising (Phase 4)
+CPM / CPC model
+Hotel, food, fintech partners targeting travellers at point of booking.
+Data Intelligence (Phase 4)
+₦500,000+/report
+Anonymised route demand, pricing benchmarks, occupancy data sold to LASG / operators.
+13. Risk Register
+Risk
+Likelihood
+Impact
+Mitigation
+Operator adoption resistance
+High
+High
+Agent-mediated model removes digital literacy barrier. Revenue share + competitive commission vs tout system.
+Internet infrastructure / power failures
+High
+Medium
+Offline-first agent app. USSD fallback. PWA offline ticket display. QR scan works without internet.
+Payment failures (card decline / USSD timeout)
+High
+High
+Multi-provider fallback. Seat held for 10 minutes on payment attempt. SMS confirmation regardless.
+Regulatory (LASG, FRSC, NCC)
+Medium
+High
+Engage FRSC and state transport authorities early. Obtain NIMC data sharing agreement. NCC USSD licence.
+GPS device non-adoption by operators
+Medium
+Medium
+Subsidise first 2 devices per operator at onboarding. Show tracking as competitive advantage to passengers.
+Counterfeit QR codes
+Medium
+High
+Server-side QR validation on every scan. Single-use QR codes. Rate limiting on scan endpoint.
+Price war from incumbents
+Medium
+Medium
+Differentiate on trust, tracking, and data — not price. Operator SaaS tools create switching costs.
+FX / naira devaluation impact
+Medium
+Low
+All pricing in NGN. Infrastructure costs hedged via prepaid AWS credits. Pricing model is % not fixed.
+Key engineer attrition
+Low
+High
+Documented architecture. Pair programming. Competitive equity compensation. Remote-friendly culture.
+14. Success Metrics & KPIs
+14.1  North Star Metric
+Confirmed Bookings Per Month (CBPM)
+Every other metric is either a leading indicator or a health guardrail for CBPM.
+Category
+Metric
+Month-3 Target
+Month-12 Target
+Growth
+Monthly confirmed bookings
+2,000
+50,000
+Growth
+Active operators on platform
+50
+500+
+Growth
+States covered
+3
+24
+Revenue
+Gross Merchandise Value (GMV)
+₦20M
+₦500M
+Revenue
+Monthly Recurring Revenue
+₦1.5M
+₦25M
+Quality
+Booking success rate
+>90%
+>97%
+Quality
+Payment success rate
+>85%
+>95%
+Quality
+Average operator rating
+>3.8
+>4.2
+Retention
+30-day user retention
+>25%
+>45%
+Retention
+Repeat booking rate
+>30%
+>55%
+Operations
+Agent tickets sold/day/agent
+>20
+>50
+Operations
+Avg. time to onboard operator
+<5 days
+<24 hours
+15. Immediate Next Steps
+To move from PRD to active development, the following actions should be completed within the first 30 days:
+#
+Action
+Description
+Owner
+01
+Validate with 10 operators
+Conduct in-park interviews in Lagos and Abuja. Validate pricing, pain points, and agent model willingness.
+Product + Founder
+02
+Register business entity
+Incorporate as Ltd in Nigeria. Register with FRSC, CAC, and relevant transport associations.
+Legal / Founder
+03
+Paystack + Termii accounts
+Create and verify merchant accounts. Get test API keys. Sign operator payment agreements.
+Tech Lead
+04
+Hire 2 backend engineers
+Target Senior Node.js engineers with fintech or logistics experience. Remote-first preferred.
+Founder / HR
+05
+Scaffold monorepo
+Set up Turborepo, pnpm workspaces, CI/CD pipeline, Supabase project, and staging environment.
+Tech Lead
+06
+Design system sprint
+1-week Figma sprint. Define colours, type scale, component library. Align on Yoruba/Hausa UI patterns.
+Designer
+07
+Pilot route selection
+Choose 3 high-volume routes for MVP: Lagos–Abuja, Enugu–Lagos, Kano–Abuja.
+Product + Field
+08
+Recruit 5 pilot agents
+Hire and train park agents at Jibowu (Lagos), Utako (Abuja), Asata (Enugu). Define commission structure.
+Field Coordinator
+09
+GPS device procurement
+Order 20 Teltonika FMB920 devices. Set up Airtel M2M SIM agreements. Test OBD integration.
+Tech Lead
+10
+PRD sign-off
+Circulate this PRD to all stakeholders. Collect written approval before sprint 1 begins.
+Product Manager
+Naija Routes — Bringing Every Motor Park Online
+PRD Version 1.0 · Confidential

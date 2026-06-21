@@ -1,0 +1,22 @@
+Naija Routes PRD - Architecture & Monorepo Refactor (Replacement Draft for Sections 6–7)
+Purpose: This document preserves the original PRD scope while restructuring the Technology Architecture and Monorepo sections for clarity, onboarding, governance, and implementation readiness.
+6. Technology Architecture Overview
+System LayersUsers- Travellers- Cargo Shippers- Operators- Park Agents- Corporate ClientsApplications- Web Platform (PWA)- Agent Application (PWA)- Operator Dashboard- Mobile Application (Phase 3)Core Platform Services- Authentication- Route Search- Booking Engine- Payments- Ticketing- Cargo- Reviews- TrackingData Layer- PostgreSQL- Redis- TypesenseSupporting Services- ML Service- USSD ServiceExternal Integrations- Paystack- Flutterwave- Termii- OPay- PalmPay- NIBSS- GPS Providers
+7. Monorepo Architecture
+Naija Routes uses a Turborepo-based monorepo with pnpm workspaces.Objectives:- Shared code across products- Independent deployments- Faster CI/CD- Single source of truth for translations- Consistent validation logic- Reduced duplication
+7.1 Workspace Overview
+naija-routes/├── apps/├── services/├── packages/├── infrastructure/├── scripts/├── docs/└── .github/
+7.2 Applications Layer
+apps/├── web/├── agent/├── operator/└── mobile/web/- Route search- Booking- Payments- QR tickets- Cargo- Tracking- Reviewsagent/- Ticket sales- QR scanning- Cash reconciliation- Operator onboarding- Offline-first operationsoperator/- Fleet management- Route management- Analytics- Settlements- Passenger manifestsmobile/- React Native + Expo- Same API as web- Phase 3 deployment
+7.3 Services Layer
+services/├── api/├── ml-service/└── ussd-service/api/- Authentication- Search- Booking- Payments- Ticketing- Cargo- Reviews- Trackingml-service/- Occupancy forecasting- Dynamic pricing- Fraud detection- Route intelligenceussd-service/- Feature phone access- Booking flows- Ticket lookup- Agent workflows
+7.4 Shared Packages
+packages/├── shared/├── ui/└── config/shared/- Constants- Validators- Localesui/- Design system- Components- Icons- Tokensconfig/- ESLint- Prettier- Testing configuration
+7.5 Infrastructure Layer
+infrastructure/├── terraform/├── docker/└── nginx/Responsibilities:- Infrastructure as Code- Containerisation- Reverse Proxy- Environment Management
+7.6 Engineering Ownership
+Web Platform -> Frontend TeamAgent Platform -> Frontend TeamOperator Dashboard -> Frontend TeamMobile App -> Mobile TeamAPI Platform -> Backend TeamML Service -> Data TeamUSSD Service -> Backend TeamInfrastructure -> DevOps Team
+7.7 Dependency Model
+Shared Packages      ↓Web / Agent / Operator / Mobile      ↓API Platform      ↓PostgreSQL + Redis + Typesense      ↓ML Service + USSD Service
+7.8 Detailed Repository Structure
+Recommendation: Keep the original detailed repository tree from the PRD as the implementation reference, while using the sections above as the architectural overview. This preserves all implementation detail while significantly improving readability and onboarding.

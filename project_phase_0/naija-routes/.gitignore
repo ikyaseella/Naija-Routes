@@ -1,0 +1,60 @@
+# ────────────────────────────────────────────────
+# NAIJA ROUTES — .gitignore
+# ────────────────────────────────────────────────
+
+# ── Secrets — NEVER commit these ─────────────────
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# ── Dependencies ─────────────────────────────────
+node_modules/
+.pnp
+.pnp.js
+
+# ── Build outputs ─────────────────────────────────
+dist/
+build/
+out/
+.output/
+
+# ── Turborepo cache ───────────────────────────────
+.turbo/
+
+# ── Vite ─────────────────────────────────────────
+*.local
+vite.config.js.timestamp-*
+
+# ── Logs ─────────────────────────────────────────
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+
+# ── OS files ─────────────────────────────────────
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# ── VS Code ───────────────────────────────────────
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# ── Test coverage ─────────────────────────────────
+coverage/
+.nyc_output/
+
+# ── Python (ml-service — Phase 4) ────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+*.egg-info/
+
+# ── Uploads & generated files ─────────────────────
+uploads/
+generated/

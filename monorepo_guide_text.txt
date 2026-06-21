@@ -1,0 +1,807 @@
+🚌
+NAIJA ROUTES
+PRD Supplement
+Architecture & Monorepo Setup Guide
+Replacement for PRD Sections 6 & 7 — Written for Beginners
+Replaces
+PRD Sections 6 (Tech Stack) and 7 (Project Structure)
+Audience
+Developers who are new to monorepos and project architecture
+Goal
+Understand the stack, the folder layout, and set up GitHub in one sitting
+Time to read
+45 minutes
+Version
+1.0 — June 2025
+Table of Contents
+Section 1: What Are We Building and How Does It All Connect?
+Before we look at any code or folder structure, you need to understand the big picture — what the Naija Routes system is made of and how the pieces talk to each other. Think of it like the parts of a transport business.
+💡
+The simple mental model
+Naija Routes is like a transport company headquarters. The APPS are the different offices (traveller front desk, agent desk, operator office, admin war room). The SERVER is the back office where all the real work happens. The DATABASE is the filing cabinet. They all share the same filing cabinet but have their own desks.
+1.1  The Five Parts of Naija Routes
+The entire platform is made of five distinct parts. Every person on the team needs to know what these five parts are and which one they are responsible for.
+#
+Part
+Tech Used
+Plain English Description
+1
+Traveller Web App
+HTML + CSS + JavaScript
+The website passengers visit to search and book buses. Like the Jumia website but for bus tickets.
+2
+Agent App
+HTML + CSS + JavaScript
+A special website only for park agents. They use it to sell tickets, scan QR codes, and manage their park.
+3
+Operator Dashboard
+HTML + CSS + JavaScript
+A website for bus company owners. They use it to manage their routes, see revenue, and track their fleet.
+4
+Backend API Server
+Node.js + Express.js
+The brain behind everything. All three websites above talk to this server to get data and save data. Users never see this directly.
+5
+Database
+PostgreSQL (Supabase)
+Where everything is stored permanently — every booking, every passenger, every route, every payment. Like a giant filing cabinet that never forgets.
+1.2  How the Parts Talk to Each Other
+This is the most important diagram to understand. Read it carefully. It shows that the three frontend apps (traveller, agent, operator) never talk to the database directly. They always go through the API server. The API server is the only part that touches the database.
+                    ┌─────────────────────────────────────────┐
+                    │          USERS (on their phones)         │
+                    └──────────────┬──────────────────────────┘
+                                   │
+              ┌────────────────────┼────────────────────┐
+              │                    │                    │
+    ┌─────────▼──────┐  ┌─────────▼──────┐  ┌─────────▼──────┐
+    │  Traveller App  │  │   Agent App    │  │Operator Dashboard│
+    │ (HTML/CSS/JS)   │  │ (HTML/CSS/JS)  │  │ (HTML/CSS/JS)  │
+    │  apps/web/      │  │  apps/agent/   │  │ apps/operator/ │
+    └────────┬────────┘  └───────┬────────┘  └────────┬───────┘
+             │                   │                    │
+             └───────────────────┼────────────────────┘
+                                 │ HTTP Requests (fetch API)
+                                 │ e.g. GET /api/v1/routes/search
+                    ┌────────────▼────────────┐
+                    │    Backend API Server    │
+                    │   (Node.js + Express)    │
+                    │      server/src/         │
+                    └────────────┬────────────┘
+                                 │ SQL Queries
+                    ┌────────────▼────────────┐
+                    │    PostgreSQL Database   │
+                    │        (Supabase)        │
+                    │  bookings, routes, users │
+                    └─────────────────────────┘
+✅
+Key rule
+The three frontend apps (web, agent, operator) NEVER touch the database directly. They always send a request to the API server, and the API server handles the database. This is what makes the system secure and scalable.
+1.3  External Services We Connect To
+The backend server also connects to third-party services — companies that provide specialist functionality we do not build ourselves.
+Service
+Provider
+What It Does for Naija Routes
+Payment Processing
+Paystack
+Accepts card payments and bank transfers from passengers. Sends money to Naija Routes. We never store card numbers ourselves.
+SMS Messages
+Termii
+Sends OTP codes when users log in, and sends booking confirmation SMS to passengers after they pay.
+Email
+Resend
+Sends booking confirmation emails with PDF tickets attached. Used for operator onboarding emails too.
+File Storage
+Cloudflare R2
+Stores PDF tickets, waybill documents, and operator KYC documents. Like Google Drive but for our app.
+Authentication
+Supabase Auth
+Manages user login with phone number OTP. We do not build the login system ourselves — Supabase handles it.
+GPS Tracking
+Teltonika Device + Airtel SIM
+A small device plugged into a bus sends the GPS location every 30 seconds to our server.
+Route Search
+Typesense
+A fast search engine that returns bus routes in under 50 milliseconds. Much faster than searching PostgreSQL directly.
+Cache
+Redis (Upstash)
+Temporarily stores search results and user sessions so the database is not hit on every single request.
+Section 2: What Is a Monorepo and Why Are We Using One?
+This word — monorepo — sounds complicated but the idea is simple. Let us explain it with a story first.
+2.1  The Problem Without a Monorepo
+Imagine the Naija Routes team decides to keep each part of the project in a separate GitHub repository:
+Repository 1: naija-routes-web (the traveller website)
+Repository 2: naija-routes-agent (the agent app)
+Repository 3: naija-routes-operator (the operator dashboard)
+Repository 4: naija-routes-server (the backend API)
+Now imagine you need to change the way a 'Booking' object looks — maybe you add a new field called cargo_weight. Here is what happens:
+You update the Booking object in Repository 4 (server)
+You update the code that displays bookings in Repository 1 (web)
+You update the code in Repository 2 (agent)
+You update the code in Repository 3 (operator)
+You make four separate pull requests. Four separate code reviews. Four separate deployments.
+One developer forgets to update Repository 2. The agent app breaks.
+❌
+The four-repo problem
+Separate repositories create coordination nightmares. Teams get out of sync. The same code gets copied and pasted across repos and gets different bugs in each one. Shared code like the Booking type has to be updated in four places every time.
+2.2  The Solution: One Repository, Many Apps
+A monorepo puts ALL parts of the project in ONE GitHub repository. A single folder on your computer (and on GitHub) contains the traveller app, the agent app, the operator dashboard, the backend server, and shared code — all together.
+  One GitHub Repository: naija-routes
+  ├── apps/
+  │   ├── web/          ← Traveller website
+  │   ├── agent/        ← Park agent app
+  │   └── operator/     ← Operator dashboard
+  ├── server/           ← Backend API
+  └── shared/           ← Code shared between all apps
+Now when you change the Booking object, you change it ONCE in the shared/ folder. All four apps see the update automatically. One pull request. One code review. One deployment pipeline.
+✅
+The monorepo advantage
+One change. One review. Everything stays in sync automatically. The shared/ folder contains types, validators, and constants that every app and the server can import. No more copy-pasting. No more four-repo chaos.
+2.3  The Tool That Manages Our Monorepo: Turborepo
+A monorepo with four apps and a server would be slow if every time you made a change, you had to rebuild all five parts. Turborepo solves this. It is a tool from Vercel that:
+Only rebuilds the part you changed — if you only edited the agent app, only the agent app rebuilds
+Caches build results — if nothing changed in the server, it reuses the last build
+Runs tasks in parallel — it can build and test all apps at the same time
+Understands dependencies — it knows the server must build before the apps, and handles the order automatically
+You do not need to understand Turborepo deeply on day one. The configuration is already set up. You just run commands like npm run dev and Turborepo handles the rest.
+Section 3: The Complete Folder Structure Explained
+This section shows you every folder in the project and explains exactly what goes inside it. Read this before you write a single line of code. Knowing where things live means you never have to ask 'where do I put this file?'
+📌
+The golden rule of file placement
+If a file is only used by ONE app, it lives inside that app's folder. If a file is used by TWO OR MORE apps or by the server, it lives in the shared/ folder.
+3.1  Root Level — The Top of the Project
+naija-routes/                    ← Root of the entire project
+├── apps/                        ← All frontend applications live here
+├── server/                      ← The backend API lives here
+├── shared/                      ← Code shared between apps and server
+├── infrastructure/              ← Deployment and server setup files
+├── docs/                        ← Documentation and diagrams
+├── scripts/                     ← Utility scripts (database setup, etc.)
+├── .github/                     ← GitHub Actions (automated testing & deployment)
+├── package.json                 ← Root package file — defines the workspace
+├── turbo.json                   ← Turborepo configuration
+├── .env.example                 ← Template for environment variables (API keys, etc.)
+└── .gitignore                   ← Tells Git which files NOT to commit
+3.2  apps/ — The Four Frontend Applications
+Every application that a user sees in their browser or phone lives in the apps/ folder. Each app is self-contained with its own HTML files, CSS, and JavaScript.
+apps/web/ — The Traveller Website
+This is what passengers see when they visit naijaroutes.com. It is the main public-facing website.
+apps/web/
+├── index.html          ← Home page (search box, popular routes)
+├── search.html         ← Search results page (list of buses)
+├── booking.html        ← Seat selection and payment page
+├── ticket.html         ← Digital ticket with QR code
+├── tracking.html       ← Live bus location map
+├── account.html        ← User profile and booking history
+├── cargo.html          ← Cargo booking form
+├── css/
+│   ├── tokens.css      ← Design tokens (brand colours, spacing, fonts)
+│   ├── base.css        ← Global reset and base typography
+│   └── components.css  ← Reusable styles (buttons, cards, forms)
+├── js/
+│   ├── core/
+│   │   ├── api.js      ← Sends HTTP requests to the backend server
+│   │   ├── auth.js     ← Handles login, logout, OTP verification
+│   │   └── i18n.js     ← Language switching (English/Yoruba/Hausa/Igbo/Pidgin)
+│   └── modules/
+│       ├── search.js   ← Route search logic
+│       ├── booking.js  ← Booking flow (seat selection, checkout)
+│       ├── payment.js  ← Paystack payment popup
+│       ├── ticket.js   ← QR code display and PDF download
+│       └── tracking.js ← Live map with bus location
+├── locales/
+│   ├── en.json         ← English translations
+│   ├── yo.json         ← Yoruba translations
+│   ├── ha.json         ← Hausa translations
+│   ├── ig.json         ← Igbo translations
+│   └── pcm.json        ← Nigerian Pidgin translations
+└── sw.js               ← Service Worker (makes the app work offline)
+apps/agent/ — The Park Agent App
+This is only for Naija Routes field agents. It is a separate website — agents log in with a special agent account. It is designed to work offline and on cheap Android phones.
+apps/agent/
+├── index.html          ← Agent home: today's stats and quick action buttons
+├── scan.html           ← QR code scanner screen for boarding passengers
+├── sell.html           ← Walk-up ticket sale form
+├── onboard.html        ← Operator registration wizard
+├── reconcile.html      ← End-of-day cash reconciliation form
+├── css/
+│   └── agent.css       ← Agent-specific styles (large tap targets, high contrast)
+├── js/
+│   ├── scanner.js      ← Camera-based QR code scanner
+│   ├── sell.js         ← Offline-first ticket sale (saves locally if no internet)
+│   ├── sync.js         ← Syncs offline sales to the server when internet returns
+│   └── reconcile.js    ← Daily cash tally and submission
+└── sw.js               ← Service Worker (aggressive offline caching for agents)
+apps/operator/ — The Operator Dashboard
+This is the business management tool for transport company owners. They log in to manage their routes, see revenue data, and track their fleet.
+apps/operator/
+├── index.html          ← Dashboard overview (KPIs, charts, recent bookings)
+├── routes.html         ← Route and schedule management
+├── fleet.html          ← Vehicle and driver management
+├── bookings.html       ← Full booking history and passenger manifests
+├── analytics.html      ← Revenue charts and occupancy graphs
+├── payouts.html        ← Settlement history and bank account settings
+├── css/
+│   └── operator.css
+└── js/
+    ├── dashboard.js    ← KPI widgets and live booking counter
+    ├── schedule.js     ← Add/edit/delete departure schedules
+    ├── analytics.js    ← Chart.js revenue and occupancy graphs
+    └── manifest.js     ← Export passenger list as PDF or CSV
+apps/mobile/ — The Future Mobile App (Reserved)
+This folder is created now but left empty. When the team is ready to build the iOS and Android app (Phase 3), the mobile app code goes here. It will use the same backend API — no backend changes needed when this is built.
+apps/mobile/            ← RESERVED — Do not build yet
+│   (This folder is a placeholder for the React Native
+│    mobile app we will build in Phase 3. The backend
+│    API it uses is exactly the same as the web apps.)
+└── README.md           ← Instructions for when Phase 3 begins
+3.3  server/ — The Backend API
+Everything in this folder runs on the server — not on the user's device. This is where bookings are created, payments are processed, tickets are generated, and data is stored in the database. No user ever sees this code directly.
+server/
+├── src/
+│   ├── app.js              ← Sets up Express, registers all middleware and routes
+│   ├── server.js           ← Starts the HTTP server on a port (e.g. port 3000)
+│   │
+│   ├── config/             ← Connects to external services
+│   │   ├── database.js     ← Connects to PostgreSQL (Supabase)
+│   │   ├── redis.js        ← Connects to Redis cache (Upstash)
+│   │   ├── storage.js      ← Connects to Cloudflare R2 (file storage)
+│   │   └── env.js          ← Loads and validates all environment variables
+│   │
+│   ├── middleware/         ← Code that runs on EVERY request before the route handler
+│   │   ├── auth.js         ← Checks if the user is logged in (validates JWT token)
+│   │   ├── rateLimit.js    ← Limits how many requests one user can make per minute
+│   │   ├── validate.js     ← Checks that request data is in the correct format
+│   │   ├── errorHandler.js ← Catches all errors and returns a clean error response
+│   │   └── cors.js         ← Allows the frontend apps to talk to this server
+│   │
+│   ├── routes/             ← Defines what URLs the API accepts (the endpoints)
+│   │   ├── auth.routes.js       ← POST /api/v1/auth/otp/send
+│   │   │                           POST /api/v1/auth/otp/verify
+│   │   ├── search.routes.js     ← GET  /api/v1/routes/search
+│   │   ├── booking.routes.js    ← POST /api/v1/bookings
+│   │   │                           GET  /api/v1/bookings/:id
+│   │   ├── payment.routes.js    ← POST /api/v1/bookings/:id/pay
+│   │   │                           POST /api/v1/webhooks/paystack
+│   │   ├── ticket.routes.js     ← GET  /api/v1/tickets/:id
+│   │   │                           POST /api/v1/tickets/:hash/scan
+│   │   ├── tracking.routes.js   ← GPS data ingestion and broadcast
+│   │   ├── cargo.routes.js      ← Cargo booking and waybill creation
+│   │   ├── operator.routes.js   ← Operator management and dashboard data
+│   │   ├── agent.routes.js      ← Agent ticket sales and reconciliation
+│   │   ├── review.routes.js     ← Star ratings and written reviews
+│   │   └── admin.routes.js      ← Platform management (admin only)
+│   │
+│   ├── services/           ← The actual business logic (where real work happens)
+│   │   ├── booking.service.js   ← Creates bookings, locks seats for 10 minutes
+│   │   ├── payment.service.js   ← Talks to Paystack, handles payment webhooks
+│   │   ├── ticket.service.js    ← Generates QR codes and PDF tickets
+│   │   ├── sms.service.js       ← Sends SMS via Termii
+│   │   ├── email.service.js     ← Sends emails via Resend
+│   │   ├── search.service.js    ← Queries Typesense for fast route search
+│   │   └── tracking.service.js  ← Processes GPS events from buses
+│   │
+│   ├── jobs/               ← Background tasks that run after responding to the user
+│   │   ├── ticketPdf.job.js     ← Generates the PDF ticket after payment (async)
+│   │   ├── smsDispatch.job.js   ← Sends SMS confirmation (with retry if it fails)
+│   │   └── paymentRetry.job.js  ← Checks Paystack again if payment status is unclear
+│   │
+│   └── sockets/            ← Real-time connections (WebSocket)
+│       ├── tracking.socket.js   ← Sends live GPS updates to passengers watching map
+│       └── seats.socket.js      ← Updates seat availability live as others book
+│
+├── migrations/             ← SQL files that create and modify database tables
+│   ├── 001_create_users.sql
+│   ├── 002_create_operators.sql
+│   ├── 003_create_routes.sql
+│   └── ... (one file per database change, numbered in order)
+│
+├── seeds/                  ← Test data to fill the database during development
+│   ├── operators.seed.js   ← Creates 5 test operators
+│   └── routes.seed.js      ← Creates 20 test routes
+│
+└── tests/                  ← Automated tests for the server
+    ├── booking.test.js
+    └── payment.test.js
+3.4  shared/ — Code Used by Multiple Parts
+This is the most important folder to understand. Anything put here is available to ALL apps and the server. Never put app-specific code here — only things that two or more parts need.
+shared/
+├── constants.js        ← Fixed values used everywhere
+│                         e.g. BOOKING_STATUS = { PENDING, CONFIRMED, CANCELLED }
+│                         e.g. PAYMENT_METHODS = { CARD, TRANSFER, CASH, USSD }
+│                         e.g. USER_ROLES = { TRAVELLER, AGENT, OPERATOR, ADMIN }
+│
+├── validators.js       ← Functions that check if data is valid
+│                         e.g. isValidNigerianPhone('08012345678') → true/false
+│                         e.g. isValidNIN('12345678901') → true/false
+│                         e.g. isValidEmail('test@gmail.com') → true/false
+│
+└── locales/            ← Master translation files (all 5 languages)
+    ├── en.json         ← English (the source — all other files translate from this)
+    ├── yo.json         ← Yoruba
+    ├── ha.json         ← Hausa
+    ├── ig.json         ← Igbo
+    └── pcm.json        ← Nigerian Pidgin
+3.5  Other Important Root Files
+File / Folder
+What It Is and Why It Exists
+package.json (root)
+The master package file. Defines the project as a workspace with pnpm. Lists shared development tools like Turborepo and ESLint.
+turbo.json
+Tells Turborepo how to build, test, and deploy all the apps. Defines which tasks depend on which other tasks.
+.env.example
+A template file listing every environment variable the project needs — API keys, database URLs, etc. NEVER contains real values. Each developer copies this to .env and fills in their own values.
+.gitignore
+Tells Git which files to never commit to GitHub. Always includes: node_modules/, .env (real secrets), and build output folders.
+.github/workflows/
+Contains GitHub Actions YAML files. These are automated scripts that run every time you push code — they test your code and deploy it.
+infrastructure/
+Terraform files that define all the cloud servers on AWS. A developer runs these to create or update the production server environment.
+docs/
+Architecture diagrams, API documentation, and decision records explaining why certain technology choices were made.
+scripts/
+Useful one-off scripts. migrate.js runs database migrations. seed.js fills the dev database with test data.
+Section 4: How One Feature Works End to End
+To make the architecture concrete, let us trace a single user action through the entire system — from tapping a button to seeing the result. We will use route search as the example because it touches the most parts.
+The Journey: Passenger Searches for Lagos to Abuja Buses
+STEP 1 — USER TAPS BUTTON
+─────────────────────────
+Passenger fills in: From: Lagos  To: Abuja  Date: 25-Dec
+Taps the green 'Search Buses' button
+File: apps/web/js/modules/search.js
+ 
+STEP 2 — FRONTEND SENDS REQUEST
+────────────────────────────────
+search.js calls the API using the fetch wrapper:
+  api.get('/api/v1/routes/search?origin=Lagos&destination=Abuja&date=2025-12-25')
+File: apps/web/js/core/api.js
+ 
+STEP 3 — REQUEST ARRIVES AT SERVER
+────────────────────────────────────
+Express receives the request.
+Middleware runs first (in this order):
+  1. cors.js      → checks the request is from an allowed website
+  2. rateLimit.js → checks this user has not made too many requests
+  3. validate.js  → checks origin, destination, date are present and valid
+File: server/src/middleware/
+ 
+STEP 4 — ROUTE HANDLER RUNS
+────────────────────────────
+search.routes.js receives the validated request.
+It calls searchService.findRoutes(origin, destination, date)
+File: server/src/routes/search.routes.js
+ 
+STEP 5 — SERVICE QUERIES THE DATABASE AND CACHE
+─────────────────────────────────────────────────
+search.service.js first checks Redis cache:
+  'Have we searched Lagos-Abuja-25Dec in the last 5 minutes?'
+  YES → Return cached results instantly (no database hit)
+  NO  → Query Typesense search engine for matching routes
+        Query PostgreSQL for real-time seat availability
+        Store result in Redis for 5 minutes
+File: server/src/services/search.service.js
+ 
+STEP 6 — SERVER RESPONDS
+─────────────────────────
+Server sends back a JSON array of matching operators:
+  [ { operator: "ABC Transport", price: 9500, seats: 12, departure: "06:00" }, ... ]
+ 
+STEP 7 — FRONTEND DISPLAYS RESULTS
+────────────────────────────────────
+search.js receives the JSON and builds result cards in HTML.
+The user sees a list of operators with prices and times.
+File: apps/web/js/modules/search.js
+💡
+The pattern for every feature
+Every feature follows this same pattern: (1) User does something on the frontend. (2) Frontend calls the API. (3) Middleware validates the request. (4) Route handler calls a service. (5) Service talks to database/cache. (6) Server responds with data. (7) Frontend shows the data. Learn this pattern once and you understand every feature.
+Section 5: Setting Up the Monorepo on GitHub — Step by Step
+This section walks you through creating the Naija Routes monorepo on GitHub from scratch. Follow every step in order. Every command shown here is run in your computer's terminal (Command Prompt on Windows, Terminal on Mac/Linux).
+⚠️
+Before you start
+You need these installed on your computer: Git, Node.js version 20 or later, and pnpm. If you do not have them, install them first. Instructions are at nodejs.org and pnpm.io.
+Phase A: Create the GitHub Repository
+A1
+Create a GitHub account (if you don't have one)
+Go to github.com and sign up with your email address. Choose a username — this will be visible publicly.
+A2
+Create the repository on GitHub
+Click the green 'New' button on github.com. Fill in: Repository name: naija-routes. Description: Nigeria's road transport and logistics aggregator. Set it to Private (not Public — this is a business project). Do NOT tick 'Add a README file' — we will create our own. Click 'Create repository'.
+A3
+Copy the repository URL
+After creating the repository, GitHub shows you a page with setup instructions. Copy the HTTPS URL — it looks like: https://github.com/YOUR-USERNAME/naija-routes.git
+Phase B: Set Up the Project on Your Computer
+B1
+Open your terminal and create the project folder
+Run these commands one at a time. Press Enter after each line.
+# Create the project folder
+mkdir naija-routes
+ 
+# Go into the folder
+cd naija-routes
+ 
+# Tell Git this folder is a Git repository
+git init
+ 
+# Connect this folder to your GitHub repository
+# (replace YOUR-USERNAME with your actual GitHub username)
+git remote add origin https://github.com/YOUR-USERNAME/naija-routes.git
+B2
+Create the root package.json file
+This file defines the project as a pnpm workspace (a monorepo). Create a file called package.json in the naija-routes folder with the following content:
+{
+  "name": "naija-routes",
+  "version": "1.0.0",
+  "private": true,
+  "packageManager": "pnpm@9.0.0",
+  "scripts": {
+    "dev":   "turbo run dev",
+    "build": "turbo run build",
+    "test":  "turbo run test",
+    "lint":  "turbo run lint"
+  },
+  "devDependencies": {
+    "turbo": "^2.0.0"
+  }
+}
+B3
+Create the pnpm-workspace.yaml file
+This tells pnpm which folders contain individual apps/packages. Create pnpm-workspace.yaml in the root folder:
+packages:
+  - 'apps/*'
+  - 'server'
+  - 'shared'
+B4
+Create the turbo.json file
+This tells Turborepo how to run tasks across all packages. Create turbo.json in the root folder:
+{
+  "$schema": "https://turbo.build/schema.json",
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "test": {
+      "dependsOn": ["^build"]
+    },
+    "lint": {}
+  }
+}
+B5
+Create the .gitignore file
+This tells Git which files to never upload to GitHub. VERY IMPORTANT — .env files contain secret API keys and must never go to GitHub. Create .gitignore in the root folder:
+# Dependencies (installed locally, not stored in Git)
+node_modules/
+ 
+# Environment variables (SECRET — NEVER commit this)
+.env
+.env.local
+.env.production
+ 
+# Build output
+dist/
+.turbo/
+ 
+# OS files
+.DS_Store
+Thumbs.db
+ 
+# Editor files
+.vscode/
+.idea/
+B6
+Create the .env.example file
+This is the TEMPLATE for environment variables. It lists every secret the project needs, but with fake placeholder values. Real values go in .env (which is never committed). Create .env.example in the root folder:
+# Copy this file to .env and fill in your real values
+# NEVER commit .env to GitHub
+ 
+# Database (get from Supabase dashboard)
+DATABASE_URL=postgresql://user:password@host:5432/naija_routes
+ 
+# Redis cache (get from Upstash dashboard)
+REDIS_URL=redis://default:password@host:6379
+ 
+# Paystack (get from Paystack dashboard)
+PAYSTACK_SECRET_KEY=sk_test_your_key_here
+PAYSTACK_PUBLIC_KEY=pk_test_your_key_here
+ 
+# Termii SMS (get from Termii dashboard)
+TERMII_API_KEY=your_termii_key_here
+TERMII_SENDER_ID=NaijaRoutes
+ 
+# Resend email (get from resend.com)
+RESEND_API_KEY=re_your_key_here
+ 
+# Cloudflare R2 storage
+R2_ACCOUNT_ID=your_account_id
+R2_ACCESS_KEY=your_access_key
+R2_SECRET_KEY=your_secret_key
+R2_BUCKET_NAME=naija-routes-files
+ 
+# JWT secret (make this a long random string)
+JWT_SECRET=replace_this_with_a_very_long_random_string
+ 
+# Server port
+PORT=3000
+NODE_ENV=development
+Phase C: Create the Folder Structure
+C1
+Create all the folders at once
+In your terminal, run this single command to create the complete folder structure:
+# Create all app folders
+mkdir -p apps/web/css apps/web/js/core apps/web/js/modules apps/web/locales
+mkdir -p apps/agent/css apps/agent/js
+mkdir -p apps/operator/css apps/operator/js
+mkdir -p apps/mobile
+ 
+# Create server folders
+mkdir -p server/src/config
+mkdir -p server/src/middleware
+mkdir -p server/src/routes
+mkdir -p server/src/services
+mkdir -p server/src/jobs
+mkdir -p server/src/sockets
+mkdir -p server/migrations
+mkdir -p server/seeds
+mkdir -p server/tests
+ 
+# Create shared folders
+mkdir -p shared/locales
+ 
+# Create other folders
+mkdir -p infrastructure docs scripts
+mkdir -p .github/workflows
+C2
+Create a placeholder README in each app folder
+Run these commands to create simple README files. GitHub shows the README when you browse a folder.
+echo "# Naija Routes — Traveller Web App" > apps/web/README.md
+echo "# Naija Routes — Agent App" > apps/agent/README.md
+echo "# Naija Routes — Operator Dashboard" > apps/operator/README.md
+echo "# Naija Routes — Mobile App (Phase 3)" > apps/mobile/README.md
+echo "# Naija Routes — Backend API Server" > server/README.md
+echo "# Naija Routes — Shared Code" > shared/README.md
+echo "# Naija Routes" > README.md
+Phase D: Install Dependencies and Push to GitHub
+D1
+Install pnpm globally
+pnpm is the package manager we use. It is faster than npm and handles monorepos better.
+# Install pnpm globally on your computer
+npm install -g pnpm
+ 
+# Verify it installed correctly
+pnpm --version
+# Should print something like: 9.0.0
+D2
+Install Turborepo
+Turborepo manages the monorepo tasks. Install it at the root level.
+# Install from the root naija-routes folder
+pnpm install
+ 
+# This creates node_modules/ and pnpm-lock.yaml
+# Both are gitignored — they are installed fresh on each computer
+D3
+Make your first Git commit
+A commit is like saving a snapshot of your project at this moment. Write a clear message describing what you did.
+# Stage all the files you created
+git add .
+ 
+# Create a commit with a descriptive message
+git commit -m "feat: initial monorepo setup with Turborepo and pnpm workspaces"
+ 
+# Set the default branch name to 'main'
+git branch -M main
+ 
+# Push to GitHub
+git push -u origin main
+ 
+# Open github.com/YOUR-USERNAME/naija-routes
+# You should see all your folders and files there
+Phase E: Set Up Branch Protection (Very Important)
+Branch protection rules prevent anyone from pushing code directly to the main branch without a review. This is essential for a team — without it, one mistake can break the entire project for everyone.
+E1
+Set up branch protection rules on GitHub
+Go to your repository on GitHub and follow these steps:
+Go to your repository: github.com/YOUR-USERNAME/naija-routes
+Click Settings (the gear icon in the top navigation)
+Click Branches in the left sidebar
+Click Add branch protection rule
+In 'Branch name pattern', type: main
+Tick: Require a pull request before merging
+Tick: Require at least 1 approval (so 1 teammate must review your code before it merges)
+Tick: Require status checks to pass before merging (this ensures tests must pass)
+Tick: Do not allow bypassing the above settings
+Click Create at the bottom
+Phase F: Set Up GitHub Actions (Automated Testing)
+GitHub Actions automatically runs your tests every time anyone pushes code. This catches bugs before they reach the main branch. Create this file exactly as shown:
+F1
+Create the CI workflow file
+Create the file at this exact path: .github/workflows/ci.yml
+name: CI — Test and Lint
+ 
+# Run this workflow every time code is pushed or a pull request is opened
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+ 
+jobs:
+  test:
+    name: Test and Lint
+    runs-on: ubuntu-latest
+ 
+    steps:
+      # Step 1: Download the code
+      - name: Checkout code
+        uses: actions/checkout@v4
+ 
+      # Step 2: Install Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+ 
+      # Step 3: Install pnpm
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+ 
+      # Step 4: Install all dependencies
+      - name: Install dependencies
+        run: pnpm install
+ 
+      # Step 5: Run linting (checks code style)
+      - name: Lint
+        run: pnpm lint
+ 
+      # Step 6: Run tests
+      - name: Test
+        run: pnpm test
+F2
+Commit and push the workflow file
+After creating the workflow file, commit and push it to GitHub.
+git add .github/workflows/ci.yml
+git commit -m "ci: add GitHub Actions CI workflow"
+git push
+ 
+# Go to github.com/YOUR-USERNAME/naija-routes/actions
+# You should see the workflow listed there
+Phase G: The Team Workflow — How Everyone Works Together
+Now that the repository is set up, here is the workflow every developer must follow. Never push directly to main. Always work on a feature branch.
+THE DAILY WORKFLOW FOR EVERY DEVELOPER
+═══════════════════════════════════════
+ 
+1. PULL LATEST CODE before starting any work
+   git checkout main
+   git pull origin main
+ 
+2. CREATE A BRANCH for your feature
+   # Branch naming: type/short-description
+   # Types: feat (new feature), fix (bug fix), chore (maintenance)
+   git checkout -b feat/add-route-search
+ 
+3. WRITE YOUR CODE in the correct folder
+   # Example: if adding the route search API endpoint,
+   # you edit: server/src/routes/search.routes.js
+   #       and: server/src/services/search.service.js
+ 
+4. COMMIT YOUR CHANGES with a clear message
+   git add .
+   git commit -m "feat: add route search endpoint with Typesense integration"
+ 
+5. PUSH YOUR BRANCH to GitHub
+   git push origin feat/add-route-search
+ 
+6. OPEN A PULL REQUEST on GitHub
+   Go to github.com/YOUR-USERNAME/naija-routes
+   Click 'Compare & pull request'
+   Write a description of what you changed and why
+   Request a review from a teammate
+ 
+7. TEAMMATE REVIEWS AND APPROVES
+   They leave comments if anything needs fixing
+   You fix and push more commits to the same branch
+   When they approve, you can merge
+ 
+8. MERGE TO MAIN
+   Click 'Merge pull request' on GitHub
+   Delete the branch after merging (keep things clean)
+ 
+9. EVERYONE PULLS THE UPDATE
+   All teammates run: git pull origin main
+   to get your merged changes
+Section 6: First-Time Setup for a New Developer Joining the Team
+When a new developer joins the Naija Routes team, this is the exact sequence of steps they follow to get the project running on their computer for the first time.
+COMPLETE FIRST-TIME SETUP GUIDE
+════════════════════════════════
+ 
+PREREQUISITE TOOLS — Install these first if you don't have them
+──────────────────────────────────────────────────────────────
+1. Git         → git-scm.com/downloads
+2. Node.js 20  → nodejs.org (download LTS version)
+3. pnpm        → run: npm install -g pnpm
+4. VS Code     → code.visualstudio.com (recommended editor)
+ 
+CLONE THE REPOSITORY
+────────────────────
+git clone https://github.com/YOUR-ORG/naija-routes.git
+cd naija-routes
+ 
+INSTALL ALL DEPENDENCIES
+────────────────────────
+pnpm install
+# This installs packages for ALL apps and the server at once
+ 
+SET UP ENVIRONMENT VARIABLES
+────────────────────────────
+cp .env.example .env
+# Now open .env in VS Code and fill in the real values
+# Ask the Tech Lead for the development API keys
+ 
+SET UP THE DATABASE
+───────────────────
+# Ask the Tech Lead for the Supabase project URL
+# Add it to your .env file as DATABASE_URL
+# Run migrations to create all the database tables
+node scripts/migrate.js
+ 
+FILL WITH TEST DATA
+───────────────────
+node scripts/seed.js
+# This creates 5 test operators, 20 test routes,
+# and 3 test user accounts for development
+ 
+START THE DEVELOPMENT SERVER
+────────────────────────────
+pnpm dev
+# This starts ALL apps at once:
+#   Traveller app  → http://localhost:5173
+#   Agent app      → http://localhost:5174
+#   Operator app   → http://localhost:5175
+#   Backend server → http://localhost:3000
+ 
+VERIFY EVERYTHING IS WORKING
+────────────────────────────
+Open http://localhost:5173 in your browser
+You should see the Naija Routes home page
+Try searching 'Lagos' to 'Abuja' — results should appear
+ 
+IF SOMETHING GOES WRONG
+────────────────────────
+Check the terminal for error messages
+Make sure all values in .env are filled in correctly
+Ask the Tech Lead for help in the team Slack channel
+Common Commands Reference
+These are the commands you will use every single day. Print this page and keep it at your desk.
+Command
+What It Does
+pnpm dev
+Starts all apps and the server in development mode. Use this every morning.
+pnpm build
+Builds all apps for production. Run before deploying.
+pnpm test
+Runs all automated tests across all packages.
+pnpm lint
+Checks code style. Fix any errors before committing.
+git pull origin main
+Downloads the latest code from GitHub. Run every morning before starting work.
+git checkout -b feat/my-feature
+Creates a new branch for your feature. Replace 'my-feature' with a short description.
+git add .
+Stages all changed files ready to commit.
+git commit -m "your message"
+Saves a snapshot with a description of what you changed.
+git push origin feat/my-feature
+Uploads your branch to GitHub.
+node scripts/migrate.js
+Runs any new database migration files. Run when the database schema changes.
+node scripts/seed.js
+Re-fills the database with test data. Use in development only.
+pnpm install
+Installs or updates all packages. Run when package.json changes.
+🎉
+You are ready to build
+The monorepo is set up. The team workflow is clear. Every developer knows where their code goes and how to collaborate without stepping on each other. Now build Naija Routes and bring every motor park in Nigeria online.

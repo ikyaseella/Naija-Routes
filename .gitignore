@@ -1,0 +1,23 @@
+# Dependency directories
+**/node_modules/
+
+# Environment files (sensitive)
+**/.env
+**/.env.local
+**/.env.production
+**/.env.development
+
+# Build outputs
+**/dist/
+**/.turbo/
+
+# Editor/OS directories
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+~$*.docx
+*.txt
+!prd_text.txt
+!architecture_refactor_text.txt
+!monorepo_guide_text.txt

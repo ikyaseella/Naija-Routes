@@ -1,0 +1,20 @@
+{
+  "name": "@naija-routes/server",
+  "version": "0.1.0",
+  "description": "Naija Routes — Node.js + Express.js Backend API",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js",
+    "test": "echo \"Tests not yet configured — add Jest/Vitest in Phase 1\""
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

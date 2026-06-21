@@ -1,0 +1,114 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap');
+
+:root {
+  --green-deep:  #0A3D20;
+  --green-mid:   #1B6B3A;
+  --green-light: #2E9E57;
+  --gold:        #D4A017;
+  --gold-light:  #F0C842;
+  --cream:       #FDF8F0;
+  --charcoal:    #1A1A1A;
+  --slate:       #4A5568;
+  --mist:        #EDF2EF;
+  --white:       #FFFFFF;
+  --danger:      #E53E3E;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--cream);
+  color: var(--charcoal);
+  min-height: 100vh;
+}
+
+/* ── LABEL ────────────────────────────────── */
+.design-label {
+  background: var(--charcoal);
+  color: var(--gold);
+  text-align: center;
+  padding: 10px;
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* ── NAV ──────────────────────────────────── */
+nav {
+  background: var(--green-deep);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  height: 64px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.nav-logo {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 22px;
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+.nav-logo span { color: var(--gold); }
+.nav-links { display: flex; gap: 28px; }
+.nav-links a {
+  color: rgba(255,255,255,0.75);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: color .2s;
+}
+.nav-links a:hover { color: var(--gold); }
+.nav-cta {
+  background: var(--gold);
+  color: var(--green-deep);
+  border: none;
+  padding: 9px 20px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+}
+
+/* ── FOOTER ───────────────────────────────── */
+footer {
+  background: var(--green-deep);
+  color: rgba(255,255,255,0.6);
+  padding: 32px;
+  text-align: center;
+  font-size: 13px;
+}
+footer strong { color: var(--gold); }
+
+.cta-green {
+  background: var(--green-mid);
+  color: white;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  margin-right: 12px;
+}
+.cta-outline {
+  background: transparent;
+  color: var(--green-mid);
+  border: 2px solid var(--green-mid);
+  padding: 12px 28px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+}

@@ -1,0 +1,137 @@
+/**
+ * Naija Routes — Base CSS
+ * Traveller Web App
+ * ─────────────────────────────────────────
+ * Reset, typography, and base element styles.
+ * Depends on tokens.css.
+ */
+
+/* ───────────── CSS RESET ───────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  font: inherit;
+}
+
+html {
+  color-scheme: light;
+  scroll-behavior: smooth;
+  font-size: 16px; /* Base 1rem */
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--color-slate-700);
+  background-color: var(--color-slate-50);
+  line-height: var(--leading-normal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+img, picture, svg, video {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: var(--ease-fast);
+}
+
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+/* ───────────── TYPOGRAPHY ───────────── */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  color: var(--color-slate-900);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-tight);
+}
+
+h1 { font-size: var(--text-5xl); }
+h2 { font-size: var(--text-4xl); }
+h3 { font-size: var(--text-3xl); }
+h4 { font-size: var(--text-2xl); }
+h5 { font-size: var(--text-xl); font-family: var(--font-body); font-weight: var(--weight-extrabold); }
+h6 { font-size: var(--text-lg); font-family: var(--font-body); font-weight: var(--weight-extrabold); }
+
+p {
+  margin-bottom: var(--space-4);
+}
+
+small {
+  font-size: var(--text-sm);
+  color: var(--color-slate-500);
+}
+
+strong {
+  font-weight: var(--weight-bold);
+  color: var(--color-slate-900);
+}
+
+/* ───────────── LAYOUT PRIMITIVES ───────────── */
+.container {
+  width: 100%;
+  max-width: var(--max-width);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--space-6);
+  padding-right: var(--space-6);
+}
+
+.flex { display: flex; }
+.flex-col { display: flex; flex-direction: column; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.justify-center { justify-content: center; }
+.gap-2 { gap: var(--space-2); }
+.gap-4 { gap: var(--space-4); }
+.gap-6 { gap: var(--space-6); }
+.gap-8 { gap: var(--space-8); }
+
+.grid { display: grid; }
+.grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+.grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+.grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
+
+.hidden { display: none !important; }
+
+/* ───────────── UTILITIES ───────────── */
+.text-center { text-align: center; }
+.text-primary { color: var(--color-primary); }
+.text-gold { color: var(--color-gold); }
+.text-muted { color: var(--color-slate-500); }
+.font-bold { font-weight: var(--weight-bold); }
+
+.mt-4 { margin-top: var(--space-4); }
+.mt-8 { margin-top: var(--space-8); }
+.mb-2 { margin-bottom: var(--space-2); }
+.mb-4 { margin-bottom: var(--space-4); }
+.mb-8 { margin-bottom: var(--space-8); }
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  h1 { font-size: var(--text-4xl); }
+  h2 { font-size: var(--text-3xl); }
+  
+  .grid-cols-2, .grid-cols-3, .grid-cols-4 {
+    grid-template-columns: 1fr;
+  }
+}

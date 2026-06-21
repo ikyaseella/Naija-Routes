@@ -1,0 +1,1786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Naija Routes — Mobile UI/UX Showcase</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: #0A0A0F;
+  color: white;
+  min-height: 100vh;
+}
+
+/* ── PAGE HEADER ───────────────────────────── */
+.page-header {
+  background: linear-gradient(135deg, #0A3D20 0%, #1B6B3A 60%, #0A3D20 100%);
+  padding: 56px 40px 48px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.page-header::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(212,160,23,0.2) 0%, transparent 60%);
+}
+.page-header h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: 48px;
+  font-weight: 800;
+  position: relative;
+}
+.page-header h1 em { color: #D4A017; font-style: normal; }
+.page-header p {
+  font-size: 16px;
+  color: rgba(255,255,255,0.6);
+  margin-top: 12px;
+  position: relative;
+}
+
+/* ── SECTION LABELS ────────────────────────── */
+.section-wrap {
+  padding: 64px 40px;
+}
+.section-intro {
+  text-align: center;
+  margin-bottom: 48px;
+}
+.section-intro h2 {
+  font-family: 'Syne', sans-serif;
+  font-size: 32px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+.section-intro p { color: rgba(255,255,255,0.45); font-size: 15px; }
+.design-label {
+  display: inline-block;
+  padding: 5px 14px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.dl-green { background: rgba(46,158,87,0.2); color: #4ADE80; border: 1px solid rgba(74,222,128,0.3); }
+.dl-gold  { background: rgba(212,160,23,0.2); color: #FCD34D; border: 1px solid rgba(252,211,77,0.3); }
+
+/* ── PHONES ROW ────────────────────────────── */
+.phones-row {
+  display: flex;
+  gap: 40px;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+.phone-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+.phone-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.5);
+  text-align: center;
+}
+.phone-label strong { color: white; display: block; font-size: 15px; margin-bottom: 2px; }
+
+/* ── PHONE FRAME ───────────────────────────── */
+.phone-frame {
+  width: 375px;
+  height: 812px;
+  background: #0A0A0F;
+  border-radius: 50px;
+  border: 8px solid #2A2A2A;
+  box-shadow:
+    0 0 0 1px #3A3A3A,
+    0 40px 100px rgba(0,0,0,0.7),
+    inset 0 0 0 1px #1A1A1A;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.phone-frame::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 126px; height: 34px;
+  background: #0A0A0F;
+  border-radius: 0 0 20px 20px;
+  z-index: 100;
+  border-bottom: 1px solid #222;
+}
+.phone-screen {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 42px;
+  position: relative;
+}
+
+/* ── STATUS BAR ────────────────────────────── */
+.status-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 24px 8px;
+  font-size: 12px;
+  font-weight: 700;
+  position: relative;
+  z-index: 10;
+}
+.status-time { font-size: 15px; font-weight: 700; }
+.status-icons { display: flex; gap: 5px; align-items: center; font-size: 12px; }
+
+/* ═══════════════════════════════════════════
+   TRAVELLER APP — DESIGN 1 (Dark Emerald)
+════════════════════════════════════════════ */
+.t1 { background: #0A3D20; color: white; font-family: 'Syne', sans-serif; }
+.t1 .status-bar { color: rgba(255,255,255,0.9); }
+
+.t1-hero {
+  background: linear-gradient(160deg, #0A3D20 0%, #1B6B3A 100%);
+  padding: 8px 20px 24px;
+}
+.t1-greeting { font-size: 13px; color: rgba(255,255,255,0.55); margin-bottom: 2px; font-family: 'Inter', sans-serif; }
+.t1-title { font-size: 22px; font-weight: 800; }
+.t1-title em { color: #D4A017; font-style: normal; }
+
+.t1-search-box {
+  background: white;
+  border-radius: 20px;
+  padding: 16px;
+  margin: 16px 20px 0;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.35);
+}
+.t1-search-row {
+  display: flex;
+  align-items: center;
+  background: #F0F7F3;
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  gap: 10px;
+}
+.t1-search-row .icon { font-size: 16px; }
+.t1-search-row .city { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 15px; color: #0A3D20; }
+.t1-search-row .sub { font-size: 11px; color: #6B9E76; font-family: 'Inter', sans-serif; }
+.t1-swap { display: flex; align-items: center; gap: 8px; margin: 4px 0; }
+.t1-swap-line { flex: 1; height: 1px; background: #E2E8F0; }
+.t1-swap-btn {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: #1B6B3A;
+  color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 700;
+  border: none; cursor: pointer;
+  flex-shrink: 0;
+}
+.t1-date-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.t1-date-chip {
+  background: #F0F7F3;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-family: 'Inter', sans-serif;
+}
+.t1-chip-label { font-size: 10px; color: #6B9E76; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+.t1-chip-val { font-size: 14px; font-weight: 700; color: #0A3D20; margin-top: 2px; }
+.t1-search-btn {
+  width: 100%;
+  background: #1B6B3A;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 14px;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+
+.t1-section { padding: 20px 20px 0; }
+.t1-sec-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.t1-sec-title { font-size: 16px; font-weight: 700; color: white; }
+.t1-sec-link { font-size: 12px; color: #D4A017; font-weight: 600; font-family: 'Inter', sans-serif; }
+
+.t1-route-scroll { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 4px; }
+.t1-route-scroll::-webkit-scrollbar { display: none; }
+.t1-route-card {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 16px;
+  padding: 14px;
+  min-width: 160px;
+  flex-shrink: 0;
+}
+.t1-route-cities { font-size: 14px; font-weight: 700; color: white; margin-bottom: 4px; }
+.t1-route-meta { font-size: 11px; color: rgba(255,255,255,0.45); font-family: 'Inter', sans-serif; margin-bottom: 10px; }
+.t1-route-price { font-size: 18px; font-weight: 800; color: #D4A017; }
+.t1-route-price span { font-size: 11px; color: rgba(255,255,255,0.4); font-family: 'Inter', sans-serif; font-weight: 400; }
+
+.t1-bottom-nav {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: #0A3D20;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  display: flex;
+  padding: 10px 0 20px;
+}
+.t1-nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.t1-nav-icon { font-size: 20px; }
+.t1-nav-label { font-size: 10px; color: rgba(255,255,255,0.4); font-family: 'Inter', sans-serif; font-weight: 600; }
+.t1-nav-item.active .t1-nav-label { color: #D4A017; }
+
+/* ═══════════════════════════════════════════
+   TRAVELLER APP — DESIGN 2 (Search Results)
+════════════════════════════════════════════ */
+.t2 { background: #F7F9F7; color: #0D1B0F; font-family: 'Inter', sans-serif; }
+.t2 .status-bar { color: #0D1B0F; }
+
+.t2-topbar {
+  background: white;
+  border-bottom: 1px solid #E4EDE7;
+  padding: 8px 20px 14px;
+}
+.t2-back { font-size: 14px; color: #1B5E35; font-weight: 600; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.t2-route-title { font-family: 'DM Serif Display', serif; font-size: 22px; font-weight: 400; }
+.t2-route-sub { font-size: 12px; color: #6B7F72; margin-top: 2px; }
+
+.t2-filter-row {
+  display: flex; gap: 8px;
+  padding: 12px 20px;
+  overflow-x: auto;
+  background: white;
+  border-bottom: 1px solid #E4EDE7;
+}
+.t2-filter-row::-webkit-scrollbar { display: none; }
+.t2-filter-chip {
+  padding: 6px 14px;
+  border-radius: 100px;
+  border: 1.5px solid #E4EDE7;
+  font-size: 12px; font-weight: 600;
+  white-space: nowrap;
+  color: #6B7F72;
+  background: white;
+  flex-shrink: 0;
+}
+.t2-filter-chip.active { background: #1B5E35; color: white; border-color: #1B5E35; }
+
+.t2-results { padding: 12px 16px; overflow-y: auto; }
+.t2-result-card {
+  background: white;
+  border: 1px solid #E4EDE7;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 12px;
+  position: relative;
+}
+.t2-result-card.best::before {
+  content: '🏆 Best Value';
+  position: absolute; top: -1px; right: 16px;
+  background: #1B5E35; color: white;
+  font-size: 10px; font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 0 0 8px 8px;
+  letter-spacing: 0.5px;
+}
+.t2-op-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.t2-op-avi {
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; font-weight: 800;
+}
+.t2-op-name { font-size: 14px; font-weight: 700; }
+.t2-op-rating { font-size: 12px; color: #6B7F72; display: flex; align-items: center; gap: 3px; }
+.t2-op-rating span { color: #EAB308; }
+.t2-time-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-top: 1px solid #F0F5F1;
+  border-bottom: 1px solid #F0F5F1;
+  margin-bottom: 12px;
+}
+.t2-time { font-size: 22px; font-weight: 800; }
+.t2-time-sub { font-size: 10px; color: #6B7F72; text-transform: uppercase; letter-spacing: 0.5px; }
+.t2-duration { text-align: center; font-size: 12px; color: #6B7F72; }
+.t2-duration-line {
+  display: flex; align-items: center; gap: 4px;
+  margin-bottom: 2px;
+}
+.t2-dur-dash { flex: 1; height: 1px; background: #E4EDE7; }
+.t2-dur-dot { width: 6px; height: 6px; border-radius: 50%; background: #1B5E35; }
+.t2-bottom-row { display: flex; justify-content: space-between; align-items: center; }
+.t2-price { font-size: 24px; font-weight: 800; color: #1B5E35; }
+.t2-price-sub { font-size: 11px; color: #6B7F72; }
+.t2-book-btn {
+  background: #1B5E35; color: white;
+  border: none; border-radius: 10px;
+  padding: 10px 20px;
+  font-size: 13px; font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+}
+.t2-seats-chip {
+  display: inline-block;
+  background: #FEF3C7; color: #92400E;
+  font-size: 10px; font-weight: 700;
+  padding: 3px 8px; border-radius: 100px;
+  margin-left: 8px;
+}
+
+.t2-bottom-nav {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: white;
+  border-top: 1.5px solid #E4EDE7;
+  display: flex;
+  padding: 10px 0 20px;
+}
+.t2-nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.t2-nav-icon { font-size: 20px; }
+.t2-nav-label { font-size: 10px; color: #6B7F72; font-weight: 600; }
+.t2-nav-item.active .t2-nav-label { color: #1B5E35; }
+
+/* ═══════════════════════════════════════════
+   AGENT APP — DESIGN 1 (Dark Terminal)
+════════════════════════════════════════════ */
+.a1 { background: #0F1710; color: #E8F5EA; font-family: 'Space Grotesk', sans-serif; }
+.a1 .status-bar { color: #4ADE80; }
+
+.a1-header {
+  background: #141714;
+  padding: 8px 20px 16px;
+  border-bottom: 1px solid #252925;
+}
+.a1-header-row { display: flex; justify-content: space-between; align-items: center; }
+.a1-agent-name { font-size: 16px; font-weight: 700; }
+.a1-park { font-size: 11px; color: #5A6B5C; margin-top: 1px; }
+.a1-online {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 11px; font-weight: 700; color: #4ADE80;
+  background: rgba(74,222,128,0.1);
+  border: 1px solid rgba(74,222,128,0.25);
+  padding: 4px 10px; border-radius: 100px;
+}
+.a1-dot { width: 6px; height: 6px; border-radius: 50%; background: #4ADE80; animation: blink 2s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+.a1-stats-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; padding: 14px 20px; }
+.a1-stat {
+  background: #1A2B1D;
+  border: 1px solid #252925;
+  border-radius: 10px;
+  padding: 12px 10px;
+  text-align: center;
+}
+.a1-stat-val { font-size: 22px; font-weight: 700; line-height: 1; margin-bottom: 3px; }
+.a1-stat-val.g { color: #4ADE80; }
+.a1-stat-val.y { color: #FCD34D; }
+.a1-stat-val.b { color: #60A5FA; }
+.a1-stat-lbl { font-size: 9px; color: #5A6B5C; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600; }
+
+.a1-section-title {
+  font-size: 10px; text-transform: uppercase; letter-spacing: 2px;
+  color: #5A6B5C; font-weight: 700;
+  padding: 0 20px; margin-bottom: 10px;
+}
+
+.a1-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 20px; margin-bottom: 20px; }
+.a1-action-btn {
+  border-radius: 14px; padding: 16px 14px;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 6px;
+  cursor: pointer; border: none;
+  font-family: 'Space Grotesk', sans-serif;
+  text-align: left;
+}
+.a1-action-btn.primary { background: #3CB371; }
+.a1-action-btn.secondary { background: #1A2B1D; border: 1px solid #252925; }
+.a1-action-icon { font-size: 26px; }
+.a1-action-label { font-size: 13px; font-weight: 700; color: white; }
+.a1-action-sub { font-size: 10px; color: rgba(255,255,255,0.5); }
+
+.a1-ticket-list { padding: 0 20px; }
+.a1-ticket-item {
+  background: #1A2B1D;
+  border: 1px solid #252925;
+  border-radius: 12px;
+  padding: 13px 14px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.a1-ticket-ref { font-size: 10px; color: #4ADE80; font-family: monospace; min-width: 100px; }
+.a1-ticket-info { flex: 1; }
+.a1-ticket-name { font-size: 13px; font-weight: 600; }
+.a1-ticket-route { font-size: 11px; color: #5A6B5C; margin-top: 1px; }
+.a1-ticket-amount { font-size: 14px; font-weight: 700; color: #FCD34D; min-width: 60px; text-align: right; }
+.a1-status {
+  font-size: 9px; font-weight: 700;
+  padding: 2px 7px; border-radius: 100px;
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.a1-status.boarded { background: rgba(74,222,128,0.1); color: #4ADE80; border: 1px solid rgba(74,222,128,0.25); }
+.a1-status.issued { background: rgba(252,211,77,0.1); color: #FCD34D; border: 1px solid rgba(252,211,77,0.25); }
+
+.a1-bottom-nav {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: #141714; border-top: 1px solid #252925;
+  display: flex; padding: 10px 0 18px;
+}
+.a1-nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.a1-nav-icon { font-size: 18px; }
+.a1-nav-label { font-size: 9px; color: #5A6B5C; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+.a1-nav-item.active .a1-nav-label { color: #4ADE80; }
+
+/* ═══════════════════════════════════════════
+   AGENT APP — DESIGN 2 (Bright Outdoor)
+════════════════════════════════════════════ */
+.a2 { background: #F0FDF4; color: #14532D; font-family: 'Nunito', sans-serif; }
+.a2 .status-bar { color: #14532D; }
+
+.a2-top {
+  background: #16A34A;
+  padding: 8px 20px 20px;
+  color: white;
+}
+.a2-top-row { display: flex; justify-content: space-between; align-items: flex-start; }
+.a2-greeting { font-size: 13px; opacity: 0.8; }
+.a2-name { font-size: 20px; font-weight: 900; }
+.a2-park-badge {
+  background: rgba(255,255,255,0.15);
+  padding: 5px 12px; border-radius: 100px;
+  font-size: 12px; font-weight: 700;
+  border: 1px solid rgba(255,255,255,0.25);
+}
+
+.a2-big-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 16px 16px 0; }
+.a2-big-btn {
+  border-radius: 18px;
+  padding: 20px 16px;
+  display: flex; flex-direction: column; gap: 8px;
+  align-items: flex-start;
+  border: none; cursor: pointer;
+  font-family: 'Nunito', sans-serif;
+  position: relative;
+  overflow: hidden;
+  min-height: 110px;
+}
+.a2-big-btn.green { background: #16A34A; color: white; }
+.a2-big-btn.amber { background: #D97706; color: white; }
+.a2-big-btn.blue { background: #2563EB; color: white; }
+.a2-big-btn.white { background: white; color: #14532D; border: 2px solid #BBF7D0; }
+.a2-btn-icon { font-size: 30px; }
+.a2-btn-label { font-size: 15px; font-weight: 900; }
+.a2-btn-arrow { position: absolute; bottom: 14px; right: 14px; font-size: 18px; opacity: 0.5; }
+
+.a2-stats-strip {
+  display: grid; grid-template-columns: repeat(3,1fr); gap: 8px;
+  padding: 12px 16px 0;
+}
+.a2-mini-stat {
+  background: white;
+  border-radius: 12px;
+  padding: 12px 10px;
+  text-align: center;
+  border: 1.5px solid #BBF7D0;
+}
+.a2-ms-val { font-size: 20px; font-weight: 900; }
+.a2-ms-val.g { color: #16A34A; }
+.a2-ms-val.a { color: #D97706; }
+.a2-ms-val.b { color: #2563EB; }
+.a2-ms-lbl { font-size: 10px; color: #6B7280; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+
+.a2-departures { padding: 14px 16px 0; }
+.a2-dep-title { font-size: 14px; font-weight: 900; color: #14532D; margin-bottom: 10px; }
+.a2-dep-card {
+  background: white;
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 10px;
+  border: 1.5px solid #BBF7D0;
+  display: flex; align-items: center; gap: 12px;
+}
+.a2-dep-left { flex: 1; }
+.a2-dep-route { font-size: 16px; font-weight: 900; }
+.a2-dep-meta { font-size: 11px; color: #6B7280; margin-top: 2px; font-weight: 600; }
+.a2-dep-right { text-align: right; }
+.a2-dep-time { font-size: 22px; font-weight: 900; color: #16A34A; }
+.a2-dep-chip {
+  display: inline-block;
+  font-size: 10px; font-weight: 800;
+  padding: 3px 8px; border-radius: 100px;
+  margin-top: 3px;
+}
+.dc-green { background: #D1FAE5; color: #14532D; }
+.dc-amber { background: #FEF3C7; color: #92400E; }
+
+.a2-bottom-nav {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: white; border-top: 2px solid #BBF7D0;
+  display: flex; padding: 8px 0 18px;
+}
+.a2-nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.a2-nav-icon { font-size: 22px; }
+.a2-nav-label { font-size: 10px; color: #6B7280; font-weight: 800; text-transform: uppercase; letter-spacing: 0.3px; }
+.a2-nav-item.active .a2-nav-label { color: #16A34A; }
+
+/* ═══════════════════════════════════════════
+   OPERATOR APP — DESIGN 1 (Professional Dark)
+════════════════════════════════════════════ */
+.o1 { background: #0F172A; color: white; font-family: 'Inter', sans-serif; }
+.o1 .status-bar { color: rgba(255,255,255,0.8); }
+
+.o1-header {
+  background: linear-gradient(135deg, #0F172A, #1E3A5F);
+  padding: 8px 20px 20px;
+}
+.o1-hdr-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.o1-op-name { font-size: 16px; font-weight: 700; }
+.o1-op-sub { font-size: 11px; color: rgba(255,255,255,0.45); margin-top: 1px; }
+.o1-notif {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.1);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  position: relative;
+}
+.o1-notif-dot {
+  position: absolute; top: 6px; right: 6px;
+  width: 8px; height: 8px;
+  border-radius: 50%; background: #EF4444;
+  border: 2px solid #0F172A;
+}
+
+.o1-kpi-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.o1-kpi {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 14px;
+  padding: 14px;
+}
+.o1-kpi-lbl { font-size: 10px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600; margin-bottom: 6px; }
+.o1-kpi-val { font-size: 24px; font-weight: 800; line-height: 1; }
+.o1-kpi-val.green { color: #4ADE80; }
+.o1-kpi-val.gold { color: #FCD34D; }
+.o1-kpi-val.blue { color: #60A5FA; }
+.o1-kpi-val.white { color: white; }
+.o1-kpi-delta { font-size: 11px; margin-top: 4px; }
+.o1-kpi-delta.up { color: #4ADE80; }
+
+.o1-section { padding: 16px 20px 0; }
+.o1-section-hdr { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.o1-section-title { font-size: 13px; font-weight: 700; }
+.o1-section-link { font-size: 11px; color: #4ADE80; font-weight: 600; }
+
+.o1-occ-card {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 10px;
+}
+.o1-route-name { font-size: 14px; font-weight: 700; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+.o1-route-pct { font-size: 16px; font-weight: 800; color: #4ADE80; }
+.o1-occ-bar { height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; margin-bottom: 6px; }
+.o1-occ-fill { height: 100%; border-radius: 4px; background: #4ADE80; }
+.o1-occ-meta { display: flex; justify-content: space-between; font-size: 11px; color: rgba(255,255,255,0.35); }
+
+.o1-trips-list { }
+.o1-trip-item {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  display: flex; align-items: center; gap: 12px;
+}
+.o1-trip-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%; flex-shrink: 0;
+}
+.dot-moving { background: #4ADE80; }
+.dot-parked { background: #FCD34D; }
+.o1-trip-info { flex: 1; }
+.o1-trip-route { font-size: 13px; font-weight: 700; }
+.o1-trip-plate { font-size: 10px; color: rgba(255,255,255,0.35); font-family: monospace; margin-top: 2px; }
+.o1-trip-time { font-size: 15px; font-weight: 800; color: #4ADE80; }
+
+.o1-bottom-nav {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: #0F172A; border-top: 1px solid rgba(255,255,255,0.08);
+  display: flex; padding: 10px 0 18px;
+}
+.o1-nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.o1-nav-icon { font-size: 18px; }
+.o1-nav-label { font-size: 9px; color: rgba(255,255,255,0.3); font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
+.o1-nav-item.active .o1-nav-label { color: #4ADE80; }
+
+/* ═══════════════════════════════════════════
+   OPERATOR APP — DESIGN 2 (Clean Light)
+════════════════════════════════════════════ */
+.o2 { background: #FAFAFA; color: #111827; font-family: 'Inter', sans-serif; }
+.o2 .status-bar { color: #111827; }
+
+.o2-header {
+  background: white;
+  border-bottom: 1px solid #E5E7EB;
+  padding: 8px 20px 16px;
+}
+.o2-hdr-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.o2-greet { font-size: 12px; color: #6B7280; }
+.o2-name { font-size: 18px; font-weight: 800; }
+.o2-avatar {
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  background: #D1FAE5; color: #059669;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; font-weight: 800;
+}
+
+.o2-date-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: #F3F4F6;
+  border-radius: 100px;
+  padding: 6px 14px;
+  font-size: 12px; font-weight: 600; color: #6B7280;
+}
+
+.o2-kpis { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; padding: 12px 16px 0; }
+.o2-kpi {
+  background: white;
+  border: 1px solid #E5E7EB;
+  border-radius: 14px;
+  padding: 14px;
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.o2-kpi-icon {
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; flex-shrink: 0;
+}
+.ki-g { background: #D1FAE5; }
+.ki-a { background: #FEF3C7; }
+.ki-b { background: #DBEAFE; }
+.ki-p { background: #EDE9FE; }
+.o2-kpi-val { font-size: 22px; font-weight: 800; line-height: 1; }
+.o2-kpi-val.g { color: #059669; }
+.o2-kpi-val.a { color: #D97706; }
+.o2-kpi-val.b { color: #2563EB; }
+.o2-kpi-val.p { color: #7C3AED; }
+.o2-kpi-lbl { font-size: 11px; color: #6B7280; margin-top: 3px; }
+.o2-kpi-trend { font-size: 11px; font-weight: 700; margin-top: 4px; color: #059669; }
+
+.o2-section { padding: 14px 16px 0; }
+.o2-sec-hdr { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.o2-sec-title { font-size: 14px; font-weight: 700; }
+.o2-sec-link { font-size: 12px; color: #059669; font-weight: 600; }
+
+/* Donut chart CSS */
+.o2-donut-wrap { display: flex; align-items: center; gap: 16px; background: white; border-radius: 14px; border: 1px solid #E5E7EB; padding: 14px; }
+.o2-donut {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  background: conic-gradient(#059669 0% 87%, #D97706 87% 97%, #EF4444 97% 100%);
+  position: relative; flex-shrink: 0;
+}
+.o2-donut::after { content: ''; position: absolute; inset: 18px; background: white; border-radius: 50%; }
+.o2-donut-pct {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; font-weight: 800; color: #059669;
+  z-index: 1;
+}
+.o2-legend { flex: 1; }
+.o2-leg-item { display: flex; align-items: center; gap: 6px; margin-bottom: 5px; font-size: 12px; }
+.o2-leg-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.o2-leg-lbl { flex: 1; color: #6B7280; }
+.o2-leg-val { font-weight: 700; }
+
+.o2-schedule-list { }
+.o2-sched-item {
+  background: white;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  display: flex; align-items: center; gap: 12px;
+}
+.o2-sched-color { width: 4px; height: 40px; border-radius: 2px; flex-shrink: 0; }
+.o2-sched-info { flex: 1; }
+.o2-sched-route { font-size: 13px; font-weight: 700; }
+.o2-sched-meta { font-size: 11px; color: #6B7280; margin-top: 2px; }
+.o2-sched-right { text-align: right; }
+.o2-sched-time { font-size: 15px; font-weight: 800; }
+.o2-sched-seats { font-size: 11px; color: #6B7280; margin-top: 2px; }
+.o2-status-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%; display: inline-block; margin-right: 4px;
+}
+
+.o2-bottom-nav {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: white; border-top: 1px solid #E5E7EB;
+  display: flex; padding: 10px 0 18px;
+}
+.o2-nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.o2-nav-icon { font-size: 20px; }
+.o2-nav-label { font-size: 10px; color: #9CA3AF; font-weight: 600; }
+.o2-nav-item.active .o2-nav-label { color: #059669; }
+
+/* ═══════════════════════════════════════════
+   ADMIN — DESIGN 1 (Dark Command)
+════════════════════════════════════════════ */
+.ad1 { background: #0C0E0D; color: #E8F0E9; font-family: 'Space Grotesk', sans-serif; }
+.ad1 .status-bar { color: #22C55E; }
+
+.ad1-header {
+  background: #141714;
+  border-bottom: 1px solid #252925;
+  padding: 8px 20px 16px;
+}
+.ad1-hdr-row { display: flex; justify-content: space-between; align-items: center; }
+.ad1-title { font-size: 13px; font-weight: 700; letter-spacing: 0.5px; color: #22C55E; font-family: monospace; }
+.ad1-admin { font-size: 12px; color: #5A6B5C; }
+.ad1-live {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 10px; font-weight: 700; color: #22C55E;
+  font-family: monospace;
+}
+.ad1-live-dot { width: 6px; height: 6px; border-radius: 50%; background: #22C55E; animation: blink 1.5s infinite; }
+
+.ad1-metrics { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; padding: 14px 16px 0; }
+.ad1-metric {
+  background: #141714;
+  border: 1px solid #252925;
+  border-radius: 10px;
+  padding: 12px 10px;
+}
+.ad1-metric-lbl { font-size: 9px; color: #5A6B5C; text-transform: uppercase; letter-spacing: 0.8px; font-family: monospace; margin-bottom: 6px; }
+.ad1-metric-val { font-size: 20px; font-weight: 700; font-family: monospace; line-height: 1; }
+.ad1-mv-g { color: #22C55E; }
+.ad1-mv-y { color: #EAB308; }
+.ad1-mv-r { color: #F43F5E; }
+.ad1-mv-b { color: #3B82F6; }
+.ad1-mv-w { color: #E8F0E9; }
+.ad1-metric-delta { font-size: 10px; color: #5A6B5C; font-family: monospace; margin-top: 3px; }
+.ad1-delta-up { color: #22C55E; }
+
+.ad1-section { padding: 14px 16px 0; }
+.ad1-sec-lbl { font-size: 9px; text-transform: uppercase; letter-spacing: 1.5px; color: #5A6B5C; font-weight: 700; font-family: monospace; margin-bottom: 10px; }
+
+.ad1-feed-item {
+  background: #141714;
+  border: 1px solid #252925;
+  border-radius: 10px;
+  padding: 11px 12px;
+  margin-bottom: 7px;
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.ad1-feed-time { font-size: 10px; color: #5A6B5C; font-family: monospace; white-space: nowrap; margin-top: 1px; }
+.ad1-feed-text { flex: 1; font-size: 12px; line-height: 1.4; color: #A0B4A2; }
+.ad1-feed-text strong { color: #E8F0E9; font-weight: 600; }
+.ad1-tag {
+  font-size: 9px; font-weight: 700; font-family: monospace;
+  padding: 2px 6px; border-radius: 3px;
+  text-transform: uppercase; white-space: nowrap; margin-top: 1px;
+}
+.tag-bk { background: rgba(34,197,94,0.1); color: #22C55E; border: 1px solid rgba(34,197,94,0.2); }
+.tag-py { background: rgba(234,179,8,0.1); color: #EAB308; border: 1px solid rgba(234,179,8,0.2); }
+.tag-al { background: rgba(244,63,94,0.1); color: #F43F5E; border: 1px solid rgba(244,63,94,0.2); }
+.tag-ky { background: rgba(59,130,246,0.1); color: #3B82F6; border: 1px solid rgba(59,130,246,0.2); }
+
+.ad1-alert-box {
+  background: rgba(244,63,94,0.08);
+  border: 1px solid rgba(244,63,94,0.3);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin: 14px 16px 0;
+}
+.ad1-alert-title { font-size: 12px; font-weight: 700; color: #F43F5E; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+.ad1-alert-body { font-size: 11px; color: rgba(244,63,94,0.7); line-height: 1.4; }
+
+.ad1-bottom-nav {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: #141714; border-top: 1px solid #252925;
+  display: flex; padding: 10px 0 18px;
+}
+.ad1-nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.ad1-nav-icon { font-size: 18px; }
+.ad1-nav-label { font-size: 9px; color: #5A6B5C; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
+.ad1-nav-item.active .ad1-nav-label { color: #22C55E; }
+
+/* ═══════════════════════════════════════════
+   ADMIN — DESIGN 2 (Clean White Enterprise)
+════════════════════════════════════════════ */
+.ad2 { background: #F8F9FA; color: #18181B; font-family: 'Inter', sans-serif; }
+.ad2 .status-bar { color: #18181B; }
+
+.ad2-header {
+  background: white;
+  border-bottom: 1px solid #E4E4E7;
+  padding: 8px 20px 16px;
+}
+.ad2-hdr-row { display: flex; justify-content: space-between; align-items: center; }
+.ad2-logo { font-size: 16px; font-weight: 800; display: flex; align-items: center; gap: 6px; }
+.ad2-logo span { color: #10B981; }
+.ad2-admin-badge {
+  background: #D1FAE5; color: #065F46;
+  font-size: 11px; font-weight: 700;
+  padding: 4px 10px; border-radius: 100px;
+  border: 1px solid #A7F3D0;
+}
+.ad2-page-title { font-size: 20px; font-weight: 800; margin-top: 10px; }
+.ad2-page-sub { font-size: 12px; color: #71717A; margin-top: 2px; }
+
+.ad2-stats { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; padding: 12px 16px 0; }
+.ad2-stat {
+  background: white; border: 1px solid #E4E4E7;
+  border-radius: 14px; padding: 14px;
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.ad2-stat-icon {
+  width: 36px; height: 36px;
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; flex-shrink: 0;
+}
+.si2-g { background: #D1FAE5; }
+.si2-a { background: #FEF3C7; }
+.si2-r { background: #FFE4E6; }
+.si2-b { background: #EEF2FF; }
+.ad2-stat-val { font-size: 22px; font-weight: 800; line-height: 1; }
+.sv-g { color: #10B981; }
+.sv-a { color: #F59E0B; }
+.sv-r { color: #F43F5E; }
+.sv-b { color: #6366F1; }
+.ad2-stat-lbl { font-size: 11px; color: #71717A; margin-top: 3px; }
+.ad2-stat-trend {
+  font-size: 10px; font-weight: 700; margin-top: 4px;
+  padding: 2px 6px; border-radius: 100px;
+  display: inline-block;
+}
+.str-up { background: #D1FAE5; color: #059669; }
+.str-down { background: #FFE4E6; color: #F43F5E; }
+
+.ad2-section { padding: 14px 16px 0; }
+.ad2-sec-hdr { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.ad2-sec-title { font-size: 14px; font-weight: 700; }
+.ad2-sec-link { font-size: 12px; color: #10B981; font-weight: 600; }
+
+.ad2-alert-item {
+  background: white; border: 1px solid #E4E4E7;
+  border-radius: 12px; padding: 12px 14px;
+  margin-bottom: 8px;
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.ad2-al-icon {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; flex-shrink: 0;
+}
+.ai2-r { background: #FFE4E6; }
+.ai2-a { background: #FEF3C7; }
+.ai2-g { background: #D1FAE5; }
+.ad2-al-title { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+.ad2-al-body { font-size: 11px; color: #71717A; line-height: 1.4; }
+.ad2-al-time { font-size: 11px; color: #71717A; white-space: nowrap; margin-top: 1px; }
+
+.ad2-op-list { }
+.ad2-op-row {
+  background: white; border: 1px solid #E4E4E7;
+  border-radius: 12px; padding: 12px 14px;
+  margin-bottom: 8px;
+  display: flex; align-items: center; gap: 10px;
+}
+.ad2-op-avi {
+  width: 36px; height: 36px;
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 800; flex-shrink: 0;
+}
+.ad2-op-name { font-size: 13px; font-weight: 700; }
+.ad2-op-state { font-size: 11px; color: #71717A; }
+.ad2-op-rev { font-size: 14px; font-weight: 800; color: #10B981; }
+.ad2-op-pill {
+  font-size: 10px; font-weight: 700;
+  padding: 3px 8px; border-radius: 100px;
+}
+.p2-green { background: #D1FAE5; color: #065F46; }
+.p2-amber { background: #FEF3C7; color: #92400E; }
+
+.ad2-bottom-nav {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: white; border-top: 1px solid #E4E4E7;
+  display: flex; padding: 10px 0 18px;
+}
+.ad2-nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.ad2-nav-icon { font-size: 20px; }
+.ad2-nav-label { font-size: 10px; color: #9CA3AF; font-weight: 600; }
+.ad2-nav-item.active .ad2-nav-label { color: #10B981; }
+
+/* ── DIVIDER ────────────────────────────── */
+.section-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+  margin: 0 40px;
+}
+
+/* ── SCROLL INDICATOR ───────────────────── */
+.scroll-hint {
+  text-align: center;
+  padding: 10px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.25);
+  letter-spacing: 1px;
+}
+</style>
+</head>
+<body>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <h1>Naija Routes<br><em>Mobile UI/UX</em></h1>
+  <p>8 screens · 4 app roles · 2 design directions each · Pixel-perfect phone frames</p>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 1 — TRAVELLER APP
+═══════════════════════════════════════════════ -->
+<div class="section-wrap" style="background:#0D1410;">
+  <div class="section-intro">
+    <div class="design-label dl-green">Traveller App</div>
+    <h2>Consumer Booking Experience</h2>
+    <p>Design 1 — Home screen with route search &nbsp;·&nbsp; Design 2 — Live search results</p>
+  </div>
+
+  <div class="phones-row">
+
+    <!-- TRAVELLER DESIGN 1 -->
+    <div class="phone-wrap">
+      <div class="phone-frame">
+        <div class="phone-screen t1">
+          <div class="status-bar t1">
+            <div class="status-time">9:41</div>
+            <div class="status-icons">▲ ◆ 📶 🔋</div>
+          </div>
+          <!-- Hero -->
+          <div class="t1-hero">
+            <div class="t1-greeting">Good morning, Emeka 👋</div>
+            <div class="t1-title">Find your bus,<br><em>anywhere</em> in Nigeria.</div>
+          </div>
+          <!-- Search Box -->
+          <div class="t1-search-box">
+            <div class="t1-search-row">
+              <div class="icon">🟢</div>
+              <div>
+                <div class="city">Lagos</div>
+                <div class="sub">Jibowu Motor Park</div>
+              </div>
+            </div>
+            <div class="t1-swap">
+              <div class="t1-swap-line"></div>
+              <div class="t1-swap-btn">⇅</div>
+              <div class="t1-swap-line"></div>
+            </div>
+            <div class="t1-search-row" style="margin-top:0;">
+              <div class="icon">📍</div>
+              <div>
+                <div class="city" style="color:#9CA3AF;font-weight:500;">Where to?</div>
+                <div class="sub">Select destination</div>
+              </div>
+            </div>
+            <div class="t1-date-row" style="margin-top:10px;">
+              <div class="t1-date-chip">
+                <div class="t1-chip-label">Date</div>
+                <div class="t1-chip-val">25 Dec 2025</div>
+              </div>
+              <div class="t1-date-chip">
+                <div class="t1-chip-label">Passengers</div>
+                <div class="t1-chip-val">1 adult</div>
+              </div>
+            </div>
+            <div style="height:10px;"></div>
+            <div class="t1-search-btn">🔍 Search buses</div>
+          </div>
+          <!-- Popular Routes -->
+          <div class="t1-section">
+            <div class="t1-sec-header">
+              <div class="t1-sec-title">Popular Routes</div>
+              <div class="t1-sec-link">See all →</div>
+            </div>
+            <div class="t1-route-scroll">
+              <div class="t1-route-card">
+                <div class="t1-route-cities">Lagos → Abuja</div>
+                <div class="t1-route-meta">8 operators · 7–9h</div>
+                <div class="t1-route-price">₦8,500 <span>from</span></div>
+              </div>
+              <div class="t1-route-card">
+                <div class="t1-route-cities">PH → Lagos</div>
+                <div class="t1-route-meta">6 operators · 5–6h</div>
+                <div class="t1-route-price">₦7,200 <span>from</span></div>
+              </div>
+              <div class="t1-route-card">
+                <div class="t1-route-cities">Abuja → Kano</div>
+                <div class="t1-route-meta">5 operators · 4h</div>
+                <div class="t1-route-price">₦5,000 <span>from</span></div>
+              </div>
+            </div>
+          </div>
+          <!-- Bottom Nav -->
+          <div class="t1-bottom-nav">
+            <div class="t1-nav-item active"><div class="t1-nav-icon">🏠</div><div class="t1-nav-label" style="color:#D4A017;">Home</div></div>
+            <div class="t1-nav-item"><div class="t1-nav-icon">🔍</div><div class="t1-nav-label">Search</div></div>
+            <div class="t1-nav-item"><div class="t1-nav-icon">🎫</div><div class="t1-nav-label">Tickets</div></div>
+            <div class="t1-nav-item"><div class="t1-nav-icon">📍</div><div class="t1-nav-label">Track</div></div>
+            <div class="t1-nav-item"><div class="t1-nav-icon">👤</div><div class="t1-nav-label">Profile</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label"><strong>Traveller · Design 1</strong>"Deep Roots" — Home / Search</div>
+    </div>
+
+    <!-- TRAVELLER DESIGN 2 -->
+    <div class="phone-wrap">
+      <div class="phone-frame">
+        <div class="phone-screen t2">
+          <div class="status-bar t2">
+            <div class="status-time" style="color:#0D1B0F;">9:41</div>
+            <div class="status-icons" style="color:#0D1B0F;">▲ ◆ 📶 🔋</div>
+          </div>
+          <!-- Topbar -->
+          <div class="t2-topbar">
+            <div class="t2-back">← Back</div>
+            <div class="t2-route-title">Lagos → Abuja</div>
+            <div class="t2-route-sub">25 Dec · 1 passenger · 12 results</div>
+          </div>
+          <!-- Filters -->
+          <div class="t2-filter-row">
+            <div class="t2-filter-chip active">All</div>
+            <div class="t2-filter-chip">Cheapest</div>
+            <div class="t2-filter-chip">Earliest</div>
+            <div class="t2-filter-chip">4★+</div>
+            <div class="t2-filter-chip">Executive</div>
+          </div>
+          <!-- Results -->
+          <div class="t2-results" style="height:580px;overflow:hidden;">
+            <!-- Result 1 -->
+            <div class="t2-result-card best">
+              <div class="t2-op-row">
+                <div class="t2-op-avi" style="background:#EDF7F1;color:#1B5E35;">AB</div>
+                <div>
+                  <div class="t2-op-name">ABC Transport</div>
+                  <div class="t2-op-rating"><span>★</span> 4.7 · Executive · AC</div>
+                </div>
+              </div>
+              <div class="t2-time-row">
+                <div>
+                  <div class="t2-time">06:00</div>
+                  <div class="t2-time-sub">Departure</div>
+                </div>
+                <div class="t2-duration">
+                  <div class="t2-duration-line"><div class="t2-dur-dash"></div><div class="t2-dur-dot"></div><div class="t2-dur-dash"></div></div>
+                  7h 30m
+                </div>
+                <div style="text-align:right">
+                  <div class="t2-time">13:30</div>
+                  <div class="t2-time-sub">Arrival</div>
+                </div>
+              </div>
+              <div class="t2-bottom-row">
+                <div>
+                  <div class="t2-price">₦9,500</div>
+                  <div class="t2-price-sub">per seat <span class="t2-seats-chip">4 left</span></div>
+                </div>
+                <div class="t2-book-btn">Select →</div>
+              </div>
+            </div>
+            <!-- Result 2 -->
+            <div class="t2-result-card">
+              <div class="t2-op-row">
+                <div class="t2-op-avi" style="background:#FEF3C7;color:#92400E;">GU</div>
+                <div>
+                  <div class="t2-op-name">GUO Transport</div>
+                  <div class="t2-op-rating"><span>★</span> 4.5 · Standard · AC</div>
+                </div>
+              </div>
+              <div class="t2-time-row">
+                <div>
+                  <div class="t2-time">06:30</div>
+                  <div class="t2-time-sub">Departure</div>
+                </div>
+                <div class="t2-duration">
+                  <div class="t2-duration-line"><div class="t2-dur-dash"></div><div class="t2-dur-dot"></div><div class="t2-dur-dash"></div></div>
+                  8h 00m
+                </div>
+                <div style="text-align:right">
+                  <div class="t2-time">14:30</div>
+                  <div class="t2-time-sub">Arrival</div>
+                </div>
+              </div>
+              <div class="t2-bottom-row">
+                <div>
+                  <div class="t2-price">₦8,500</div>
+                  <div class="t2-price-sub">per seat</div>
+                </div>
+                <div class="t2-book-btn">Select →</div>
+              </div>
+            </div>
+          </div>
+          <!-- Bottom Nav -->
+          <div class="t2-bottom-nav">
+            <div class="t2-nav-item"><div class="t2-nav-icon">🏠</div><div class="t2-nav-label">Home</div></div>
+            <div class="t2-nav-item active"><div class="t2-nav-icon">🔍</div><div class="t2-nav-label" style="color:#1B5E35;">Search</div></div>
+            <div class="t2-nav-item"><div class="t2-nav-icon">🎫</div><div class="t2-nav-label">Tickets</div></div>
+            <div class="t2-nav-item"><div class="t2-nav-icon">📍</div><div class="t2-nav-label">Track</div></div>
+            <div class="t2-nav-item"><div class="t2-nav-icon">👤</div><div class="t2-nav-label">Profile</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label"><strong>Traveller · Design 2</strong>"Open Road" — Search Results</div>
+    </div>
+
+  </div>
+</div>
+
+<div class="section-divider"></div>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 2 — AGENT APP
+═══════════════════════════════════════════════ -->
+<div class="section-wrap" style="background:#0A0F0B;">
+  <div class="section-intro">
+    <div class="design-label dl-gold">Park Agent App</div>
+    <h2>Field Agent Dashboard</h2>
+    <p>Design 1 — Dark terminal for experienced agents &nbsp;·&nbsp; Design 2 — Bright outdoor-ready</p>
+  </div>
+  <div class="phones-row">
+
+    <!-- AGENT DESIGN 1 -->
+    <div class="phone-wrap">
+      <div class="phone-frame">
+        <div class="phone-screen a1">
+          <div class="status-bar" style="color:#4ADE80;background:#141714;padding-bottom:8px;padding-top:14px;padding-left:24px;padding-right:24px;">
+            <div class="status-time" style="color:#4ADE80;">9:41</div>
+            <div class="status-icons" style="color:#4ADE80;">▲ 📶 🔋</div>
+          </div>
+          <div class="a1-header">
+            <div class="a1-header-row">
+              <div>
+                <div class="a1-agent-name">Tunde Adeyemi</div>
+                <div class="a1-park">📍 Jibowu Motor Park, Lagos</div>
+              </div>
+              <div class="a1-online"><div class="a1-dot"></div>Online</div>
+            </div>
+          </div>
+          <div class="a1-stats-row">
+            <div class="a1-stat"><div class="a1-stat-val g">47</div><div class="a1-stat-lbl">Tickets</div></div>
+            <div class="a1-stat"><div class="a1-stat-val y">₦185K</div><div class="a1-stat-lbl">Cash</div></div>
+            <div class="a1-stat"><div class="a1-stat-val b">34</div><div class="a1-stat-lbl">Scanned</div></div>
+          </div>
+          <div style="height:10px;"></div>
+          <div class="a1-section-title">Quick Actions</div>
+          <div class="a1-actions">
+            <div class="a1-action-btn primary">
+              <div class="a1-action-icon">🎫</div>
+              <div class="a1-action-label">Sell Ticket</div>
+              <div class="a1-action-sub">Walk-up sale</div>
+            </div>
+            <div class="a1-action-btn secondary">
+              <div class="a1-action-icon">📷</div>
+              <div class="a1-action-label">Scan QR</div>
+              <div class="a1-action-sub">Board passenger</div>
+            </div>
+            <div class="a1-action-btn secondary">
+              <div class="a1-action-icon">🏢</div>
+              <div class="a1-action-label">Onboard</div>
+              <div class="a1-action-sub">Add operator</div>
+            </div>
+            <div class="a1-action-btn secondary">
+              <div class="a1-action-icon">💰</div>
+              <div class="a1-action-label">Reconcile</div>
+              <div class="a1-action-sub">End of day</div>
+            </div>
+          </div>
+          <div class="a1-section-title">Recent Sales</div>
+          <div class="a1-ticket-list">
+            <div class="a1-ticket-item">
+              <div class="a1-ticket-ref">NR-0047</div>
+              <div class="a1-ticket-info">
+                <div class="a1-ticket-name">Emeka Okonkwo</div>
+                <div class="a1-ticket-route">Lagos → Abuja · 06:00</div>
+              </div>
+              <div>
+                <div class="a1-ticket-amount">₦8,500</div>
+                <div class="a1-status boarded">Boarded</div>
+              </div>
+            </div>
+            <div class="a1-ticket-item">
+              <div class="a1-ticket-ref">NR-0046</div>
+              <div class="a1-ticket-info">
+                <div class="a1-ticket-name">Fatima Bello</div>
+                <div class="a1-ticket-route">Lagos → Kano · 07:30</div>
+              </div>
+              <div>
+                <div class="a1-ticket-amount">₦12,000</div>
+                <div class="a1-status issued">Issued</div>
+              </div>
+            </div>
+          </div>
+          <div class="a1-bottom-nav">
+            <div class="a1-nav-item active"><div class="a1-nav-icon">🏠</div><div class="a1-nav-label" style="color:#4ADE80;">Home</div></div>
+            <div class="a1-nav-item"><div class="a1-nav-icon">🎫</div><div class="a1-nav-label">Sell</div></div>
+            <div class="a1-nav-item"><div class="a1-nav-icon">📷</div><div class="a1-nav-label">Scan</div></div>
+            <div class="a1-nav-item"><div class="a1-nav-icon">💰</div><div class="a1-nav-label">Cash</div></div>
+            <div class="a1-nav-item"><div class="a1-nav-icon">👤</div><div class="a1-nav-label">Me</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label"><strong>Agent · Design 1</strong>"Field Terminal" — Dark high-contrast</div>
+    </div>
+
+    <!-- AGENT DESIGN 2 -->
+    <div class="phone-wrap">
+      <div class="phone-frame">
+        <div class="phone-screen a2">
+          <div class="status-bar" style="color:#14532D;background:#16A34A;padding-bottom:8px;padding-top:14px;padding-left:24px;padding-right:24px;">
+            <div class="status-time" style="color:white;">9:41</div>
+            <div class="status-icons" style="color:white;">▲ 📶 🔋</div>
+          </div>
+          <div class="a2-top">
+            <div class="a2-top-row">
+              <div>
+                <div class="a2-greeting">Good morning 👋</div>
+                <div class="a2-name">Tunde Adeyemi</div>
+              </div>
+              <div class="a2-park-badge">📍 Jibowu</div>
+            </div>
+          </div>
+          <div class="a2-big-actions">
+            <div class="a2-big-btn green">
+              <div class="a2-btn-icon">🎫</div>
+              <div class="a2-btn-label">Sell Ticket</div>
+              <div class="a2-btn-arrow">→</div>
+            </div>
+            <div class="a2-big-btn amber">
+              <div class="a2-btn-icon">📷</div>
+              <div class="a2-btn-label">Scan & Board</div>
+              <div class="a2-btn-arrow">→</div>
+            </div>
+            <div class="a2-big-btn blue">
+              <div class="a2-btn-icon">🏢</div>
+              <div class="a2-btn-label">Add Operator</div>
+              <div class="a2-btn-arrow">→</div>
+            </div>
+            <div class="a2-big-btn white">
+              <div class="a2-btn-icon">📦</div>
+              <div class="a2-btn-label">Log Cargo</div>
+              <div class="a2-btn-arrow" style="color:#6B7280;">→</div>
+            </div>
+          </div>
+          <div class="a2-stats-strip">
+            <div class="a2-mini-stat"><div class="a2-ms-val g">47</div><div class="a2-ms-lbl">Tickets</div></div>
+            <div class="a2-mini-stat"><div class="a2-ms-val a">₦185K</div><div class="a2-ms-lbl">Cash</div></div>
+            <div class="a2-mini-stat"><div class="a2-ms-val b">34</div><div class="a2-ms-lbl">Boarded</div></div>
+          </div>
+          <div class="a2-departures">
+            <div class="a2-dep-title">Upcoming Departures</div>
+            <div class="a2-dep-card">
+              <div class="a2-dep-left">
+                <div class="a2-dep-route">Lagos → Abuja</div>
+                <div class="a2-dep-meta">ABC Transport · Gate 3</div>
+              </div>
+              <div class="a2-dep-right">
+                <div class="a2-dep-time">06:00</div>
+                <div class="a2-dep-chip dc-amber">⚡ 4 seats</div>
+              </div>
+            </div>
+            <div class="a2-dep-card">
+              <div class="a2-dep-left">
+                <div class="a2-dep-route">Lagos → Ibadan</div>
+                <div class="a2-dep-meta">YTC Motors · Gate 1</div>
+              </div>
+              <div class="a2-dep-right">
+                <div class="a2-dep-time">07:30</div>
+                <div class="a2-dep-chip dc-green">✓ 12 seats</div>
+              </div>
+            </div>
+          </div>
+          <div class="a2-bottom-nav">
+            <div class="a2-nav-item active"><div class="a2-nav-icon">🏠</div><div class="a2-nav-label" style="color:#16A34A;">Home</div></div>
+            <div class="a2-nav-item"><div class="a2-nav-icon">🎫</div><div class="a2-nav-label">Sell</div></div>
+            <div class="a2-nav-item"><div class="a2-nav-icon">📷</div><div class="a2-nav-label">Scan</div></div>
+            <div class="a2-nav-item"><div class="a2-nav-icon">💰</div><div class="a2-nav-label">Cash</div></div>
+            <div class="a2-nav-item"><div class="a2-nav-icon">👤</div><div class="a2-nav-label">Me</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label"><strong>Agent · Design 2</strong>"Park Ready" — Bright outdoor-safe</div>
+    </div>
+
+  </div>
+</div>
+
+<div class="section-divider"></div>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 3 — OPERATOR APP
+═══════════════════════════════════════════════ -->
+<div class="section-wrap" style="background:#080D14;">
+  <div class="section-intro">
+    <div class="design-label dl-green">Operator App</div>
+    <h2>Transport Operator Dashboard</h2>
+    <p>Design 1 — Navy analytics &nbsp;·&nbsp; Design 2 — Clean white operations hub</p>
+  </div>
+  <div class="phones-row">
+
+    <!-- OPERATOR DESIGN 1 -->
+    <div class="phone-wrap">
+      <div class="phone-frame">
+        <div class="phone-screen o1">
+          <div class="status-bar" style="background:#0F172A;color:rgba(255,255,255,0.7);padding:14px 24px 8px;">
+            <div class="status-time">9:41</div>
+            <div class="status-icons">▲ 📶 🔋</div>
+          </div>
+          <div class="o1-header">
+            <div class="o1-hdr-row">
+              <div>
+                <div class="o1-op-name">ABC Transport Ltd</div>
+                <div class="o1-op-sub">Verified · Lagos · 12 vehicles</div>
+              </div>
+              <div class="o1-notif">🔔<div class="o1-notif-dot"></div></div>
+            </div>
+            <div class="o1-kpi-row">
+              <div class="o1-kpi">
+                <div class="o1-kpi-lbl">Revenue Today</div>
+                <div class="o1-kpi-val green">₦428K</div>
+                <div class="o1-kpi-delta up">↑ +18%</div>
+              </div>
+              <div class="o1-kpi">
+                <div class="o1-kpi-lbl">Bookings</div>
+                <div class="o1-kpi-val gold">84</div>
+                <div class="o1-kpi-delta up">↑ +22</div>
+              </div>
+              <div class="o1-kpi">
+                <div class="o1-kpi-lbl">Occupancy</div>
+                <div class="o1-kpi-val blue">87%</div>
+                <div class="o1-kpi-delta up">↑ +5%</div>
+              </div>
+              <div class="o1-kpi">
+                <div class="o1-kpi-lbl">Rating</div>
+                <div class="o1-kpi-val white">★ 4.7</div>
+                <div class="o1-kpi-delta" style="color:rgba(255,255,255,0.35);">1,284 reviews</div>
+              </div>
+            </div>
+          </div>
+          <div class="o1-section">
+            <div class="o1-section-hdr">
+              <div class="o1-section-title">Route Occupancy</div>
+              <div class="o1-section-link">All routes →</div>
+            </div>
+            <div class="o1-occ-card">
+              <div class="o1-route-name">Lagos → Abuja <span class="o1-route-pct">94%</span></div>
+              <div class="o1-occ-bar"><div class="o1-occ-fill" style="width:94%"></div></div>
+              <div class="o1-occ-meta"><span>47/50 seats</span><span>₦228K today</span></div>
+            </div>
+            <div class="o1-occ-card">
+              <div class="o1-route-name">Lagos → Ibadan <span class="o1-route-pct" style="color:#FCD34D;">78%</span></div>
+              <div class="o1-occ-bar"><div class="o1-occ-fill" style="width:78%;background:#FCD34D;"></div></div>
+              <div class="o1-occ-meta"><span>42/54 seats</span><span>₦84K today</span></div>
+            </div>
+          </div>
+          <div class="o1-section" style="margin-top:4px;">
+            <div class="o1-section-hdr">
+              <div class="o1-section-title">Active Fleet</div>
+              <div class="o1-section-link">8 moving</div>
+            </div>
+            <div class="o1-trip-item">
+              <div class="o1-trip-dot dot-moving"></div>
+              <div class="o1-trip-info">
+                <div class="o1-trip-route">Lagos → Abuja</div>
+                <div class="o1-trip-plate">LSD-481-KA · Akin Salami</div>
+              </div>
+              <div class="o1-trip-time">06:00</div>
+            </div>
+            <div class="o1-trip-item">
+              <div class="o1-trip-dot dot-parked"></div>
+              <div class="o1-trip-info">
+                <div class="o1-trip-route">Lagos → Ibadan</div>
+                <div class="o1-trip-plate">LSD-392-DE · Yemi Obi</div>
+              </div>
+              <div class="o1-trip-time" style="color:#FCD34D;">07:30</div>
+            </div>
+          </div>
+          <div class="o1-bottom-nav">
+            <div class="o1-nav-item active"><div class="o1-nav-icon">📊</div><div class="o1-nav-label" style="color:#4ADE80;">Overview</div></div>
+            <div class="o1-nav-item"><div class="o1-nav-icon">🎫</div><div class="o1-nav-label">Bookings</div></div>
+            <div class="o1-nav-item"><div class="o1-nav-icon">🚌</div><div class="o1-nav-label">Fleet</div></div>
+            <div class="o1-nav-item"><div class="o1-nav-icon">💳</div><div class="o1-nav-label">Payouts</div></div>
+            <div class="o1-nav-item"><div class="o1-nav-icon">⚙</div><div class="o1-nav-label">Settings</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label"><strong>Operator · Design 1</strong>"Command Centre" — Navy analytics</div>
+    </div>
+
+    <!-- OPERATOR DESIGN 2 -->
+    <div class="phone-wrap">
+      <div class="phone-frame">
+        <div class="phone-screen o2">
+          <div class="status-bar" style="background:white;color:#111827;padding:14px 24px 8px;">
+            <div class="status-time" style="color:#111827;">9:41</div>
+            <div class="status-icons" style="color:#111827;">▲ 📶 🔋</div>
+          </div>
+          <div class="o2-header">
+            <div class="o2-hdr-top">
+              <div>
+                <div class="o2-greet">Good morning</div>
+                <div class="o2-name">Alhaji Musa 👋</div>
+              </div>
+              <div class="o2-avatar">GU</div>
+            </div>
+            <div class="o2-date-pill">📅 Wednesday, 25 Dec 2025</div>
+          </div>
+          <div class="o2-kpis">
+            <div class="o2-kpi">
+              <div class="o2-kpi-icon ki-g">💰</div>
+              <div>
+                <div class="o2-kpi-val g">₦612K</div>
+                <div class="o2-kpi-lbl">Revenue Today</div>
+                <div class="o2-kpi-trend">↑ 23%</div>
+              </div>
+            </div>
+            <div class="o2-kpi">
+              <div class="o2-kpi-icon ki-a">🎫</div>
+              <div>
+                <div class="o2-kpi-val a">142</div>
+                <div class="o2-kpi-lbl">Tickets Sold</div>
+                <div class="o2-kpi-trend">↑ 31 more</div>
+              </div>
+            </div>
+            <div class="o2-kpi">
+              <div class="o2-kpi-icon ki-b">🚌</div>
+              <div>
+                <div class="o2-kpi-val b">18/22</div>
+                <div class="o2-kpi-lbl">Active Vehicles</div>
+                <div class="o2-kpi-trend" style="color:#D97706;">2 in maint.</div>
+              </div>
+            </div>
+            <div class="o2-kpi">
+              <div class="o2-kpi-icon ki-p">⭐</div>
+              <div>
+                <div class="o2-kpi-val p">4.7</div>
+                <div class="o2-kpi-lbl">Avg Rating</div>
+                <div class="o2-kpi-trend">↑ from 4.5</div>
+              </div>
+            </div>
+          </div>
+          <div class="o2-section">
+            <div class="o2-sec-hdr">
+              <div class="o2-sec-title">Seat Occupancy</div>
+              <div class="o2-sec-link">All routes →</div>
+            </div>
+            <div class="o2-donut-wrap">
+              <div class="o2-donut"><div class="o2-donut-pct">87%</div></div>
+              <div class="o2-legend">
+                <div class="o2-leg-item"><div class="o2-leg-dot" style="background:#059669;"></div><div class="o2-leg-lbl">Filled</div><div class="o2-leg-val">1,218</div></div>
+                <div class="o2-leg-item"><div class="o2-leg-dot" style="background:#D97706;"></div><div class="o2-leg-lbl">Reserved</div><div class="o2-leg-val">126</div></div>
+                <div class="o2-leg-item"><div class="o2-leg-dot" style="background:#EF4444;"></div><div class="o2-leg-lbl">Empty</div><div class="o2-leg-val">56</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="o2-section" style="margin-top:12px;">
+            <div class="o2-sec-hdr">
+              <div class="o2-sec-title">Today's Schedule</div>
+              <div class="o2-sec-link">+ Add</div>
+            </div>
+            <div class="o2-sched-item">
+              <div class="o2-sched-color" style="background:#059669;"></div>
+              <div class="o2-sched-info">
+                <div class="o2-sched-route">Lagos → Abuja</div>
+                <div class="o2-sched-meta"><span class="o2-status-dot" style="background:#059669;"></span>LSD-481-KA · Akin</div>
+              </div>
+              <div class="o2-sched-right">
+                <div class="o2-sched-time">06:00</div>
+                <div class="o2-sched-seats">47/50 seats</div>
+              </div>
+            </div>
+            <div class="o2-sched-item">
+              <div class="o2-sched-color" style="background:#D97706;"></div>
+              <div class="o2-sched-info">
+                <div class="o2-sched-route">Lagos → Ibadan</div>
+                <div class="o2-sched-meta"><span class="o2-status-dot" style="background:#D97706;"></span>LSD-392-DE · Yemi</div>
+              </div>
+              <div class="o2-sched-right">
+                <div class="o2-sched-time">07:30</div>
+                <div class="o2-sched-seats">42/54 seats</div>
+              </div>
+            </div>
+          </div>
+          <div class="o2-bottom-nav">
+            <div class="o2-nav-item active"><div class="o2-nav-icon">📊</div><div class="o2-nav-label" style="color:#059669;">Overview</div></div>
+            <div class="o2-nav-item"><div class="o2-nav-icon">🎫</div><div class="o2-nav-label">Bookings</div></div>
+            <div class="o2-nav-item"><div class="o2-nav-icon">🚌</div><div class="o2-nav-label">Fleet</div></div>
+            <div class="o2-nav-item"><div class="o2-nav-icon">💳</div><div class="o2-nav-label">Payouts</div></div>
+            <div class="o2-nav-item"><div class="o2-nav-icon">⚙</div><div class="o2-nav-label">Settings</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label"><strong>Operator · Design 2</strong>"Operations Hub" — Clean white</div>
+    </div>
+
+  </div>
+</div>
+
+<div class="section-divider"></div>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 4 — ADMIN APP
+═══════════════════════════════════════════════ -->
+<div class="section-wrap" style="background:#060809;">
+  <div class="section-intro">
+    <div class="design-label dl-gold">Admin App</div>
+    <h2>Platform Admin Dashboard</h2>
+    <p>Design 1 — Dark mission control terminal &nbsp;·&nbsp; Design 2 — White enterprise portal</p>
+  </div>
+  <div class="phones-row">
+
+    <!-- ADMIN DESIGN 1 -->
+    <div class="phone-wrap">
+      <div class="phone-frame">
+        <div class="phone-screen ad1">
+          <div class="status-bar" style="background:#141714;color:#22C55E;padding:14px 24px 8px;">
+            <div class="status-time" style="font-family:monospace;color:#22C55E;">9:41</div>
+            <div class="status-icons" style="color:#22C55E;">▲ 📶 🔋</div>
+          </div>
+          <div class="ad1-header">
+            <div class="ad1-hdr-row">
+              <div>
+                <div class="ad1-title">NR_ADMIN · Overview</div>
+                <div class="ad1-admin">Chidi Okeke · Super Admin</div>
+              </div>
+              <div class="ad1-live"><div class="ad1-live-dot"></div>LIVE</div>
+            </div>
+          </div>
+          <div class="ad1-metrics">
+            <div class="ad1-metric">
+              <div class="ad1-metric-lbl">GMV Today</div>
+              <div class="ad1-metric-val ad1-mv-g">₦14.2M</div>
+              <div class="ad1-metric-delta ad1-delta-up">↑ +28%</div>
+            </div>
+            <div class="ad1-metric">
+              <div class="ad1-metric-lbl">Bookings</div>
+              <div class="ad1-metric-val ad1-mv-y">1,847</div>
+              <div class="ad1-metric-delta ad1-delta-up">↑ +412</div>
+            </div>
+            <div class="ad1-metric">
+              <div class="ad1-metric-lbl">Operators</div>
+              <div class="ad1-metric-val ad1-mv-b">483</div>
+              <div class="ad1-metric-delta" style="color:#5A6B5C;">+12 week</div>
+            </div>
+            <div class="ad1-metric">
+              <div class="ad1-metric-lbl">Fail Pays</div>
+              <div class="ad1-metric-val ad1-mv-r">24</div>
+              <div class="ad1-metric-delta" style="color:#F43F5E;">↑ +6</div>
+            </div>
+            <div class="ad1-metric">
+              <div class="ad1-metric-lbl">Commission</div>
+              <div class="ad1-metric-val ad1-mv-g">₦924K</div>
+              <div class="ad1-metric-delta ad1-delta-up">↑ +31%</div>
+            </div>
+            <div class="ad1-metric">
+              <div class="ad1-metric-lbl">KYC Queue</div>
+              <div class="ad1-metric-val ad1-mv-r">5</div>
+              <div class="ad1-metric-delta" style="color:#5A6B5C;">Pending</div>
+            </div>
+          </div>
+          <div class="ad1-section">
+            <div class="ad1-sec-lbl">Live Events</div>
+            <div class="ad1-feed-item">
+              <div class="ad1-feed-time">09:42</div>
+              <div class="ad1-feed-text"><strong>Booking</strong> — Emeka → Lagos–Abuja ₦9,500</div>
+              <div class="ad1-tag tag-bk">BK</div>
+            </div>
+            <div class="ad1-feed-item">
+              <div class="ad1-feed-time">09:41</div>
+              <div class="ad1-feed-text"><strong>Payment OK</strong> — NR-1847 Paystack ₦12K</div>
+              <div class="ad1-tag tag-py">PY</div>
+            </div>
+            <div class="ad1-feed-item">
+              <div class="ad1-feed-time">09:40</div>
+              <div class="ad1-feed-text"><strong>KYC</strong> — Rimbo Transport documents uploaded</div>
+              <div class="ad1-tag tag-ky">KYC</div>
+            </div>
+            <div class="ad1-feed-item">
+              <div class="ad1-feed-time">09:39</div>
+              <div class="ad1-feed-text" style="color:#F43F5E;"><strong>FAIL</strong> — NR-1843 card declined retry 1/3</div>
+              <div class="ad1-tag tag-al">ALT</div>
+            </div>
+          </div>
+          <div class="ad1-alert-box">
+            <div class="ad1-alert-title">⚠ Active Alert</div>
+            <div class="ad1-alert-body">24 payment failures — Paystack card error rate elevated at 6.2%</div>
+          </div>
+          <div class="ad1-bottom-nav">
+            <div class="ad1-nav-item active"><div class="ad1-nav-icon">📊</div><div class="ad1-nav-label" style="color:#22C55E;">Overview</div></div>
+            <div class="ad1-nav-item"><div class="ad1-nav-icon">📡</div><div class="ad1-nav-label">Feed</div></div>
+            <div class="ad1-nav-item"><div class="ad1-nav-icon">🏢</div><div class="ad1-nav-label">Operators</div></div>
+            <div class="ad1-nav-item"><div class="ad1-nav-icon">💳</div><div class="ad1-nav-label">Finance</div></div>
+            <div class="ad1-nav-item"><div class="ad1-nav-icon">⚙</div><div class="ad1-nav-label">System</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label"><strong>Admin · Design 1</strong>"Mission Control" — Dark terminal</div>
+    </div>
+
+    <!-- ADMIN DESIGN 2 -->
+    <div class="phone-wrap">
+      <div class="phone-frame">
+        <div class="phone-screen ad2">
+          <div class="status-bar" style="background:white;color:#18181B;padding:14px 24px 8px;">
+            <div class="status-time" style="color:#18181B;">9:41</div>
+            <div class="status-icons" style="color:#18181B;">▲ 📶 🔋</div>
+          </div>
+          <div class="ad2-header">
+            <div class="ad2-hdr-row">
+              <div class="ad2-logo">🚌 Naija<span>Routes</span></div>
+              <div class="ad2-admin-badge">Super Admin</div>
+            </div>
+            <div class="ad2-page-title">Platform Overview</div>
+            <div class="ad2-page-sub">Wednesday, 25 December 2025 · Live</div>
+          </div>
+          <div class="ad2-stats">
+            <div class="ad2-stat">
+              <div class="ad2-stat-icon si2-g">💰</div>
+              <div>
+                <div class="ad2-stat-val sv-g">₦14.2M</div>
+                <div class="ad2-stat-lbl">GMV Today</div>
+                <div class="ad2-stat-trend str-up">↑ 28%</div>
+              </div>
+            </div>
+            <div class="ad2-stat">
+              <div class="ad2-stat-icon si2-a">🎫</div>
+              <div>
+                <div class="ad2-stat-val sv-a">1,847</div>
+                <div class="ad2-stat-lbl">Bookings</div>
+                <div class="ad2-stat-trend str-up">↑ 22%</div>
+              </div>
+            </div>
+            <div class="ad2-stat">
+              <div class="ad2-stat-icon si2-r">⚠️</div>
+              <div>
+                <div class="ad2-stat-val sv-r">24</div>
+                <div class="ad2-stat-lbl">Failures</div>
+                <div class="ad2-stat-trend str-down">↑ 6 more</div>
+              </div>
+            </div>
+            <div class="ad2-stat">
+              <div class="ad2-stat-icon si2-b">🏢</div>
+              <div>
+                <div class="ad2-stat-val sv-b">483</div>
+                <div class="ad2-stat-lbl">Operators</div>
+                <div class="ad2-stat-trend str-up">↑ 12</div>
+              </div>
+            </div>
+          </div>
+          <div class="ad2-section">
+            <div class="ad2-sec-hdr">
+              <div class="ad2-sec-title">Active Alerts</div>
+              <span style="font-size:11px;background:#FFE4E6;color:#F43F5E;padding:3px 9px;border-radius:100px;font-weight:700;">3 urgent</span>
+            </div>
+            <div class="ad2-alert-item">
+              <div class="ad2-al-icon ai2-r">🔴</div>
+              <div style="flex:1;">
+                <div class="ad2-al-title">Payment failure spike</div>
+                <div class="ad2-al-body">24 failures in 60 min — Paystack 6.2% error rate</div>
+              </div>
+              <div class="ad2-al-time">9m ago</div>
+            </div>
+            <div class="ad2-alert-item">
+              <div class="ad2-al-icon ai2-a">⚠️</div>
+              <div style="flex:1;">
+                <div class="ad2-al-title">5 KYC applications pending</div>
+                <div class="ad2-al-body">Rimbo Transport, YTC Motors + 3 more</div>
+              </div>
+              <div class="ad2-al-time">2h ago</div>
+            </div>
+            <div class="ad2-alert-item">
+              <div class="ad2-al-icon ai2-g">✅</div>
+              <div style="flex:1;">
+                <div class="ad2-al-title">Star Line Ltd approved</div>
+                <div class="ad2-al-body">20-bus Lagos operator now live</div>
+              </div>
+              <div class="ad2-al-time">5h ago</div>
+            </div>
+          </div>
+          <div class="ad2-section" style="margin-top:4px;">
+            <div class="ad2-sec-hdr">
+              <div class="ad2-sec-title">Top Operators</div>
+              <div class="ad2-sec-link">Manage all →</div>
+            </div>
+            <div class="ad2-op-row">
+              <div class="ad2-op-avi" style="background:#D1FAE5;color:#059669;">AB</div>
+              <div style="flex:1;">
+                <div class="ad2-op-name">ABC Transport</div>
+                <div class="ad2-op-state">Lagos · 8 routes</div>
+              </div>
+              <div style="text-align:right;">
+                <div class="ad2-op-rev">₦42.8M</div>
+                <div class="ad2-op-pill p2-green">Active</div>
+              </div>
+            </div>
+            <div class="ad2-op-row">
+              <div class="ad2-op-avi" style="background:#FEF3C7;color:#92400E;">GU</div>
+              <div style="flex:1;">
+                <div class="ad2-op-name">GUO Transport</div>
+                <div class="ad2-op-state">Lagos/Abuja · 12 routes</div>
+              </div>
+              <div style="text-align:right;">
+                <div class="ad2-op-rev">₦38.1M</div>
+                <div class="ad2-op-pill p2-amber">KYC Review</div>
+              </div>
+            </div>
+          </div>
+          <div class="ad2-bottom-nav">
+            <div class="ad2-nav-item active"><div class="ad2-nav-icon">📊</div><div class="ad2-nav-label" style="color:#10B981;">Overview</div></div>
+            <div class="ad2-nav-item"><div class="ad2-nav-icon">🏢</div><div class="ad2-nav-label">Operators</div></div>
+            <div class="ad2-nav-item"><div class="ad2-nav-icon">💳</div><div class="ad2-nav-label">Finance</div></div>
+            <div class="ad2-nav-item"><div class="ad2-nav-icon">⚠️</div><div class="ad2-nav-label">Alerts</div></div>
+            <div class="ad2-nav-item"><div class="ad2-nav-icon">⚙</div><div class="ad2-nav-label">System</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label"><strong>Admin · Design 2</strong>"Platform HQ" — Clean enterprise</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div style="background:#050507;padding:40px;text-align:center;color:rgba(255,255,255,0.25);font-size:13px;">
+  <div style="font-family:'Syne',sans-serif;font-size:20px;color:white;margin-bottom:8px;">🚌 Naija Routes</div>
+  Mobile UI/UX · 8 screens · 4 roles · 2 designs each · Rendered at 375×812px (iPhone SE / 13 mini)
+</div>
+
+</body>
+</html>

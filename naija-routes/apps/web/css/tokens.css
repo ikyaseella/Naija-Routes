@@ -1,0 +1,125 @@
+/**
+ * Naija Routes — Design Tokens
+ * Traveller Web App · "Deep Roots" Theme
+ * ─────────────────────────────────────────
+ * All colours, spacing, typography, and
+ * shadow values are defined here ONCE.
+ * Never use raw values elsewhere — always
+ * reference a token variable.
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=DM+Serif+Display:ital@0;1&display=swap');
+
+:root {
+
+  /* ───────────── BRAND COLOURS ───────────── */
+  --color-primary:       #16A34A;   /* Naija green — primary actions */
+  --color-primary-d:     #15803D;   /* Darker green — hover states */
+  --color-primary-dd:    #166534;   /* Darkest green — active/pressed */
+  --color-primary-l:     #DCFCE7;   /* Light green — backgrounds */
+  --color-primary-pale:  rgba(22, 163, 74, 0.08);
+
+  --color-gold:          #D97706;   /* Gold — secondary accent */
+  --color-gold-d:        #B45309;   /* Darker gold — hover */
+  --color-gold-l:        #FEF3C7;   /* Light gold — badge backgrounds */
+  --color-gold-pale:     rgba(217, 119, 6, 0.10);
+
+  /* ───────────── NEUTRALS ───────────── */
+  --color-slate-900:     #0F172A;   /* Darkest — headings */
+  --color-slate-800:     #1E293B;   /* Dark — sidebar bg */
+  --color-slate-700:     #334155;   /* Body text */
+  --color-slate-600:     #475569;   /* Secondary text */
+  --color-slate-500:     #64748B;   /* Muted / placeholder */
+  --color-slate-400:     #94A3B8;   /* Dividers */
+  --color-slate-300:     #CBD5E1;   /* Borders */
+  --color-slate-200:     #E2E8F0;   /* Light borders */
+  --color-slate-100:     #F1F5F9;   /* Surface light */
+  --color-slate-50:      #F8FAFC;   /* Page background */
+  --color-white:         #FFFFFF;
+
+  /* ───────────── SEMANTIC COLOURS ───────────── */
+  --color-success:       #16A34A;
+  --color-success-l:     #DCFCE7;
+  --color-warning:       #D97706;
+  --color-warning-l:     #FEF3C7;
+  --color-danger:        #DC2626;
+  --color-danger-l:      #FEE2E2;
+  --color-info:          #2563EB;
+  --color-info-l:        #DBEAFE;
+
+  /* ───────────── TYPOGRAPHY ───────────── */
+  --font-display:        'DM Serif Display', Georgia, serif;    /* Hero headlines */
+  --font-body:           'Plus Jakarta Sans', system-ui, sans-serif; /* Everything else */
+  --font-mono:           'Courier New', Courier, monospace;    /* Ticket refs, codes */
+
+  --text-xs:    0.75rem;    /* 12px */
+  --text-sm:    0.875rem;   /* 14px */
+  --text-base:  1rem;       /* 16px */
+  --text-lg:    1.125rem;   /* 18px */
+  --text-xl:    1.25rem;    /* 20px */
+  --text-2xl:   1.5rem;     /* 24px */
+  --text-3xl:   1.875rem;   /* 30px */
+  --text-4xl:   2.25rem;    /* 36px */
+  --text-5xl:   3rem;       /* 48px */
+  --text-6xl:   3.75rem;    /* 60px */
+
+  --weight-light:    300;
+  --weight-regular:  400;
+  --weight-medium:   500;
+  --weight-semibold: 600;
+  --weight-bold:     700;
+  --weight-extrabold:800;
+
+  --leading-tight:   1.2;
+  --leading-snug:    1.35;
+  --leading-normal:  1.5;
+  --leading-relaxed: 1.65;
+
+  /* ───────────── SPACING SCALE ───────────── */
+  --space-1:   0.25rem;   /* 4px  */
+  --space-2:   0.5rem;    /* 8px  */
+  --space-3:   0.75rem;   /* 12px */
+  --space-4:   1rem;      /* 16px */
+  --space-5:   1.25rem;   /* 20px */
+  --space-6:   1.5rem;    /* 24px */
+  --space-7:   1.75rem;   /* 28px */
+  --space-8:   2rem;      /* 32px */
+  --space-10:  2.5rem;    /* 40px */
+  --space-12:  3rem;      /* 48px */
+  --space-16:  4rem;      /* 64px */
+  --space-20:  5rem;      /* 80px */
+  --space-24:  6rem;      /* 96px */
+
+  /* ───────────── BORDER RADIUS ───────────── */
+  --radius-sm:   0.375rem;  /* 6px */
+  --radius-md:   0.5rem;    /* 8px */
+  --radius-lg:   0.75rem;   /* 12px */
+  --radius-xl:   1rem;      /* 16px */
+  --radius-2xl:  1.5rem;    /* 24px */
+  --radius-full: 9999px;
+
+  /* ───────────── SHADOWS ───────────── */
+  --shadow-sm:   0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md:   0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -1px rgba(0,0,0,0.04);
+  --shadow-lg:   0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -2px rgba(0,0,0,0.04);
+  --shadow-xl:   0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
+
+  /* ───────────── TRANSITIONS ───────────── */
+  --ease-fast:    all 0.12s ease;
+  --ease-normal:  all 0.2s ease;
+  --ease-slow:    all 0.35s ease;
+
+  /* ───────────── Z-INDEX SCALE ───────────── */
+  --z-base:    0;
+  --z-raised:  10;
+  --z-sticky:  40;
+  --z-overlay: 50;
+  --z-modal:   60;
+  --z-toast:   70;
+
+  /* ───────────── LAYOUT ───────────── */
+  --max-width:    1240px;
+  --nav-height:   72px;
+  --sidebar-w:    260px;
+}

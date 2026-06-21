@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Naija Routes — Agent App · Design 2</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+  :root {
+    --green:     #16A34A;
+    --green-d:   #14532D;
+    --green-l:   #DCFCE7;
+    --amber:     #D97706;
+    --amber-l:   #FEF3C7;
+    --blue:      #2563EB;
+    --blue-l:    #DBEAFE;
+    --red:       #DC2626;
+    --red-l:     #FEE2E2;
+    --bg:        #F0FDF4;
+    --white:     #FFFFFF;
+    --border:    #BBF7D0;
+    --text:      #14532D;
+    --muted:     #6B7280;
+    --dark:      #111827;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--dark); min-height: 100vh; }
+
+  .design-label {
+    background: var(--green-d);
+    color: #DCFCE7;
+    text-align: center;
+    padding: 10px;
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+
+  /* TOP BAR */
+  .top-bar {
+    background: var(--green);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: white;
+  }
+  .top-bar-left { display: flex; align-items: center; gap: 12px; }
+  .agent-avi {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    font-weight: 900;
+    border: 2px solid rgba(255,255,255,0.4);
+  }
+  .greeting { font-size: 13px; opacity: 0.85; }
+  .agent-nm { font-size: 18px; font-weight: 800; }
+  .top-bar-right { text-align: right; }
+  .park-name { font-size: 13px; opacity: 0.8; }
+  .top-time { font-size: 22px; font-weight: 800; }
+  .sync-status {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 11px; opacity: 0.8; margin-top: 2px;
+    justify-content: flex-end;
+  }
+  .sync-dot { width: 6px; height: 6px; border-radius: 50%; background: #86EFAC; }
+
+  /* BIG ACTION CARDS */
+  .big-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    padding: 20px;
+  }
+  .big-card {
+    border-radius: 20px;
+    padding: 24px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    cursor: pointer;
+    transition: transform .15s;
+    position: relative;
+    overflow: hidden;
+    min-height: 130px;
+    border: none;
+    font-family: 'Nunito', sans-serif;
+    text-align: left;
+  }
+  .big-card:active { transform: scale(0.97); }
+  .big-card.green { background: var(--green); color: white; }
+  .big-card.amber { background: var(--amber); color: white; }
+  .big-card.blue { background: var(--blue); color: white; }
+  .big-card.white-card { background: var(--white); color: var(--dark); border: 2px solid var(--border); }
+  .big-card .card-icon { font-size: 36px; }
+  .big-card .card-label { font-size: 18px; font-weight: 800; }
+  .big-card .card-sub { font-size: 12px; opacity: 0.8; font-weight: 600; }
+  .big-card .card-arrow {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    font-size: 20px;
+    opacity: 0.5;
+  }
+
+  /* DAY STATS */
+  .day-stats {
+    padding: 0 20px 8px;
+  }
+  .day-stats h3 {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .mini-stat {
+    background: var(--white);
+    border-radius: 14px;
+    padding: 16px 14px;
+    text-align: center;
+    border: 1.5px solid var(--border);
+  }
+  .mini-stat-val {
+    font-size: 26px;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .mini-stat-val.g { color: var(--green); }
+  .mini-stat-val.a { color: var(--amber); }
+  .mini-stat-val.b { color: var(--blue); }
+  .mini-stat-label { font-size: 11px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ACTIVE DEPARTURES */
+  .departures-section { padding: 16px 20px; }
+  .section-h {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .departure-card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 18px;
+    margin-bottom: 12px;
+    border: 1.5px solid var(--border);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 14px;
+    align-items: center;
+  }
+  .dep-route { font-size: 18px; font-weight: 800; margin-bottom: 4px; }
+  .dep-meta { font-size: 13px; color: var(--muted); font-weight: 600; }
+  .dep-meta span { margin-right: 12px; }
+  .dep-right { text-align: right; }
+  .dep-time { font-size: 28px; font-weight: 900; color: var(--green); }
+  .dep-seats-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 800;
+    margin-top: 4px;
+  }
+  .seats-ok { background: var(--green-l); color: var(--green-d); }
+  .seats-few { background: var(--amber-l); color: var(--amber); }
+  .seats-full { background: var(--red-l); color: var(--red); }
+  .board-btn {
+    margin-top: 12px;
+    display: flex;
+    gap: 8px;
+  }
+  .dep-btn {
+    flex: 1;
+    padding: 10px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 800;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer;
+    border: none;
+  }
+  .dep-btn.scan { background: var(--green); color: white; }
+  .dep-btn.sell { background: var(--green-l); color: var(--green-d); border: 1.5px solid var(--border); }
+
+  /* OFFLINE BANNER */
+  .offline-banner {
+    background: var(--amber-l);
+    border-top: 2px solid var(--amber);
+    border-bottom: 2px solid var(--amber);
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--amber);
+    margin-bottom: 4px;
+  }
+  .offline-icon { font-size: 20px; }
+
+  /* TICKET ISSUED SUCCESS */
+  .success-banner {
+    background: var(--green-l);
+    border: 1.5px solid var(--border);
+    border-radius: 16px;
+    padding: 16px 20px;
+    margin: 0 20px 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .success-icon {
+    width: 44px; height: 44px;
+    background: var(--green);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .success-text strong { display: block; font-size: 15px; font-weight: 800; color: var(--green-d); }
+  .success-text span { font-size: 13px; color: var(--muted); }
+
+  /* RECENT LIST */
+  .recent-section { padding: 0 20px 24px; }
+  .recent-item {
+    background: var(--white);
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    border: 1.5px solid var(--border);
+  }
+  .recent-icon {
+    width: 42px; height: 42px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .icon-green { background: var(--green-l); }
+  .icon-amber { background: var(--amber-l); }
+  .icon-blue { background: var(--blue-l); }
+  .recent-info { flex: 1; }
+  .recent-name { font-size: 15px; font-weight: 800; }
+  .recent-detail { font-size: 12px; color: var(--muted); font-weight: 600; }
+  .recent-right { text-align: right; }
+  .recent-amount { font-size: 16px; font-weight: 900; color: var(--green); }
+  .recent-status {
+    font-size: 11px;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 100px;
+    display: inline-block;
+    margin-top: 3px;
+  }
+  .st-done { background: var(--green-l); color: var(--green); }
+  .st-pending { background: var(--amber-l); color: var(--amber); }
+
+  /* BOTTOM NAV */
+  .bottom-nav {
+    position: sticky;
+    bottom: 0;
+    background: var(--white);
+    border-top: 2px solid var(--border);
+    display: flex;
+    padding: 8px 0 4px;
+  }
+  .bot-nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 6px 0;
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-family: 'Nunito', sans-serif;
+  }
+  .bot-nav-icon { font-size: 24px; }
+  .bot-nav-label { font-size: 10px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+  .bot-nav-item.active .bot-nav-label { color: var(--green); }
+  .bot-nav-item.active .bot-nav-icon { filter: none; }
+
+  .cash-summary {
+    background: var(--green-d);
+    color: white;
+    margin: 0 20px 16px;
+    border-radius: 16px;
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .cash-lbl { font-size: 12px; opacity: 0.7; font-weight: 700; margin-bottom: 4px; }
+  .cash-big { font-size: 28px; font-weight: 900; }
+  .reconcile-now-btn {
+    background: var(--amber);
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 800;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<div class="design-label">🎨 Naija Routes · Park Agent App · Design 2 — "Park Ready" (White · Outdoor Visibility · Big Tap Targets)</div>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <div class="top-bar-left">
+    <div class="agent-avi">TU</div>
+    <div>
+      <div class="greeting">Good morning 👋</div>
+      <div class="agent-nm">Tunde Adeyemi</div>
+    </div>
+  </div>
+  <div class="top-bar-right">
+    <div class="park-name">📍 Jibowu Park</div>
+    <div class="top-time">09:42</div>
+    <div class="sync-status"><div class="sync-dot"></div> Synced 2 min ago</div>
+  </div>
+</div>
+
+<!-- OFFLINE BANNER (shown when offline) -->
+<div class="offline-banner">
+  <div class="offline-icon">⚠️</div>
+  <div><strong>Working offline</strong> — tickets saved locally, will sync when connected</div>
+</div>
+
+<!-- SUCCESS BANNER -->
+<div class="success-banner">
+  <div class="success-icon">✓</div>
+  <div class="success-text">
+    <strong>Ticket issued — NR-20251225-0047</strong>
+    <span>Emeka Okonkwo · Lagos → Abuja · Seat 12A · ₦8,500 cash</span>
+  </div>
+</div>
+
+<!-- BIG ACTION CARDS -->
+<div class="big-actions">
+  <button class="big-card green">
+    <div class="card-icon">🎫</div>
+    <div class="card-label">Sell Ticket</div>
+    <div class="card-sub">Walk-up passenger</div>
+    <div class="card-arrow">→</div>
+  </button>
+  <button class="big-card amber">
+    <div class="card-icon">📷</div>
+    <div class="card-label">Scan & Board</div>
+    <div class="card-sub">Verify QR ticket</div>
+    <div class="card-arrow">→</div>
+  </button>
+  <button class="big-card blue">
+    <div class="card-icon">🏢</div>
+    <div class="card-label">Add Operator</div>
+    <div class="card-sub">Register park</div>
+    <div class="card-arrow">→</div>
+  </button>
+  <button class="big-card white-card">
+    <div class="card-icon">📦</div>
+    <div class="card-label">Log Cargo</div>
+    <div class="card-sub">Create waybill</div>
+    <div class="card-arrow" style="color:var(--muted)">→</div>
+  </button>
+</div>
+
+<!-- DAY STATS -->
+<div class="day-stats">
+  <h3>Today so far</h3>
+  <div class="stats-row">
+    <div class="mini-stat">
+      <div class="mini-stat-val g">47</div>
+      <div class="mini-stat-label">Tickets Sold</div>
+    </div>
+    <div class="mini-stat">
+      <div class="mini-stat-val a">₦185K</div>
+      <div class="mini-stat-label">Cash Total</div>
+    </div>
+    <div class="mini-stat">
+      <div class="mini-stat-val b">34</div>
+      <div class="mini-stat-label">Boarded</div>
+    </div>
+  </div>
+</div>
+
+<!-- ACTIVE DEPARTURES -->
+<div class="departures-section">
+  <div class="section-h">
+    Upcoming Departures
+    <span style="font-size:13px;color:var(--muted);font-weight:600;">Today ▾</span>
+  </div>
+
+  <div class="departure-card">
+    <div>
+      <div class="dep-route">Lagos → Abuja</div>
+      <div class="dep-meta">
+        <span>ABC Transport</span>
+        <span>47-seater Executive</span>
+      </div>
+      <div class="dep-meta" style="margin-top:4px;">
+        <span>Jibowu Gate 3</span>
+      </div>
+    </div>
+    <div class="dep-right">
+      <div class="dep-time">06:00</div>
+      <div class="dep-seats-badge seats-few">⚡ 4 seats left</div>
+    </div>
+    <div class="board-btn" style="grid-column:1/-1;">
+      <button class="dep-btn scan">📷 Scan Tickets</button>
+      <button class="dep-btn sell">🎫 Sell Seat</button>
+    </div>
+  </div>
+
+  <div class="departure-card">
+    <div>
+      <div class="dep-route">Lagos → Ibadan</div>
+      <div class="dep-meta">
+        <span>YTC Motors</span>
+        <span>18-seater Hiace</span>
+      </div>
+      <div class="dep-meta" style="margin-top:4px;">
+        <span>Ojota Gate 1</span>
+      </div>
+    </div>
+    <div class="dep-right">
+      <div class="dep-time">07:30</div>
+      <div class="dep-seats-badge seats-ok">✓ 12 seats available</div>
+    </div>
+    <div class="board-btn" style="grid-column:1/-1;">
+      <button class="dep-btn scan">📷 Scan Tickets</button>
+      <button class="dep-btn sell">🎫 Sell Seat</button>
+    </div>
+  </div>
+
+  <div class="departure-card" style="border-color:#FEE2E2;">
+    <div>
+      <div class="dep-route">Lagos → Kano</div>
+      <div class="dep-meta">
+        <span>Rimbo Transport</span>
+        <span>65-seater Luxury</span>
+      </div>
+      <div class="dep-meta" style="margin-top:4px;">
+        <span>Ketu Gate 2</span>
+      </div>
+    </div>
+    <div class="dep-right">
+      <div class="dep-time">05:00</div>
+      <div class="dep-seats-badge seats-full">🚫 Full — departed</div>
+    </div>
+    <div class="board-btn" style="grid-column:1/-1;">
+      <button class="dep-btn sell" style="opacity:0.4;cursor:default;">Closed</button>
+      <button class="dep-btn scan">📋 View Manifest</button>
+    </div>
+  </div>
+</div>
+
+<!-- CASH SUMMARY -->
+<div class="cash-summary">
+  <div>
+    <div class="cash-lbl">💰 Cash to reconcile by 6:00 PM</div>
+    <div class="cash-big">₦185,500</div>
+    <div style="font-size:12px;opacity:0.6;margin-top:4px;">Your commission: ₦9,275</div>
+  </div>
+  <button class="reconcile-now-btn">Reconcile Now →</button>
+</div>
+
+<!-- RECENT SALES -->
+<div class="recent-section">
+  <div class="section-h">Recent Tickets</div>
+  <div class="recent-item">
+    <div class="recent-icon icon-green">🎫</div>
+    <div class="recent-info">
+      <div class="recent-name">Emeka Okonkwo</div>
+      <div class="recent-detail">Lagos → Abuja · Seat 12A · 09:38 AM</div>
+    </div>
+    <div class="recent-right">
+      <div class="recent-amount">₦8,500</div>
+      <div class="recent-status st-done">✓ Boarded</div>
+    </div>
+  </div>
+  <div class="recent-item">
+    <div class="recent-icon icon-amber">🎫</div>
+    <div class="recent-info">
+      <div class="recent-name">Fatima Bello</div>
+      <div class="recent-detail">Lagos → Kano · Seat 3B · 09:21 AM</div>
+    </div>
+    <div class="recent-right">
+      <div class="recent-amount">₦12,000</div>
+      <div class="recent-status st-pending">⏳ Not scanned</div>
+    </div>
+  </div>
+  <div class="recent-item">
+    <div class="recent-icon icon-blue">🎫</div>
+    <div class="recent-info">
+      <div class="recent-name">Chisom Eze</div>
+      <div class="recent-detail">Lagos → Enugu · Seat 7C · 08:55 AM</div>
+    </div>
+    <div class="recent-right">
+      <div class="recent-amount">₦9,000</div>
+      <div class="recent-status st-done">✓ Boarded</div>
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <button class="bot-nav-item active">
+    <div class="bot-nav-icon">🏠</div>
+    <div class="bot-nav-label">Home</div>
+  </button>
+  <button class="bot-nav-item">
+    <div class="bot-nav-icon">🎫</div>
+    <div class="bot-nav-label">Sell</div>
+  </button>
+  <button class="bot-nav-item">
+    <div class="bot-nav-icon">📷</div>
+    <div class="bot-nav-label">Scan</div>
+  </button>
+  <button class="bot-nav-item">
+    <div class="bot-nav-icon">💰</div>
+    <div class="bot-nav-label">Cash</div>
+  </button>
+  <button class="bot-nav-item">
+    <div class="bot-nav-icon">👤</div>
+    <div class="bot-nav-label">Profile</div>
+  </button>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Naija Routes — Agent App · Design 1</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+  :root {
+    --bg: #0F1710;
+    --surface: #1A2B1D;
+    --surface2: #243527;
+    --border: #2E4532;
+    --green: #3CB371;
+    --green-bright: #4ADE80;
+    --gold: #FCD34D;
+    --red: #F87171;
+    --blue: #60A5FA;
+    --white: #F0FFF4;
+    --muted: #6B9E76;
+    --text: #E8F5EA;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Space Grotesk', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  .design-label {
+    background: var(--green);
+    color: var(--bg);
+    text-align: center;
+    padding: 10px;
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+
+  /* HEADER */
+  .app-header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .agent-info { display: flex; align-items: center; gap: 12px; }
+  .agent-avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: var(--green);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--bg);
+    flex-shrink: 0;
+  }
+  .agent-name { font-weight: 700; font-size: 15px; }
+  .agent-park { font-size: 12px; color: var(--muted); }
+  .header-right { display: flex; align-items: center; gap: 12px; }
+  .online-badge {
+    display: flex; align-items: center; gap: 6px;
+    background: rgba(74,222,128,0.1);
+    border: 1px solid rgba(74,222,128,0.3);
+    padding: 5px 12px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--green-bright);
+    white-space: nowrap;
+  }
+  .online-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--green-bright);
+    animation: blink 2s infinite;
+    flex-shrink: 0;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  .header-time { font-family: 'Space Mono', monospace; font-size: 15px; color: var(--muted); }
+
+  /* NAV TABS */
+  .nav-tabs {
+    display: flex;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nav-tabs::-webkit-scrollbar { display: none; }
+  .nav-tab {
+    flex: 1;
+    min-width: fit-content;
+    padding: 14px 12px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all .2s;
+    border: none;
+    border-bottom: 2px solid transparent;
+    background: transparent;
+    font-family: 'Space Grotesk', sans-serif;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .nav-tab.active {
+    color: var(--green-bright);
+    border-bottom: 2px solid var(--green-bright);
+  }
+
+  /* MAIN LAYOUT */
+  .main { padding: 20px; max-width: 900px; margin: 0 auto; }
+
+  /* STATS ROW */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+  }
+  .stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 8px; }
+  .stat-val { font-family: 'Space Mono', monospace; font-size: 26px; font-weight: 700; line-height: 1; }
+  .stat-val.green { color: var(--green-bright); }
+  .stat-val.gold { color: var(--gold); }
+  .stat-val.blue { color: var(--blue); }
+  .stat-val.white { color: var(--white); }
+  .stat-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+  /* QUICK ACTIONS */
+  .section-title {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--muted);
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
+  .action-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .action-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    cursor: pointer;
+    text-align: left;
+    transition: all .2s;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-family: 'Space Grotesk', sans-serif;
+    color: var(--text);
+  }
+  .action-btn:hover { border-color: var(--green); background: var(--surface2); }
+  .action-btn.primary { background: var(--green); color: var(--bg); border-color: var(--green); }
+  .action-btn.primary:hover { background: var(--green-bright); }
+  .action-icon { font-size: 28px; flex-shrink: 0; }
+  .action-label { font-size: 14px; font-weight: 700; display: block; }
+  .action-desc { font-size: 12px; opacity: 0.6; margin-top: 2px; display: block; }
+
+  /* SELL TICKET FORM */
+  .sell-form {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+  .form-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+  .form-field label {
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted);
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .form-field input, .form-field select {
+    width: 100%;
+    padding: 12px 14px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: 'Space Grotesk', sans-serif;
+    color: var(--text);
+    outline: none;
+    transition: border-color .2s;
+  }
+  .form-field input:focus, .form-field select:focus { border-color: var(--green); }
+  .form-field select option { background: var(--surface); }
+  .payment-methods {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .pay-chip {
+    flex: 1;
+    min-width: 80px;
+    padding: 10px 8px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .2s;
+    background: var(--bg);
+    color: var(--muted);
+  }
+  .pay-chip.active { border-color: var(--green); color: var(--green-bright); background: rgba(74,222,128,0.08); }
+  .issue-btn {
+    width: 100%;
+    background: var(--green);
+    color: var(--bg);
+    border: none;
+    padding: 16px;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: 700;
+    font-family: 'Space Grotesk', sans-serif;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background .2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .issue-btn:hover { background: var(--green-bright); }
+
+  /* RECENT TICKETS TABLE */
+  .tickets-table {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+  .table-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .table-header-title { font-weight: 700; font-size: 15px; }
+  .refresh-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: 'Space Grotesk', sans-serif;
+  }
+  .ticket-row {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 130px 1fr 100px 100px 80px;
+    gap: 16px;
+    align-items: center;
+    font-size: 13px;
+    transition: background .2s;
+    cursor: pointer;
+  }
+  .ticket-row:last-child { border-bottom: none; }
+  .ticket-row:hover { background: var(--surface2); }
+  .ticket-ref { font-family: 'Space Mono', monospace; font-size: 12px; color: var(--green-bright); }
+  .ticket-passenger { font-weight: 600; }
+  .ticket-route { color: var(--muted); font-size: 12px; }
+  .ticket-amount { font-family: 'Space Mono', monospace; font-weight: 700; color: var(--gold); }
+  .ticket-method { font-size: 11px; color: var(--muted); }
+  .status-badge {
+    padding: 3px 8px;
+    border-radius: 100px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-align: center;
+    white-space: nowrap;
+  }
+  .status-badge.issued { background: rgba(74,222,128,0.1); color: var(--green-bright); border: 1px solid rgba(74,222,128,0.3); }
+  .status-badge.scanned { background: rgba(96,165,250,0.1); color: var(--blue); border: 1px solid rgba(96,165,250,0.3); }
+  .status-badge.pending { background: rgba(252,211,77,0.1); color: var(--gold); border: 1px solid rgba(252,211,77,0.3); }
+
+  /* SCANNER UI */
+  .scanner-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  .scanner-viewport {
+    width: 220px;
+    height: 220px;
+    border: 2px solid var(--green);
+    border-radius: 16px;
+    margin: 20px auto;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(60,179,113,0.04);
+  }
+  .scanner-corner {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border-color: var(--green-bright);
+    border-style: solid;
+  }
+  .scanner-corner.tl { top: -2px; left: -2px; border-width: 3px 0 0 3px; border-radius: 4px 0 0 0; }
+  .scanner-corner.tr { top: -2px; right: -2px; border-width: 3px 3px 0 0; border-radius: 0 4px 0 0; }
+  .scanner-corner.bl { bottom: -2px; left: -2px; border-width: 0 0 3px 3px; border-radius: 0 0 0 4px; }
+  .scanner-corner.br { bottom: -2px; right: -2px; border-width: 0 3px 3px 0; border-radius: 0 0 4px 0; }
+  .scan-line {
+    position: absolute;
+    left: 10%;
+    right: 10%;
+    height: 2px;
+    background: var(--green-bright);
+    box-shadow: 0 0 12px var(--green-bright);
+    animation: scanMove 2s linear infinite;
+  }
+  @keyframes scanMove { 0%{top:15%} 100%{top:85%} }
+  .scan-hint { font-size: 13px; color: var(--muted); margin-top: 8px; }
+  .scan-manual-btn {
+    margin-top: 14px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: 'Space Grotesk', sans-serif;
+    transition: border-color .2s;
+  }
+  .scan-manual-btn:hover { border-color: var(--green); color: var(--text); }
+
+  /* CASH TALLY */
+  .cash-strip {
+    background: linear-gradient(135deg, var(--surface2), var(--surface));
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .cash-total-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 4px; }
+  .cash-total-val { font-family: 'Space Mono', monospace; font-size: 32px; font-weight: 700; color: var(--gold); }
+  .reconcile-btn {
+    background: var(--gold);
+    color: var(--bg);
+    border: none;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    font-family: 'Space Grotesk', sans-serif;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity .2s;
+  }
+  .reconcile-btn:hover { opacity: 0.9; }
+
+  /* ══════════════════════════════════════════
+     RESPONSIVE BREAKPOINTS
+  ══════════════════════════════════════════ */
+
+  /* ── TABLET (≤ 768px) ─── */
+  @media (max-width: 768px) {
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .stat-val { font-size: 22px; }
+
+    .ticket-row {
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+    }
+    .ticket-ref { grid-column: 1 / -1; }
+    .ticket-amount { text-align: right; }
+    .ticket-method { display: none; }
+    .ticket-route { font-size: 11px; }
+
+    .form-grid { grid-template-columns: 1fr; }
+
+    .main { padding: 16px; }
+    .sell-form { padding: 18px; }
+  }
+
+  /* ── MOBILE (≤ 480px) ─── */
+  @media (max-width: 480px) {
+    .agent-name { font-size: 13px; }
+    .agent-park { font-size: 11px; }
+    .header-time { display: none; }
+    .online-badge { padding: 4px 8px; font-size: 11px; }
+
+    .stats-row { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .stat-card { padding: 12px; }
+    .stat-val { font-size: 20px; }
+
+    .action-grid { grid-template-columns: 1fr; }
+    .action-btn { padding: 16px; }
+    .action-icon { font-size: 24px; }
+
+    .sell-form { padding: 14px; }
+    .form-title { font-size: 15px; }
+    .issue-btn { font-size: 15px; padding: 14px; }
+
+    .nav-tab { font-size: 10px; padding: 12px 8px; }
+
+    .scanner-viewport { width: 180px; height: 180px; }
+
+    .cash-total-val { font-size: 26px; }
+    .reconcile-btn { width: 100%; text-align: center; }
+
+    .ticket-row { padding: 12px 14px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="design-label">🎨 Naija Routes · Park Agent App · Design 1 — "Field Terminal" (Dark · High-Contrast · Monospace Data)</div>
+
+<!-- HEADER -->
+<div class="app-header">
+  <div class="agent-info">
+    <div class="agent-avatar">TU</div>
+    <div>
+      <div class="agent-name">Tunde Adeyemi</div>
+      <div class="agent-park">📍 Jibowu Motor Park, Lagos</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="online-badge"><div class="online-dot"></div> Online</div>
+    <div class="header-time">09:42 AM</div>
+  </div>
+</div>
+
+<!-- NAV TABS -->
+<div class="nav-tabs">
+  <button class="nav-tab active">📊 Dashboard</button>
+  <button class="nav-tab">🎫 Sell Ticket</button>
+  <button class="nav-tab">📷 Scan QR</button>
+  <button class="nav-tab">🏢 Onboard</button>
+  <button class="nav-tab">💰 Reconcile</button>
+</div>
+
+<div class="main">
+
+  <!-- STATS ROW -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-label">Tickets Today</div>
+      <div class="stat-val green">47</div>
+      <div class="stat-sub">↑ 12 vs yesterday</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Cash Collected</div>
+      <div class="stat-val gold">₦185K</div>
+      <div class="stat-sub">Reconcile by 6PM</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Scans Done</div>
+      <div class="stat-val blue">34</div>
+      <div class="stat-sub">13 pending</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Commission</div>
+      <div class="stat-val white">₦9,250</div>
+      <div class="stat-sub">This week</div>
+    </div>
+  </div>
+
+  <!-- QUICK ACTIONS -->
+  <div class="section-title">Quick Actions</div>
+  <div class="action-grid">
+    <div class="action-btn primary">
+      <div class="action-icon">🎫</div>
+      <div>
+        <span class="action-label">Sell Ticket</span>
+        <span class="action-desc">Walk-up passenger sale</span>
+      </div>
+    </div>
+    <div class="action-btn">
+      <div class="action-icon">📷</div>
+      <div>
+        <span class="action-label">Scan &amp; Board</span>
+        <span class="action-desc">Verify QR ticket</span>
+      </div>
+    </div>
+    <div class="action-btn">
+      <div class="action-icon">🏢</div>
+      <div>
+        <span class="action-label">Add Operator</span>
+        <span class="action-desc">Register new motor park</span>
+      </div>
+    </div>
+    <div class="action-btn">
+      <div class="action-icon">📦</div>
+      <div>
+        <span class="action-label">Log Cargo</span>
+        <span class="action-desc">Create waybill &amp; receipt</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SELL TICKET FORM -->
+  <div class="sell-form">
+    <div class="form-title">🎫 Issue Ticket</div>
+    <div class="form-grid">
+      <div class="form-field">
+        <label>Operator</label>
+        <select>
+          <option>ABC Transport</option>
+          <option>GUO Motors</option>
+          <option>Peace Mass Transit</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>Route</label>
+        <select>
+          <option>Lagos → Abuja (06:00)</option>
+          <option>Lagos → Ibadan (07:00)</option>
+          <option>Lagos → PH (05:30)</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>Passenger Name</label>
+        <input type="text" placeholder="Full name">
+      </div>
+      <div class="form-field">
+        <label>Phone Number</label>
+        <input type="tel" placeholder="08012345678">
+      </div>
+      <div class="form-field">
+        <label>Seat Number</label>
+        <input type="text" placeholder="Auto-assign" value="12A">
+      </div>
+      <div class="form-field">
+        <label>Amount (₦)</label>
+        <input type="text" value="8,500" style="font-family:'Space Mono',monospace;color:var(--gold);">
+      </div>
+    </div>
+    <div class="section-title" style="margin-bottom:10px;">Payment Method</div>
+    <div class="payment-methods">
+      <div class="pay-chip active">💵 Cash</div>
+      <div class="pay-chip">💳 POS/Card</div>
+      <div class="pay-chip">📲 Transfer</div>
+      <div class="pay-chip">📟 USSD</div>
+    </div>
+    <button class="issue-btn">🎫 Issue Ticket &amp; Print QR</button>
+  </div>
+
+  <!-- SCANNER -->
+  <div class="section-title">Board Passengers</div>
+  <div class="scanner-section">
+    <div style="font-size:16px;font-weight:700;margin-bottom:4px;">Scan Passenger QR Ticket</div>
+    <div class="scanner-viewport">
+      <div class="scanner-corner tl"></div>
+      <div class="scanner-corner tr"></div>
+      <div class="scanner-corner bl"></div>
+      <div class="scanner-corner br"></div>
+      <div class="scan-line"></div>
+      <div style="font-size:11px;color:var(--muted);position:relative;z-index:2;">Camera active</div>
+    </div>
+    <div class="scan-hint">Point camera at passenger's QR code</div>
+    <button class="scan-manual-btn">Enter reference manually</button>
+  </div>
+
+  <!-- RECENT TICKETS TABLE -->
+  <div class="section-title" style="margin-bottom:12px;">Today's Tickets</div>
+  <div class="tickets-table">
+    <div class="table-header">
+      <div class="table-header-title">47 tickets issued today</div>
+      <button class="refresh-btn">↻ Refresh</button>
+    </div>
+    <div class="ticket-row">
+      <div class="ticket-ref">NR-20251225-0047</div>
+      <div>
+        <div class="ticket-passenger">Emeka Okonkwo</div>
+        <div class="ticket-route">Lagos → Abuja · 06:00 AM</div>
+      </div>
+      <div class="ticket-amount">₦8,500</div>
+      <div class="ticket-method">💵 Cash</div>
+      <div class="status-badge scanned">Boarded</div>
+    </div>
+    <div class="ticket-row">
+      <div class="ticket-ref">NR-20251225-0046</div>
+      <div>
+        <div class="ticket-passenger">Fatima Bello</div>
+        <div class="ticket-route">Lagos → Kano · 07:30 AM</div>
+      </div>
+      <div class="ticket-amount">₦12,000</div>
+      <div class="ticket-method">💳 POS</div>
+      <div class="status-badge issued">Issued</div>
+    </div>
+    <div class="ticket-row">
+      <div class="ticket-ref">NR-20251225-0045</div>
+      <div>
+        <div class="ticket-passenger">Chisom Eze</div>
+        <div class="ticket-route">Lagos → Enugu · 05:30 AM</div>
+      </div>
+      <div class="ticket-amount">₦9,000</div>
+      <div class="ticket-method">📲 Transfer</div>
+      <div class="status-badge scanned">Boarded</div>
+    </div>
+    <div class="ticket-row">
+      <div class="ticket-ref">NR-20251225-0044</div>
+      <div>
+        <div class="ticket-passenger">Musa Ibrahim</div>
+        <div class="ticket-route">Lagos → Abuja · 06:00 AM</div>
+      </div>
+      <div class="ticket-amount">₦8,500</div>
+      <div class="ticket-method">💵 Cash</div>
+      <div class="status-badge pending">Pending</div>
+    </div>
+  </div>
+
+  <!-- CASH TALLY -->
+  <div class="cash-strip">
+    <div>
+      <div class="cash-total-label">Total Cash Collected Today</div>
+      <div class="cash-total-val">₦185,500</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:4px;">Commission earned: ₦9,275</div>
+    </div>
+    <button class="reconcile-btn">💰 Reconcile Cash</button>
+  </div>
+
+</div>
+
+<script>
+  // Tab switching
+  document.querySelectorAll('.nav-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+    });
+  });
+
+  // Pay chip switching
+  document.querySelectorAll('.pay-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('.pay-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

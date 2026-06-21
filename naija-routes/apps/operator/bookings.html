@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bookings — Naija Routes Operator Portal</title>
+  <link rel="stylesheet" href="css/operator.css">
+</head>
+<body>
+
+<!-- Sidebar Overlay (mobile) -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-text">🚌 NaijaRoutes</div>
+    <div class="sidebar-logo-sub">Operator Portal</div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Operations</div>
+    <a href="index.html" class="nav-item"><span class="nav-icon">📊</span> Dashboard</a>
+    <a href="bookings.html" class="nav-item active"><span class="nav-icon">🎫</span> Bookings <span class="nav-badge">8</span></a>
+    <a href="#" class="nav-item"><span class="nav-icon">🗓</span> Schedules</a>
+    <a href="#" class="nav-item"><span class="nav-icon">🚌</span> Fleet</a>
+    <a href="#" class="nav-item"><span class="nav-icon">👤</span> Drivers</a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Routes &amp; Revenue</div>
+    <a href="routes.html" class="nav-item"><span class="nav-icon">🗺</span> Routes</a>
+    <a href="#" class="nav-item"><span class="nav-icon">📈</span> Analytics</a>
+    <a href="#" class="nav-item"><span class="nav-icon">💳</span> Payouts</a>
+    <a href="#" class="nav-item"><span class="nav-icon">⭐</span> Reviews</a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Account</div>
+    <a href="#" class="nav-item"><span class="nav-icon">🏢</span> Company Profile</a>
+    <a href="#" class="nav-item"><span class="nav-icon">🔔</span> Notifications</a>
+    <a href="#" class="nav-item"><span class="nav-icon">⚙</span> Settings</a>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+  <!-- MOBILE TOPBAR -->
+  <div class="mobile-topbar">
+    <div class="mobile-logo-text">Naija<span>Routes</span> Operator</div>
+    <button class="mobile-hamburger" id="mobileHamburger">☰</button>
+  </div>
+
+  <!-- DESKTOP TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="page-title">Bookings & Manifest</div>
+    </div>
+    <div class="topbar-right">
+      <div class="notif-btn">🔔<div class="notif-dot"></div></div>
+      <div class="op-info">
+        <div class="op-avatar">AB</div>
+        <div>
+          <div class="op-name-text">ABC Transport Ltd</div>
+          <div class="op-type">Verified Operator · Lagos</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- BOOKINGS TABLE -->
+    <div class="bookings-card">
+      <div class="table-topbar">
+        <div class="table-topbar-title">Recent Bookings</div>
+        <div class="table-actions">
+          <input class="search-input" type="text" placeholder="🔍 Search by name, ref...">
+          <button class="export-btn">Export CSV</button>
+        </div>
+      </div>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Reference</th>
+              <th>Passenger</th>
+              <th>Route</th>
+              <th>Departure</th>
+              <th>Seat</th>
+              <th>Amount</th>
+              <th>Payment</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td-ref">NR-20251225-0084</td>
+              <td class="td-passenger">Emeka Okonkwo</td>
+              <td class="td-route">Lagos → Abuja</td>
+              <td>06:00 AM</td>
+              <td>12A</td>
+              <td class="td-amount">₦9,500</td>
+              <td>Card</td>
+              <td><span class="status-pill pill-confirmed">Confirmed</span></td>
+            </tr>
+            <tr>
+              <td class="td-ref">NR-20251225-0083</td>
+              <td class="td-passenger">Fatima Bello</td>
+              <td class="td-route">Lagos → Kano</td>
+              <td>07:30 AM</td>
+              <td>3B</td>
+              <td class="td-amount">₦12,000</td>
+              <td>Transfer</td>
+              <td><span class="status-pill pill-confirmed">Confirmed</span></td>
+            </tr>
+            <tr>
+              <td class="td-ref">NR-20251225-0082</td>
+              <td class="td-passenger">Chisom Eze</td>
+              <td class="td-route">Lagos → Enugu</td>
+              <td>05:30 AM</td>
+              <td>7C</td>
+              <td class="td-amount">₦9,000</td>
+              <td>Cash</td>
+              <td><span class="status-pill pill-confirmed">Confirmed</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Mobile sidebar toggle
+  const overlay = document.getElementById('sidebarOverlay');
+  const sidebar = document.getElementById('sidebar');
+  const hamburger = document.getElementById('mobileHamburger');
+
+  hamburger.addEventListener('click', () => {
+    sidebar.classList.add('open');
+    overlay.classList.add('open');
+  });
+
+  overlay.addEventListener('click', () => {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('open');
+  });
+</script>
+</body>
+</html>

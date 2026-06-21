@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent Dashboard — Naija Routes</title>
+  <link rel="stylesheet" href="css/agent.css">
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="app-header">
+  <div class="agent-info">
+    <div class="agent-avatar">TU</div>
+    <div>
+      <div class="agent-name">Tunde Adeyemi</div>
+      <div class="agent-park">📍 Jibowu Motor Park, Lagos</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="online-badge"><div class="online-dot"></div> Online</div>
+    <div class="header-time">09:42 AM</div>
+  </div>
+</div>
+
+<!-- NAV TABS -->
+<div class="nav-tabs">
+  <a href="index.html" class="nav-tab active">📊 Dashboard</a>
+  <a href="sell.html" class="nav-tab">🎫 Sell Ticket</a>
+  <a href="scan.html" class="nav-tab">📷 Scan QR</a>
+  <a href="#" class="nav-tab">🏢 Onboard</a>
+  <a href="reconcile.html" class="nav-tab">💰 Reconcile</a>
+</div>
+
+<div class="main">
+  <!-- STATS ROW -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-label">Tickets Today</div>
+      <div class="stat-val green">47</div>
+      <div class="stat-sub">↑ 12 vs yesterday</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Cash Collected</div>
+      <div class="stat-val gold">₦185K</div>
+      <div class="stat-sub">Reconcile by 6PM</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Scans Done</div>
+      <div class="stat-val blue">34</div>
+      <div class="stat-sub">13 pending</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Commission</div>
+      <div class="stat-val white">₦9,250</div>
+      <div class="stat-sub">This week</div>
+    </div>
+  </div>
+
+  <!-- QUICK ACTIONS -->
+  <div class="section-title">Quick Actions</div>
+  <div class="action-grid">
+    <a href="sell.html" class="action-btn primary">
+      <div class="action-icon">🎫</div>
+      <div>
+        <span class="action-label">Sell Ticket</span>
+        <span class="action-desc">Walk-up passenger sale</span>
+      </div>
+    </a>
+    <a href="scan.html" class="action-btn">
+      <div class="action-icon">📷</div>
+      <div>
+        <span class="action-label">Scan &amp; Board</span>
+        <span class="action-desc">Verify QR ticket</span>
+      </div>
+    </a>
+    <a href="#" class="action-btn">
+      <div class="action-icon">🏢</div>
+      <div>
+        <span class="action-label">Add Operator</span>
+        <span class="action-desc">Register new motor park</span>
+      </div>
+    </a>
+    <a href="#" class="action-btn">
+      <div class="action-icon">📦</div>
+      <div>
+        <span class="action-label">Log Cargo</span>
+        <span class="action-desc">Create waybill &amp; receipt</span>
+      </div>
+    </a>
+  </div>
+
+  <!-- RECENT TICKETS TABLE -->
+  <div class="section-title" style="margin-bottom:12px;">Today's Tickets</div>
+  <div class="tickets-table">
+    <div class="table-header">
+      <div class="table-header-title">47 tickets issued today</div>
+      <button class="refresh-btn">↻ Refresh</button>
+    </div>
+    <div class="ticket-row">
+      <div class="ticket-ref">NR-20251225-0047</div>
+      <div>
+        <div class="ticket-passenger">Emeka Okonkwo</div>
+        <div class="ticket-route">Lagos → Abuja · 06:00 AM</div>
+      </div>
+      <div class="ticket-amount">₦8,500</div>
+      <div class="ticket-method">💵 Cash</div>
+      <div class="status-badge scanned">Boarded</div>
+    </div>
+    <div class="ticket-row">
+      <div class="ticket-ref">NR-20251225-0046</div>
+      <div>
+        <div class="ticket-passenger">Fatima Bello</div>
+        <div class="ticket-route">Lagos → Kano · 07:30 AM</div>
+      </div>
+      <div class="ticket-amount">₦12,000</div>
+      <div class="ticket-method">💳 POS</div>
+      <div class="status-badge issued">Issued</div>
+    </div>
+    <div class="ticket-row">
+      <div class="ticket-ref">NR-20251225-0045</div>
+      <div>
+        <div class="ticket-passenger">Chisom Eze</div>
+        <div class="ticket-route">Lagos → Enugu · 05:30 AM</div>
+      </div>
+      <div class="ticket-amount">₦9,000</div>
+      <div class="ticket-method">📲 Transfer</div>
+      <div class="status-badge scanned">Boarded</div>
+    </div>
+    <div class="ticket-row">
+      <div class="ticket-ref">NR-20251225-0044</div>
+      <div>
+        <div class="ticket-passenger">Musa Ibrahim</div>
+        <div class="ticket-route">Lagos → Abuja · 06:00 AM</div>
+      </div>
+      <div class="ticket-amount">₦8,500</div>
+      <div class="ticket-method">💵 Cash</div>
+      <div class="status-badge pending">Pending</div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
