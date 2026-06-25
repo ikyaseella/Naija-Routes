@@ -1,0 +1,489 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Your digital boarding ticket for Naija Routes. Show this QR code to board your bus.">
+  <title>Your Ticket — Naija Routes</title>
+  <link rel="stylesheet" href="css/theme-deep-roots.css">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="../../packages/shared/web/css/i18n.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    body {
+      background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+      min-height: 100vh;
+    }
+
+    .page-wrapper {
+      max-width: 520px;
+      margin: 0 auto;
+      padding: var(--space-6) var(--space-4) var(--space-12);
+    }
+
+    /* Success Banner */
+    .success-banner {
+      text-align: center;
+      margin-bottom: var(--space-6);
+    }
+
+    .success-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      background: rgba(22, 163, 74, 0.15);
+      border: 1px solid rgba(22, 163, 74, 0.4);
+      color: #4ade80;
+      padding: var(--space-2) var(--space-5);
+      border-radius: var(--radius-full);
+      font-weight: var(--weight-bold);
+      font-size: var(--text-sm);
+      margin-bottom: var(--space-3);
+    }
+
+    .success-title {
+      color: var(--color-white);
+      font-family: var(--font-display);
+      font-size: var(--text-4xl);
+      margin-bottom: var(--space-2);
+    }
+
+    .success-sub {
+      color: var(--color-slate-400);
+      font-size: var(--text-sm);
+    }
+
+    /* The Ticket Card */
+    .ticket {
+      background: var(--color-white);
+      border-radius: var(--radius-2xl);
+      overflow: visible; /* Allow circles to protrude */
+      box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+      position: relative;
+    }
+
+    /* Notch cutouts */
+    .ticket-notch {
+      position: absolute;
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+      border-radius: 50%;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 2;
+    }
+
+    .ticket-notch-left { left: -18px; }
+    .ticket-notch-right { right: -18px; }
+
+    .ticket-divider-line {
+      border: none;
+      border-top: 2px dashed var(--color-slate-300);
+      margin: 0 var(--space-6);
+    }
+
+    /* Ticket Header */
+    .ticket-top {
+      background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dd) 100%);
+      border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+      padding: var(--space-6);
+      text-align: center;
+      color: var(--color-white);
+    }
+
+    .operator-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      background: rgba(255,255,255,0.15);
+      padding: var(--space-1) var(--space-4);
+      border-radius: var(--radius-full);
+      font-size: var(--text-sm);
+      margin-bottom: var(--space-3);
+    }
+
+    .ticket-operator-name {
+      font-family: var(--font-display);
+      font-size: var(--text-2xl);
+      margin-bottom: 4px;
+    }
+
+    .ticket-vehicle {
+      font-size: var(--text-sm);
+      opacity: 0.75;
+    }
+
+    /* Route section */
+    .route-section {
+      padding: var(--space-6);
+    }
+
+    .route-cities {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .city-block { text-align: center; }
+
+    .city-code {
+      font-family: var(--font-display);
+      font-size: 2.5rem;
+      font-weight: var(--weight-bold);
+      color: var(--color-slate-900);
+      line-height: 1;
+    }
+
+    .city-name {
+      font-size: var(--text-xs);
+      color: var(--color-slate-500);
+      margin-top: 4px;
+    }
+
+    .route-arrow {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      flex: 1;
+      padding: 0 var(--space-4);
+    }
+
+    .arrow-line {
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(to right, var(--color-primary), var(--color-gold));
+      position: relative;
+    }
+
+    .arrow-line::after {
+      content: '▶';
+      position: absolute;
+      right: -8px;
+      top: -8px;
+      font-size: 10px;
+      color: var(--color-gold);
+    }
+
+    .arrow-duration {
+      font-size: var(--text-xs);
+      color: var(--color-slate-500);
+      background: var(--color-slate-50);
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--color-slate-200);
+    }
+
+    /* Details grid */
+    .details-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-4);
+      padding: 0 var(--space-6) var(--space-5);
+    }
+
+    .detail-item { }
+
+    .detail-label {
+      font-size: var(--text-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--color-slate-400);
+      margin-bottom: 4px;
+    }
+
+    .detail-value {
+      font-weight: var(--weight-bold);
+      color: var(--color-slate-900);
+    }
+
+    /* Seat display */
+    .seat-band {
+      background: var(--color-gold-l);
+      padding: var(--space-3) var(--space-6);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--color-gold-l);
+      border-bottom: 1px solid var(--color-gold-l);
+    }
+
+    .seat-label-txt {
+      font-size: var(--text-sm);
+      color: var(--color-gold-d);
+      font-weight: var(--weight-semibold);
+    }
+
+    .seat-number-big {
+      font-family: var(--font-display);
+      font-size: var(--text-4xl);
+      color: var(--color-gold-d);
+      line-height: 1;
+    }
+
+    /* QR section */
+    .qr-section {
+      padding: var(--space-6);
+      text-align: center;
+    }
+
+    .qr-wrap {
+      display: inline-block;
+      padding: var(--space-4);
+      background: var(--color-white);
+      border: 2px solid var(--color-slate-200);
+      border-radius: var(--radius-xl);
+      margin-bottom: var(--space-3);
+    }
+
+    .qr-hash {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      color: var(--color-slate-500);
+      letter-spacing: 0.1em;
+    }
+
+    /* Action Buttons */
+    .action-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-3);
+      margin-top: var(--space-6);
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="nav-logo" style="text-decoration:none;">🚌 <span data-i18n="nav.logo">NaijaRoutes</span></a>
+    <div class="nav-links">
+      <a href="index.html" data-i18n="nav.routes">Routes</a>
+      <a href="cargo.html" data-i18n="nav.cargo">Cargo</a>
+      <a href="tracking.html" data-i18n="nav.track_bus">Track Bus</a>
+      <a href="#" data-i18n="nav.help">Help</a>
+      <div class="nav__item" data-i18n-language-container>
+        <select class="language-switcher__select" onchange="I18N.setLanguage(this.value)">
+          <option value="en">English</option>
+          <option value="yo">Yoruba</option>
+          <option value="ha">Hausa</option>
+          <option value="ig">Igbo</option>
+          <option value="pcm">Pidgin</option>
+        </select>
+      </div>
+    </div>
+    <button class="nav-cta" data-i18n="nav.sign_in">Sign in</button>
+  </nav>
+
+  <div class="page-wrapper">
+
+    <div class="success-banner">
+      <div class="success-pill" data-i18n="ticket.payment_confirmed">✅ Payment Confirmed</div>
+      <h1 class="success-title" data-i18n="ticket.all_set">You're all set!</h1>
+      <p class="success-sub" data-i18n="ticket.show_qr_instruction">Show this QR code to the agent when boarding. Save it offline.</p>
+    </div>
+
+    <!-- Ticket -->
+    <div class="ticket" id="ticketCard">
+      <!-- Notch cutouts for the "ripped ticket" look -->
+      <div class="ticket-notch ticket-notch-left" id="notchLeft"></div>
+      <div class="ticket-notch ticket-notch-right" id="notchRight"></div>
+
+      <!-- Header -->
+      <div class="ticket-top">
+        <div class="operator-badge">🚌 <span id="ticketOperator">GUO Transport</span></div>
+        <div class="ticket-operator-name" id="ticketOperatorFull">GUO Transport</div>
+        <div class="ticket-vehicle">Toyota Hiace (Air Conditioned)</div>
+      </div>
+
+      <!-- Route -->
+      <div class="route-section">
+        <div class="route-cities">
+          <div class="city-block">
+            <div class="city-code" id="ticketFromCode">LOS</div>
+            <div class="city-name" id="ticketFromName">Jibowu, Lagos</div>
+          </div>
+          <div class="route-arrow">
+            <div class="arrow-line"></div>
+            <div class="arrow-duration" id="ticketDuration">10h 30m</div>
+          </div>
+          <div class="city-block">
+            <div class="city-code" id="ticketToCode">ABV</div>
+            <div class="city-name" id="ticketToName">Utako, Abuja</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Divider with notches -->
+      <hr class="ticket-divider-line">
+
+      <!-- Details -->
+      <div class="details-grid" style="margin-top: var(--space-5);">
+        <div class="detail-item">
+          <div class="detail-label" data-i18n="ticket.departure">Departure</div>
+          <div class="detail-value">06:30 AM</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label" data-i18n="ticket.passenger">Passenger</div>
+          <div class="detail-value" id="ticketPassenger">—</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label" data-i18n="ticket.booking_ref">Booking Ref</div>
+          <div class="detail-value" style="font-family: var(--font-mono);" id="ticketRef">NR-—</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label" data-i18n="ticket.amount_paid">Amount Paid</div>
+          <div class="detail-value" id="ticketAmount">₦—</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label" data-i18n="payment.method_label">Payment Method</div>
+          <div class="detail-value" id="ticketPaymentMethod">—</div>
+        </div>
+        <div class="detail-item" style="grid-column:span 2;">
+          <div class="detail-label" data-i18n="payment.reference">Payment Reference</div>
+          <div class="detail-value" style="font-family:var(--font-mono);font-size:var(--text-xs);" id="ticketPaymentRef">—</div>
+        </div>
+      </div>
+
+      <!-- Seat Band -->
+      <div class="seat-band">
+        <div>
+          <div class="seat-label-txt" data-i18n="ticket.seat_number">Seat Number</div>
+          <div class="detail-label" style="margin-top: 2px;" data-i18n="ticket.assigned_at_selection">Assigned at selection</div>
+        </div>
+        <div class="seat-number-big" id="ticketSeat">3C</div>
+      </div>
+
+      <!-- QR Code -->
+      <div class="qr-section">
+        <div class="qr-wrap">
+          <div id="qrcode"></div>
+        </div>
+        <div class="qr-hash" id="qrHashDisplay">NR-TICKET-8A92-F1</div>
+        <p class="text-muted" style="font-size: var(--text-xs); margin-top: var(--space-2);" data-i18n="ticket.present_to_agent">Present to agent for scanning</p>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <button class="btn btn-secondary" onclick="window.print()" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); color: white;" data-i18n="ticket.download_pdf">
+        📄 Download PDF
+      </button>
+      <button class="btn btn-primary" onclick="window.location.href='index.html'" data-i18n="ticket.done">
+        ✅ Done
+      </button>
+    </div>
+
+    <p class="text-center" style="color: var(--color-slate-500); font-size: var(--text-xs); margin-top: var(--space-6);">
+      <span data-i18n="ticket.sms_confirmation">SMS confirmation sent to your phone number.</span>
+      <br><span data-i18n="ticket.help_line">Questions? Call 0800-NAIJA-R</span>
+    </p>
+
+    <div class="review-prompt" style="margin-top:32px;padding:24px;background:var(--cream);border-radius:12px;text-align:center;">
+      <div style="font-size:20px;font-weight:700;color:var(--charcoal);margin-bottom:8px;" data-i18n="review.rate_your_journey">Rate your journey</div>
+      <div style="margin-bottom:16px;">
+        <span class="star-btn" data-rating="1" style="font-size:32px;cursor:pointer;color:#D1D5DB;transition:color 0.2s;">★</span>
+        <span class="star-btn" data-rating="2" style="font-size:32px;cursor:pointer;color:#D1D5DB;transition:color 0.2s;">★</span>
+        <span class="star-btn" data-rating="3" style="font-size:32px;cursor:pointer;color:#D1D5DB;transition:color 0.2s;">★</span>
+        <span class="star-btn" data-rating="4" style="font-size:32px;cursor:pointer;color:#D1D5DB;transition:color 0.2s;">★</span>
+        <span class="star-btn" data-rating="5" style="font-size:32px;cursor:pointer;color:#D1D5DB;transition:color 0.2s;">★</span>
+      </div>
+      <div id="reviewForm" style="display:none;">
+        <textarea id="reviewBody" rows="3" style="width:100%;max-width:400px;padding:12px;border:1px solid #D1D5DB;border-radius:8px;font-size:14px;font-family:inherit;resize:vertical;" data-i18n-placeholder="review.review_placeholder"></textarea>
+        <div style="margin-top:12px;">
+          <button onclick="submitReview()" style="background:#1B6B3A;color:white;border:none;padding:10px 24px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;" data-i18n="review.submit_review">Submit Review</button>
+          <button onclick="dismissReview()" style="background:transparent;color:#6B7280;border:1px solid #D1D5DB;padding:10px 24px;border-radius:8px;font-size:14px;margin-left:8px;cursor:pointer;" data-i18n="review.remind_later">Remind later</button>
+        </div>
+      </div>
+      <div id="reviewThanks" style="display:none;font-size:16px;color:#1B6B3A;font-weight:600;" data-i18n="review.thanks">Thank you for your review!</div>
+    </div>
+  </div>
+
+  <script>
+    // Read URL params
+    const params = new URLSearchParams(window.location.search);
+    const seatNo = params.get('seat') || '3C';
+    const passengerName = decodeURIComponent(params.get('name') || 'Emeka Okonkwo');
+    const price = parseInt(params.get('price') || '12500');
+    const operator = decodeURIComponent(params.get('operator') || 'GUO Transport');
+    const paymentRef = params.get('payment_ref');
+    const paymentMethod = params.get('payment_method');
+
+    // Generate a secure-looking booking reference
+    const refSuffix = Math.random().toString(36).substring(2, 8).toUpperCase();
+    const bookingRef = `NR-${refSuffix}`;
+    const qrHash = `NR-TICKET-${refSuffix}-HASH`;
+
+    // Populate ticket
+    document.getElementById('ticketOperator').textContent = operator;
+    document.getElementById('ticketOperatorFull').textContent = operator;
+    document.getElementById('ticketPassenger').textContent = passengerName;
+    document.getElementById('ticketRef').textContent = bookingRef;
+    document.getElementById('ticketAmount').textContent = `₦${price.toLocaleString()}`;
+    document.getElementById('ticketSeat').textContent = seatNo;
+    if (paymentRef) document.getElementById('ticketPaymentRef').textContent = paymentRef;
+    if (paymentMethod) {
+      const methodNames = { wallet: 'Wallet', card: 'Card', bank_transfer: 'Bank Transfer' };
+      document.getElementById('ticketPaymentMethod').textContent = methodNames[paymentMethod] || paymentMethod;
+    }
+    document.getElementById('qrHashDisplay').textContent = qrHash;
+
+    // Position the notches at the divider line
+    // The notches appear at the halfway mark where the dashed line is
+    // We use JS to set the position after the card renders
+    function positionNotches() {
+      const divider = document.querySelector('.ticket-divider-line');
+      const card = document.getElementById('ticketCard');
+      if (divider && card) {
+        const dividerTop = divider.offsetTop;
+        document.getElementById('notchLeft').style.top = dividerTop + 'px';
+        document.getElementById('notchRight').style.top = dividerTop + 'px';
+      }
+    }
+
+    // Generate QR Code
+    new QRCode(document.getElementById("qrcode"), {
+      text: qrHash,
+      width: 180,
+      height: 180,
+      colorDark: "#0F172A",
+      colorLight: "#ffffff",
+      correctLevel: QRCode.CorrectLevel.H
+    });
+
+    window.addEventListener('load', positionNotches);
+    window.addEventListener('resize', positionNotches);
+  </script>
+  <script>
+  window.__I18N_CONFIG__ = { localePath: '../../packages/shared/web/i18n/' };
+  </script>
+  <script src="../../packages/shared/web/js/i18n.js"></script>
+  <script>
+    let selectedRating = 0;
+
+    document.querySelectorAll('.star-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        selectedRating = parseInt(btn.dataset.rating);
+        document.querySelectorAll('.star-btn').forEach((s, i) => {
+          s.style.color = i < selectedRating ? '#F59E0B' : '#D1D5DB';
+        });
+        document.getElementById('reviewForm').style.display = 'block';
+      });
+    });
+
+    function submitReview() {
+      const body = document.getElementById('reviewBody').value;
+      console.log(`[Review] Rating: ${selectedRating}/5, Comment: "${body}"`);
+      document.getElementById('reviewForm').style.display = 'none';
+      document.getElementById('reviewThanks').style.display = 'block';
+    }
+
+    function dismissReview() {
+      document.getElementById('reviewForm').style.display = 'none';
+      document.getElementById('reviewThanks').style.display = 'block';
+    }
+  </script>
+</body>
+</html>

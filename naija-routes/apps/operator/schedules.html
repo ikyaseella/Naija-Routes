@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Schedules — Naija Routes Operator Portal</title>
+  <link rel="stylesheet" href="css/operator.css">
+  <link rel="stylesheet" href="/shared/css/i18n.css">
+  <style>
+    .sch-grid { display: flex; flex-direction: column; gap: 12px; }
+    .sch-row { display: flex; align-items: center; gap: 16px; padding: 14px 16px; background: var(--white); border: 1px solid var(--border); border-radius: 10px; }
+    .sch-time { font-size: 18px; font-weight: 800; min-width: 80px; }
+    .sch-route { flex: 1; }
+    .sch-route-name { font-weight: 600; }
+    .sch-route-meta { font-size: 12px; color: var(--muted); }
+    .sch-vehicle { font-size: 13px; color: var(--muted); min-width: 120px; }
+    .sch-price { font-weight: 700; color: var(--green); min-width: 80px; }
+    .sch-status { min-width: 90px; }
+    .sch-actions { display: flex; gap: 6px; }
+    .sch-actions button { padding: 6px 12px; border: 1px solid var(--border); border-radius: 6px; background: var(--white); cursor: pointer; font-size: 12px; font-weight: 600; }
+    .sch-actions button:hover { background: var(--light); }
+    .sch-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  </style>
+</head>
+<body>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-logo"><div class="sidebar-logo-text">🚌 <span data-i18n="nav.logo">NaijaRoutes</span></div><div class="sidebar-logo-sub" data-i18n="operator.portal_label">Operator Portal</div></div>
+  <div class="sidebar-section"><div class="sidebar-section-label" data-i18n="operator.operations">Operations</div>
+    <a href="index.html" class="nav-item"><span class="nav-icon">📊</span> <span data-i18n="nav.dashboard">Dashboard</span></a>
+    <a href="bookings.html" class="nav-item"><span class="nav-icon">🎫</span> <span data-i18n="nav.bookings">Bookings</span> <span class="nav-badge">8</span></a>
+    <a href="schedules.html" class="nav-item active"><span class="nav-icon">🗓</span> <span data-i18n="nav.schedules">Schedules</span></a>
+    <a href="fleet.html" class="nav-item"><span class="nav-icon">🚌</span> <span data-i18n="nav.fleet">Fleet</span></a>
+    <a href="drivers.html" class="nav-item"><span class="nav-icon">👤</span> <span data-i18n="nav.drivers">Drivers</span></a>
+  </div>
+  <div class="sidebar-section"><div class="sidebar-section-label" data-i18n="operator.routes_revenue">Routes &amp; Revenue</div>
+    <a href="routes.html" class="nav-item"><span class="nav-icon">🗺</span> <span data-i18n="nav.routes">Routes</span></a>
+    <a href="analytics.html" class="nav-item"><span class="nav-icon">📈</span> <span data-i18n="nav.analytics">Analytics</span></a>
+    <a href="payouts.html" class="nav-item"><span class="nav-icon">💳</span> <span data-i18n="nav.payouts">Payouts</span></a>
+    <a href="reviews.html" class="nav-item"><span class="nav-icon">⭐</span> <span data-i18n="nav.reviews">Reviews</span></a>
+  </div>
+  <div class="sidebar-section"><div class="sidebar-section-label" data-i18n="operator.account">Account</div>
+    <a href="company-profile.html" class="nav-item"><span class="nav-icon">🏢</span> <span data-i18n="nav.company_profile">Company Profile</span></a>
+    <a href="notifications.html" class="nav-item"><span class="nav-icon">🔔</span> <span data-i18n="nav.notifications">Notifications</span></a>
+    <a href="settings.html" class="nav-item"><span class="nav-icon">⚙</span> <span data-i18n="nav.settings">Settings</span></a>
+  </div>
+  <div class="sidebar__item" style="margin-top:auto;padding:12px 20px;border-top:1px solid rgba(255,255,255,0.1)">
+    <select class="language-switcher__select" onchange="I18N.setLanguage(this.value)" style="background:transparent;color:inherit;width:100%;border:1px solid rgba(255,255,255,0.2);padding:6px 10px;border-radius:6px;font-size:13px">
+      <option value="en">English</option><option value="yo">Yoruba</option><option value="ha">Hausa</option><option value="ig">Igbo</option><option value="pcm">Pidgin</option>
+    </select>
+  </div>
+</nav>
+<div class="main">
+  <div class="mobile-topbar"><div class="mobile-logo-text">Naija<span>Routes</span> Operator</div><button class="mobile-hamburger" id="mobileHamburger">☰</button></div>
+  <div class="topbar"><div class="topbar-left"><div class="page-title" data-i18n="nav.schedules">Schedules</div></div><div class="topbar-right"><div class="notif-btn">🔔<div class="notif-dot"></div></div><div class="op-info"><div class="op-avatar">AB</div><div><div class="op-name-text">ABC Transport Ltd</div><div class="op-type">Verified Operator · Lagos</div></div></div></div></div>
+  <div class="content">
+    <div class="sch-header">
+      <div style="display:flex;gap:12px;">
+        <select style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--white);font-size:13px;"><option>All Routes</option><option>Lagos → Abuja</option><option>Lagos → Ibadan</option><option>Lagos → Benin</option></select>
+        <select style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--white);font-size:13px;"><option>Today</option><option>Tomorrow</option><option>This Week</option></select>
+      </div>
+      <button class="export-btn" onclick="alert('New schedule form would open')">+ Add Schedule</button>
+    </div>
+    <div class="sch-grid">
+      <div class="sch-row"><div class="sch-time">06:00</div><div class="sch-route"><div class="sch-route-name">Lagos → Abuja</div><div class="sch-route-meta">Mon–Sat · 10h · Express</div></div><div class="sch-vehicle">🚌 LSD-481-KA</div><div class="sch-price">₦9,500</div><div class="sch-status"><span class="status-pill pill-confirmed">Active</span></div><div class="sch-actions"><button>Edit</button><button style="color:var(--red)">Pause</button></div></div>
+      <div class="sch-row"><div class="sch-time">07:30</div><div class="sch-route"><div class="sch-route-name">Lagos → Ibadan</div><div class="sch-route-meta">Daily · 3h · Standard</div></div><div class="sch-vehicle">🚌 LSD-392-DE</div><div class="sch-price">₦3,500</div><div class="sch-status"><span class="status-pill pill-confirmed">Active</span></div><div class="sch-actions"><button>Edit</button><button style="color:var(--red)">Pause</button></div></div>
+      <div class="sch-row"><div class="sch-time">08:00</div><div class="sch-route"><div class="sch-route-name">Lagos → Benin City</div><div class="sch-route-meta">Mon–Fri · 5h · Standard</div></div><div class="sch-vehicle">🚌 LSD-771-BB</div><div class="sch-price">₦6,000</div><div class="sch-status"><span class="status-pill pill-confirmed">Active</span></div><div class="sch-actions"><button>Edit</button><button style="color:var(--red)">Pause</button></div></div>
+      <div class="sch-row"><div class="sch-time">09:00</div><div class="sch-route"><div class="sch-route-name">Lagos → Port Harcourt</div><div class="sch-route-meta">Daily · 8h · Express</div></div><div class="sch-vehicle">🚌 LSD-203-GH</div><div class="sch-price">₦11,000</div><div class="sch-status"><span class="status-pill pill-pending">Inactive</span></div><div class="sch-actions"><button>Edit</button><button style="color:var(--green)">Activate</button></div></div>
+      <div class="sch-row"><div class="sch-time">10:30</div><div class="sch-route"><div class="sch-route-name">Lagos → Enugu</div><div class="sch-route-meta">Mon, Wed, Fri · 7h · Standard</div></div><div class="sch-vehicle">🚌 LSD-481-KA</div><div class="sch-price">₦8,500</div><div class="sch-status"><span class="status-pill pill-confirmed">Active</span></div><div class="sch-actions"><button>Edit</button><button style="color:var(--red)">Pause</button></div></div>
+      <div class="sch-row"><div class="sch-time">14:00</div><div class="sch-route"><div class="sch-route-name">Lagos → Abuja</div><div class="sch-route-meta">Daily · 10h · Executive</div></div><div class="sch-vehicle">🚌 LSD-392-DE</div><div class="sch-price">₦14,000</div><div class="sch-status"><span class="status-pill pill-confirmed">Active</span></div><div class="sch-actions"><button>Edit</button><button style="color:var(--red)">Pause</button></div></div>
+    </div>
+  </div>
+</div>
+<script>
+  const overlay = document.getElementById('sidebarOverlay');
+  const sidebar = document.getElementById('sidebar');
+  const hamburger = document.getElementById('mobileHamburger');
+  hamburger.addEventListener('click', () => { sidebar.classList.add('open'); overlay.classList.add('open'); });
+  overlay.addEventListener('click', () => { sidebar.classList.remove('open'); overlay.classList.remove('open'); });
+</script>
+<script>window.__I18N_CONFIG__ = { localePath: '/shared/i18n/' }</script>
+<script src="/shared/js/i18n.js"></script>
+</body>
+</html>

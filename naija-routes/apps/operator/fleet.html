@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fleet — Naija Routes Operator Portal</title>
+  <link rel="stylesheet" href="css/operator.css">
+  <link rel="stylesheet" href="/shared/css/i18n.css">
+  <style>
+    .fl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+    .fl-card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+    .fl-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .fl-plate { font-size: 16px; font-weight: 800; font-family: 'IBM Plex Mono', monospace; }
+    .fl-status { font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; }
+    .fl-status.moving { background: var(--green-l); color: var(--green); }
+    .fl-status.parked { background: var(--gold-l); color: var(--gold); }
+    .fl-status.maint { background: var(--red-l); color: var(--red); }
+    .fl-detail { display: flex; flex-direction: column; gap: 6px; font-size: 13px; }
+    .fl-detail-row { display: flex; justify-content: space-between; color: var(--muted); }
+    .fl-detail-row span:last-child { color: var(--text); font-weight: 600; }
+  </style>
+</head>
+<body>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-logo"><div class="sidebar-logo-text">🚌 <span data-i18n="nav.logo">NaijaRoutes</span></div><div class="sidebar-logo-sub" data-i18n="operator.portal_label">Operator Portal</div></div>
+  <div class="sidebar-section"><div class="sidebar-section-label" data-i18n="operator.operations">Operations</div>
+    <a href="index.html" class="nav-item"><span class="nav-icon">📊</span> <span data-i18n="nav.dashboard">Dashboard</span></a>
+    <a href="bookings.html" class="nav-item"><span class="nav-icon">🎫</span> <span data-i18n="nav.bookings">Bookings</span> <span class="nav-badge">8</span></a>
+    <a href="schedules.html" class="nav-item"><span class="nav-icon">🗓</span> <span data-i18n="nav.schedules">Schedules</span></a>
+    <a href="fleet.html" class="nav-item active"><span class="nav-icon">🚌</span> <span data-i18n="nav.fleet">Fleet</span></a>
+    <a href="drivers.html" class="nav-item"><span class="nav-icon">👤</span> <span data-i18n="nav.drivers">Drivers</span></a>
+  </div>
+  <div class="sidebar-section"><div class="sidebar-section-label" data-i18n="operator.routes_revenue">Routes &amp; Revenue</div>
+    <a href="routes.html" class="nav-item"><span class="nav-icon">🗺</span> <span data-i18n="nav.routes">Routes</span></a>
+    <a href="analytics.html" class="nav-item"><span class="nav-icon">📈</span> <span data-i18n="nav.analytics">Analytics</span></a>
+    <a href="payouts.html" class="nav-item"><span class="nav-icon">💳</span> <span data-i18n="nav.payouts">Payouts</span></a>
+    <a href="reviews.html" class="nav-item"><span class="nav-icon">⭐</span> <span data-i18n="nav.reviews">Reviews</span></a>
+  </div>
+  <div class="sidebar-section"><div class="sidebar-section-label" data-i18n="operator.account">Account</div>
+    <a href="company-profile.html" class="nav-item"><span class="nav-icon">🏢</span> <span data-i18n="nav.company_profile">Company Profile</span></a>
+    <a href="notifications.html" class="nav-item"><span class="nav-icon">🔔</span> <span data-i18n="nav.notifications">Notifications</span></a>
+    <a href="settings.html" class="nav-item"><span class="nav-icon">⚙</span> <span data-i18n="nav.settings">Settings</span></a>
+  </div>
+  <div class="sidebar__item" style="margin-top:auto;padding:12px 20px;border-top:1px solid rgba(255,255,255,0.1)">
+    <select class="language-switcher__select" onchange="I18N.setLanguage(this.value)" style="background:transparent;color:inherit;width:100%;border:1px solid rgba(255,255,255,0.2);padding:6px 10px;border-radius:6px;font-size:13px">
+      <option value="en">English</option><option value="yo">Yoruba</option><option value="ha">Hausa</option><option value="ig">Igbo</option><option value="pcm">Pidgin</option>
+    </select>
+  </div>
+</nav>
+<div class="main">
+  <div class="mobile-topbar"><div class="mobile-logo-text">Naija<span>Routes</span> Operator</div><button class="mobile-hamburger" id="mobileHamburger">☰</button></div>
+  <div class="topbar"><div class="topbar-left"><div class="page-title" data-i18n="nav.fleet">Fleet Management</div></div><div class="topbar-right"><div class="notif-btn">🔔<div class="notif-dot"></div></div><div class="op-info"><div class="op-avatar">AB</div><div><div class="op-name-text">ABC Transport Ltd</div><div class="op-type">Verified Operator · Lagos</div></div></div></div></div>
+  <div class="content">
+    <div style="display:flex;gap:12px;margin-bottom:16px;">
+      <div style="flex:1;background:var(--green-l);border-radius:10px;padding:16px;text-align:center;"><div style="font-size:32px;font-weight:800;color:var(--green);">8</div><div style="font-size:13px;color:var(--green);font-weight:600;">On Route</div></div>
+      <div style="flex:1;background:var(--gold-l);border-radius:10px;padding:16px;text-align:center;"><div style="font-size:32px;font-weight:800;color:var(--gold);">3</div><div style="font-size:13px;color:var(--gold);font-weight:600;">Parked</div></div>
+      <div style="flex:1;background:var(--red-l);border-radius:10px;padding:16px;text-align:center;"><div style="font-size:32px;font-weight:800;color:var(--red);">1</div><div style="font-size:13px;color:var(--red);font-weight:600;">Maintenance</div></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <div style="display:flex;gap:8px;">
+        <select style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--white);font-size:13px;"><option>All Status</option><option>On Route</option><option>Parked</option><option>Maintenance</option></select>
+      </div>
+      <button class="export-btn">+ Add Vehicle</button>
+    </div>
+    <div class="fl-grid">
+      <div class="fl-card"><div class="fl-card-header"><div class="fl-plate">LSD-481-KA</div><span class="fl-status moving">On Route</span></div><div class="fl-detail"><div class="fl-detail-row"><span>Type</span><span>Mercedes Sprinter · 2022</span></div><div class="fl-detail-row"><span>Capacity</span><span>18 seats</span></div><div class="fl-detail-row"><span>Current Route</span><span>Lagos → Abuja</span></div><div class="fl-detail-row"><span>Driver</span><span>Musa Bello</span></div><div class="fl-detail-row"><span>GPS</span><span style="color:var(--green);">Online</span></div></div></div>
+      <div class="fl-card"><div class="fl-card-header"><div class="fl-plate">LSD-392-DE</div><span class="fl-status moving">On Route</span></div><div class="fl-detail"><div class="fl-detail-row"><span>Type</span><span>Hiace Bus · 2021</span></div><div class="fl-detail-row"><span>Capacity</span><span>14 seats</span></div><div class="fl-detail-row"><span>Current Route</span><span>Lagos → Ibadan</span></div><div class="fl-detail-row"><span>Driver</span><span>Chinedu Obi</span></div><div class="fl-detail-row"><span>GPS</span><span style="color:var(--green);">Online</span></div></div></div>
+      <div class="fl-card"><div class="fl-card-header"><div class="fl-plate">LSD-771-BB</div><span class="fl-status parked">Parked</span></div><div class="fl-detail"><div class="fl-detail-row"><span>Type</span><span>Coaster Bus · 2023</span></div><div class="fl-detail-row"><span>Capacity</span><span>24 seats</span></div><div class="fl-detail-row"><span>Location</span><span>Jibowu Park</span></div><div class="fl-detail-row"><span>Driver</span><span>—</span></div><div class="fl-detail-row"><span>GPS</span><span style="color:var(--gold);">Standby</span></div></div></div>
+      <div class="fl-card"><div class="fl-card-header"><div class="fl-plate">LSD-203-GH</div><span class="fl-status maint">Maintenance</span></div><div class="fl-detail"><div class="fl-detail-row"><span>Type</span><span>Mercedes Sprinter · 2020</span></div><div class="fl-detail-row"><span>Capacity</span><span>18 seats</span></div><div class="fl-detail-row"><span>Issue</span><span>Engine service</span></div><div class="fl-detail-row"><span>Expected</span><span>Dec 28</span></div><div class="fl-detail-row"><span>GPS</span><span style="color:var(--red);">Offline</span></div></div></div>
+    </div>
+  </div>
+</div>
+<script>
+  const overlay = document.getElementById('sidebarOverlay'); const sidebar = document.getElementById('sidebar'); const hamburger = document.getElementById('mobileHamburger');
+  hamburger.addEventListener('click', () => { sidebar.classList.add('open'); overlay.classList.add('open'); });
+  overlay.addEventListener('click', () => { sidebar.classList.remove('open'); overlay.classList.remove('open'); });
+</script>
+<script>window.__I18N_CONFIG__ = { localePath: '/shared/i18n/' }</script>
+<script src="/shared/js/i18n.js"></script>
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Routes — Naija Routes Operator Portal</title>
+  <link rel="stylesheet" href="css/operator.css">
+  <link rel="stylesheet" href="../../packages/shared/web/css/i18n.css">
+</head>
+<body>
+
+<!-- Sidebar Overlay (mobile) -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-text">🚌 <span data-i18n="nav.logo">NaijaRoutes</span></div>
+    <div class="sidebar-logo-sub" data-i18n="operator.portal_label">Operator Portal</div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label" data-i18n="operator.operations">Operations</div>
+    <a href="index.html" class="nav-item"><span class="nav-icon">📊</span> <span data-i18n="nav.dashboard">Dashboard</span></a>
+    <a href="bookings.html" class="nav-item"><span class="nav-icon">🎫</span> <span data-i18n="nav.bookings">Bookings</span> <span class="nav-badge">8</span></a>
+    <a href="#" class="nav-item"><span class="nav-icon">🗓</span> <span data-i18n="nav.schedules">Schedules</span></a>
+    <a href="#" class="nav-item"><span class="nav-icon">🚌</span> <span data-i18n="nav.fleet">Fleet</span></a>
+    <a href="#" class="nav-item"><span class="nav-icon">👤</span> <span data-i18n="nav.drivers">Drivers</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-label" data-i18n="operator.routes_revenue">Routes &amp; Revenue</div>
+    <a href="routes.html" class="nav-item active"><span class="nav-icon">🗺</span> <span data-i18n="nav.routes">Routes</span></a>
+    <a href="#" class="nav-item"><span class="nav-icon">📈</span> <span data-i18n="nav.analytics">Analytics</span></a>
+    <a href="#" class="nav-item"><span class="nav-icon">💳</span> <span data-i18n="nav.payouts">Payouts</span></a>
+    <a href="reviews.html" class="nav-item"><span class="nav-icon">⭐</span> <span data-i18n="nav.reviews">Reviews</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-label" data-i18n="operator.account">Account</div>
+    <a href="#" class="nav-item"><span class="nav-icon">🏢</span> <span data-i18n="nav.company_profile">Company Profile</span></a>
+    <a href="#" class="nav-item"><span class="nav-icon">🔔</span> <span data-i18n="nav.notifications">Notifications</span></a>
+    <a href="#" class="nav-item"><span class="nav-icon">⚙</span> <span data-i18n="nav.settings">Settings</span></a>
+  </div>
+  <div class="sidebar__item" style="margin-top:auto;padding:12px 20px;border-top:1px solid rgba(255,255,255,0.1)">
+    <select class="language-switcher__select" onchange="I18N.setLanguage(this.value)" style="background:transparent;color:inherit;width:100%;border:1px solid rgba(255,255,255,0.2);padding:6px 10px;border-radius:6px;font-size:13px">
+      <option value="en">English</option>
+      <option value="yo">Yoruba</option>
+      <option value="ha">Hausa</option>
+      <option value="ig">Igbo</option>
+      <option value="pcm">Pidgin</option>
+    </select>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+  <!-- MOBILE TOPBAR -->
+  <div class="mobile-topbar">
+    <div class="mobile-logo-text">Naija<span>Routes</span> Operator</div>
+    <button class="mobile-hamburger" id="mobileHamburger">☰</button>
+  </div>
+
+  <!-- DESKTOP TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="page-title" data-i18n="operator.route_management">Route Management</div>
+    </div>
+    <div class="topbar-right">
+      <div class="notif-btn">🔔<div class="notif-dot"></div></div>
+      <div class="op-info">
+        <div class="op-avatar">AB</div>
+        <div>
+          <div class="op-name-text">ABC Transport Ltd</div>
+          <div class="op-type">Verified Operator · Lagos</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <div class="chart-card">
+      <div class="card-header">
+        <div class="card-title" data-i18n="operator.top_routes">Top Routes by Occupancy</div>
+        <button class="export-btn" data-i18n="operator.add_new_route">+ Add New Route</button>
+      </div>
+      <div style="margin-top:16px;">
+        <div class="route-perf-list">
+          <div class="route-perf-item">
+            <div class="route-name-pill">Lagos → Abuja</div>
+            <div class="route-occ-bar"><div class="route-occ-fill" style="width:94%"></div></div>
+            <div class="route-occ-pct">94%</div>
+            <div class="route-revenue">₦228K</div>
+          </div>
+          <div class="route-perf-item">
+            <div class="route-name-pill">Lagos → Ibadan</div>
+            <div class="route-occ-bar"><div class="route-occ-fill" style="width:78%"></div></div>
+            <div class="route-occ-pct">78%</div>
+            <div class="route-revenue">₦84K</div>
+          </div>
+          <div class="route-perf-item">
+            <div class="route-name-pill">Lagos → Benin</div>
+            <div class="route-occ-bar"><div class="route-occ-fill" style="width:65%;background:var(--gold)"></div></div>
+            <div class="route-occ-pct" style="color:var(--gold)">65%</div>
+            <div class="route-revenue">₦72K</div>
+          </div>
+          <div class="route-perf-item">
+            <div class="route-name-pill">Lagos → PH</div>
+            <div class="route-occ-bar"><div class="route-occ-fill" style="width:52%;background:var(--red)"></div></div>
+            <div class="route-occ-pct" style="color:var(--red)">52%</div>
+            <div class="route-revenue">₦44K</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // Mobile sidebar toggle
+  const overlay = document.getElementById('sidebarOverlay');
+  const sidebar = document.getElementById('sidebar');
+  const hamburger = document.getElementById('mobileHamburger');
+
+  hamburger.addEventListener('click', () => {
+    sidebar.classList.add('open');
+    overlay.classList.add('open');
+  });
+
+  overlay.addEventListener('click', () => {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('open');
+  });
+</script>
+<script>window.__I18N_CONFIG__ = { localePath: '../../packages/shared/web/i18n/' }</script>
+<script src="../../packages/shared/web/js/i18n.js"></script>
+</body>
+</html>

@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Scan Ticket — Naija Routes</title>
   <link rel="stylesheet" href="css/agent.css">
+  <link rel="stylesheet" href="/shared/css/i18n.css">
   <script src="https://unpkg.com/html5-qrcode"></script>
 </head>
 <body>
@@ -19,25 +20,34 @@
     </div>
   </div>
   <div class="header-right">
-    <div class="online-badge"><div class="online-dot"></div> Online</div>
+    <div class="online-badge"><div class="online-dot"></div> <span data-i18n="agent.online">Online</span></div>
     <div class="header-time">09:42 AM</div>
   </div>
 </div>
 
 <!-- NAV TABS -->
 <div class="nav-tabs">
-  <a href="index.html" class="nav-tab">📊 Dashboard</a>
-  <a href="sell.html" class="nav-tab">🎫 Sell Ticket</a>
-  <a href="scan.html" class="nav-tab active">📷 Scan QR</a>
-  <a href="#" class="nav-tab">🏢 Onboard</a>
-  <a href="reconcile.html" class="nav-tab">💰 Reconcile</a>
+  <a href="index.html" class="nav-tab">📊 <span data-i18n="nav.dashboard">Dashboard</span></a>
+  <a href="sell.html" class="nav-tab">🎫 <span data-i18n="nav.sell_ticket">Sell Ticket</span></a>
+  <a href="scan.html" class="nav-tab active">📷 <span data-i18n="nav.scan_qr">Scan QR</span></a>
+  <a href="#" class="nav-tab">🏢 <span data-i18n="nav.onboard">Onboard</span></a>
+  <a href="reconcile.html" class="nav-tab">💰 <span data-i18n="nav.reconcile">Reconcile</span></a>
+  <div class="nav-tab language-switcher" style="margin-left:auto">
+    <select class="language-switcher__select" onchange="I18N.setLanguage(this.value)" style="background:transparent;color:inherit;border:1px solid rgba(255,255,255,0.3);padding:4px 8px;border-radius:4px;font-size:12px">
+      <option value="en">English</option>
+      <option value="yo">Yoruba</option>
+      <option value="ha">Hausa</option>
+      <option value="ig">Igbo</option>
+      <option value="pcm">Pidgin</option>
+    </select>
+  </div>
 </div>
 
 <div class="main">
   <!-- SCANNER -->
-  <div class="section-title">Board Passengers</div>
+  <div class="section-title" data-i18n="agent.scan_title">Board Passengers</div>
   <div class="scanner-section">
-    <div style="font-size:16px;font-weight:700;margin-bottom:4px;">Scan Passenger QR Ticket</div>
+    <div style="font-size:16px;font-weight:700;margin-bottom:4px;" data-i18n="agent.scan_instruction">Scan Passenger QR Ticket</div>
     <div class="scanner-viewport">
       <div class="scanner-corner tl"></div>
       <div class="scanner-corner tr"></div>
@@ -45,11 +55,14 @@
       <div class="scanner-corner br"></div>
       <div class="scan-line"></div>
       <div id="reader" style="position:absolute; inset:0; z-index:1; opacity:0;"></div>
-      <div style="font-size:11px;color:var(--muted);position:relative; z-index:2;">Camera active</div>
+      <div style="font-size:11px;color:var(--muted);position:relative; z-index:2;" data-i18n="agent.camera_active">Camera active</div>
     </div>
-    <div class="scan-hint">Point camera at passenger's QR code</div>
-    <button class="scan-manual-btn">Enter reference manually</button>
+    <div class="scan-hint" data-i18n="agent.scan_hint">Point camera at passenger's QR code</div>
+    <button class="scan-manual-btn" data-i18n="agent.manual_entry">Enter reference manually</button>
   </div>
 </div>
+
+<script>window.__I18N_CONFIG__ = { localePath: '/shared/i18n/' }</script>
+<script src="/shared/js/i18n.js"></script>
 </body>
 </html>

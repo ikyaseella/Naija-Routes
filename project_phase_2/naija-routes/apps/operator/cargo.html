@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="cargo.operator_title">Cargo Bookings — Naija Routes Operator Portal</title>
+  <link rel="stylesheet" href="css/operator.css">
+  <link rel="stylesheet" href="../../packages/shared/web/css/i18n.css">
+  <style>
+    .status-badge { display:inline-block; padding:3px 10px; border-radius:999px; font-size:12px; font-weight:600; }
+    .status-badge.pending { background:#FEF3C7; color:#92400E; }
+    .status-badge.confirmed { background:#DBEAFE; color:#1E40AF; }
+    .status-badge.in_transit { background:#D1FAE5; color:#065F46; }
+    .status-badge.delivered { background:#D1FAE5; color:#065F46; }
+    .status-badge.cancelled { background:#FEE2E2; color:#991B1B; }
+    .cargo-table { width:100%; border-collapse:collapse; font-size:13px; }
+    .cargo-table th { text-align:left; padding:10px 12px; background:#F9FAFB; border-bottom:2px solid var(--border); font-weight:600; color:var(--slate); font-size:12px; text-transform:uppercase; letter-spacing:0.05em; }
+    .cargo-table td { padding:10px 12px; border-bottom:1px solid var(--border); }
+    .cargo-table tr:hover { background:#F9FAFB; }
+    .status-select { padding:4px 8px; border:1px solid var(--border); border-radius:4px; font-size:12px; cursor:pointer; }
+    .filter-bar { display:flex; gap:12px; margin-bottom:16px; flex-wrap:wrap; }
+    .filter-bar select, .filter-bar input { padding:8px 12px; border:1px solid var(--border); border-radius:6px; font-size:13px; }
+    .filter-bar input { flex:1; min-width:200px; }
+    .summary-cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px; margin-bottom:20px; }
+    .summary-card { background:var(--white); border:1px solid var(--border); border-radius:10px; padding:14px; text-align:center; }
+    .summary-card .big { font-size:24px; font-weight:800; color:var(--primary); }
+    .summary-card .lbl { font-size:11px; color:var(--slate); margin-top:2px; }
+  </style>
+</head>
+<body>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-text">🚌 <span data-i18n="nav.logo">NaijaRoutes</span></div>
+      <div class="sidebar-logo-sub" data-i18n="operator.portal_label">Operator Portal</div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label" data-i18n="operator.operations">Operations</div>
+      <a href="index.html" class="nav-item"><span class="nav-icon">📊</span> <span data-i18n="nav.dashboard">Dashboard</span></a>
+      <a href="bookings.html" class="nav-item"><span class="nav-icon">🎫</span> <span data-i18n="nav.bookings">Bookings</span> <span class="nav-badge">8</span></a>
+      <a href="#" class="nav-item"><span class="nav-icon">🗓</span> <span data-i18n="nav.schedules">Schedules</span></a>
+      <a href="tracking.html" class="nav-item"><span class="nav-icon">📍</span> <span data-i18n="nav.fleet_tracking">Fleet Tracking</span></a>
+      <a href="#" class="nav-item"><span class="nav-icon">👤</span> <span data-i18n="nav.drivers">Drivers</span></a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label" data-i18n="operator.routes_revenue">Routes &amp; Revenue</div>
+      <a href="routes.html" class="nav-item"><span class="nav-icon">🗺</span> <span data-i18n="nav.routes">Routes</span></a>
+      <a href="#" class="nav-item"><span class="nav-icon">📈</span> <span data-i18n="nav.analytics">Analytics</span></a>
+      <a href="cargo.html" class="nav-item active"><span class="nav-icon">📦</span> <span data-i18n="nav.cargo">Cargo</span></a>
+      <a href="#" class="nav-item"><span class="nav-icon">💳</span> <span data-i18n="nav.payouts">Payouts</span></a>
+      <a href="reviews.html" class="nav-item"><span class="nav-icon">⭐</span> <span data-i18n="nav.reviews">Reviews</span></a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label" data-i18n="operator.account">Account</div>
+      <a href="#" class="nav-item"><span class="nav-icon">🏢</span> <span data-i18n="nav.company_profile">Company Profile</span></a>
+      <a href="#" class="nav-item"><span class="nav-icon">🔔</span> <span data-i18n="nav.notifications">Notifications</span></a>
+      <a href="#" class="nav-item"><span class="nav-icon">⚙</span> <span data-i18n="nav.settings">Settings</span></a>
+    </div>
+    <div class="sidebar__item" style="margin-top:auto;padding:12px 20px;border-top:1px solid rgba(255,255,255,0.1)">
+      <select class="language-switcher__select" onchange="I18N.setLanguage(this.value)" style="background:transparent;color:inherit;width:100%;border:1px solid rgba(255,255,255,0.2);padding:6px 10px;border-radius:6px;font-size:13px">
+        <option value="en">English</option>
+        <option value="yo">Yoruba</option>
+        <option value="ha">Hausa</option>
+        <option value="ig">Igbo</option>
+        <option value="pcm">Pidgin</option>
+      </select>
+    </div>
+  </nav>
+
+  <div class="main">
+    <div class="mobile-topbar">
+      <div class="mobile-logo-text">Naija<span>Routes</span> Operator</div>
+      <button class="mobile-hamburger" id="mobileHamburger">☰</button>
+    </div>
+    <div class="topbar">
+      <div class="topbar-left">
+        <div class="page-title" data-i18n="cargo.operator_title">Cargo Bookings</div>
+      </div>
+      <div class="topbar-right">
+        <div class="notif-btn">🔔<div class="notif-dot"></div></div>
+        <div class="op-info">
+          <div class="op-avatar">AB</div>
+          <div>
+            <div class="op-name-text">ABC Transport Ltd</div>
+            <div class="op-type">Verified Operator · Lagos</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="summary-cards" id="summaryCards"></div>
+
+      <div class="filter-bar">
+        <select id="statusFilter" onchange="loadCargo()">
+          <option value="all" data-i18n="cargo.filter_all">All Status</option>
+          <option value="pending" data-i18n="cargo.filter_pending">Pending</option>
+          <option value="confirmed" data-i18n="cargo.filter_confirmed">Confirmed</option>
+          <option value="in_transit" data-i18n="cargo.filter_in_transit">In Transit</option>
+          <option value="delivered" data-i18n="cargo.filter_delivered">Delivered</option>
+          <option value="cancelled" data-i18n="cargo.filter_cancelled">Cancelled</option>
+        </select>
+        <input type="text" id="searchInput" placeholder="Search by waybill, shipper, or recipient..." data-i18n-placeholder="cargo.search_placeholder">
+      </div>
+
+      <table class="cargo-table">
+        <thead>
+          <tr>
+            <th data-i18n="cargo.waybill_label">Waybill</th>
+            <th data-i18n="cargo.shipper_name">Shipper</th>
+            <th data-i18n="cargo.route_label">Route</th>
+            <th data-i18n="cargo.weight">Weight</th>
+            <th data-i18n="cargo.recipient_col">Recipient</th>
+            <th data-i18n="cargo.status_label">Status</th>
+            <th data-i18n="cargo.actions">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="cargoBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    const OPERATOR_ID = 'op-abc';
+
+    async function loadCargo() {
+      try {
+        const res = await fetch(`http://localhost:3000/api/v1/cargo/operator/${OPERATOR_ID}`);
+        const json = await res.json();
+        if (!json.success) return;
+        renderSummary(json.data);
+        renderTable(json.data);
+      } catch { console.error('Failed to load cargo'); }
+    }
+
+    function renderSummary(bookings) {
+      const counts = { pending: 0, confirmed: 0, in_transit: 0, delivered: 0, cancelled: 0 };
+      let totalWeight = 0;
+      bookings.forEach(b => { counts[b.status]++; totalWeight += b.weightKg; });
+      document.getElementById('summaryCards').innerHTML = `
+        <div class="summary-card"><div class="big">${bookings.length}</div><div class="lbl" data-i18n="cargo.total_shipments">Total</div></div>
+        <div class="summary-card"><div class="big">${totalWeight.toFixed(0)} kg</div><div class="lbl" data-i18n="cargo.total_weight">Total Weight</div></div>
+        <div class="summary-card"><div class="big">${counts.pending + counts.confirmed}</div><div class="lbl" data-i18n="cargo.active_shipments">Active</div></div>
+        <div class="summary-card"><div class="big">${counts.delivered}</div><div class="lbl" data-i18n="cargo.delivered_count">Delivered</div></div>
+      `;
+    }
+
+    function renderTable(bookings) {
+      const filter = document.getElementById('statusFilter').value;
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      let filtered = bookings;
+      if (filter !== 'all') filtered = filtered.filter(b => b.status === filter);
+      if (search) filtered = filtered.filter(b => b.waybillNo.toLowerCase().includes(search) || b.shipperName.toLowerCase().includes(search) || b.recipientName.toLowerCase().includes(search));
+
+      const tbody = document.getElementById('cargoBody');
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--slate);padding:40px;" data-i18n="cargo.no_bookings">No cargo bookings found</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = filtered.map(b => `
+        <tr>
+          <td style="font-weight:600;font-family:monospace;">${b.waybillNo}</td>
+          <td>${b.shipperName}</td>
+          <td>${b.origin} → ${b.destination}</td>
+          <td>${b.weightKg} kg</td>
+          <td>${b.recipientName}</td>
+          <td><span class="status-badge ${b.status}">${b.status.replace('_', ' ')}</span></td>
+          <td><select class="status-select" onchange="updateStatus('${b.id}', this.value)">
+            <option value="pending" ${b.status === 'pending' ? 'selected' : ''}>Pending</option>
+            <option value="confirmed" ${b.status === 'confirmed' ? 'selected' : ''}>Confirm</option>
+            <option value="in_transit" ${b.status === 'in_transit' ? 'selected' : ''}>In Transit</option>
+            <option value="delivered" ${b.status === 'delivered' ? 'selected' : ''}>Delivered</option>
+            <option value="cancelled" ${b.status === 'cancelled' ? 'selected' : ''}>Cancel</option>
+          </select></td>
+        </tr>
+      `).join('');
+    }
+
+    async function updateStatus(id, status) {
+      try {
+        await fetch(`http://localhost:3000/api/v1/cargo/${id}/status`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status }),
+        });
+        loadCargo();
+      } catch { alert('Failed to update status'); }
+    }
+
+    document.getElementById('searchInput').addEventListener('input', loadCargo);
+
+    const overlay = document.getElementById('sidebarOverlay');
+    const sidebar = document.getElementById('sidebar');
+    const hamburger = document.getElementById('mobileHamburger');
+    hamburger.addEventListener('click', () => { sidebar.classList.add('open'); overlay.classList.add('open'); });
+    overlay.addEventListener('click', () => { sidebar.classList.remove('open'); overlay.classList.remove('open'); });
+
+    loadCargo();
+  </script>
+  <script>window.__I18N_CONFIG__ = { localePath: '../../packages/shared/web/i18n/' }</script>
+  <script src="../../packages/shared/web/js/i18n.js"></script>
+</body>
+</html>

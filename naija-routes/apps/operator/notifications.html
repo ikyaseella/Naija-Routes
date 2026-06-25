@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notifications — Naija Routes Operator Portal</title>
+  <link rel="stylesheet" href="css/operator.css">
+  <link rel="stylesheet" href="/shared/css/i18n.css">
+  <style>
+    .nt-list { display: flex; flex-direction: column; gap: 6px; }
+    .nt-item { display: flex; gap: 12px; padding: 14px 16px; background: var(--white); border: 1px solid var(--border); border-radius: 10px; cursor: pointer; transition: all .15s; }
+    .nt-item:hover { border-color: var(--green); }
+    .nt-item.unread { background: var(--green-l); border-color: var(--green); }
+    .nt-icon { font-size: 20px; flex-shrink: 0; }
+    .nt-body { flex: 1; }
+    .nt-title { font-weight: 600; font-size: 14px; }
+    .nt-desc { font-size: 13px; color: var(--muted); margin-top: 2px; }
+    .nt-time { font-size: 11px; color: var(--muted); flex-shrink: 0; }
+  </style>
+</head>
+<body>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-logo"><div class="sidebar-logo-text">🚌 <span data-i18n="nav.logo">NaijaRoutes</span></div><div class="sidebar-logo-sub" data-i18n="operator.portal_label">Operator Portal</div></div>
+  <div class="sidebar-section"><div class="sidebar-section-label" data-i18n="operator.operations">Operations</div>
+    <a href="index.html" class="nav-item"><span class="nav-icon">📊</span> <span data-i18n="nav.dashboard">Dashboard</span></a>
+    <a href="bookings.html" class="nav-item"><span class="nav-icon">🎫</span> <span data-i18n="nav.bookings">Bookings</span> <span class="nav-badge">8</span></a>
+    <a href="schedules.html" class="nav-item"><span class="nav-icon">🗓</span> <span data-i18n="nav.schedules">Schedules</span></a>
+    <a href="fleet.html" class="nav-item"><span class="nav-icon">🚌</span> <span data-i18n="nav.fleet">Fleet</span></a>
+    <a href="drivers.html" class="nav-item"><span class="nav-icon">👤</span> <span data-i18n="nav.drivers">Drivers</span></a>
+  </div>
+  <div class="sidebar-section"><div class="sidebar-section-label" data-i18n="operator.routes_revenue">Routes &amp; Revenue</div>
+    <a href="routes.html" class="nav-item"><span class="nav-icon">🗺</span> <span data-i18n="nav.routes">Routes</span></a>
+    <a href="analytics.html" class="nav-item"><span class="nav-icon">📈</span> <span data-i18n="nav.analytics">Analytics</span></a>
+    <a href="payouts.html" class="nav-item"><span class="nav-icon">💳</span> <span data-i18n="nav.payouts">Payouts</span></a>
+    <a href="reviews.html" class="nav-item"><span class="nav-icon">⭐</span> <span data-i18n="nav.reviews">Reviews</span></a>
+  </div>
+  <div class="sidebar-section"><div class="sidebar-section-label" data-i18n="operator.account">Account</div>
+    <a href="company-profile.html" class="nav-item"><span class="nav-icon">🏢</span> <span data-i18n="nav.company_profile">Company Profile</span></a>
+    <a href="notifications.html" class="nav-item active"><span class="nav-icon">🔔</span> <span data-i18n="nav.notifications">Notifications</span></a>
+    <a href="settings.html" class="nav-item"><span class="nav-icon">⚙</span> <span data-i18n="nav.settings">Settings</span></a>
+  </div>
+  <div class="sidebar__item" style="margin-top:auto;padding:12px 20px;border-top:1px solid rgba(255,255,255,0.1)">
+    <select class="language-switcher__select" onchange="I18N.setLanguage(this.value)" style="background:transparent;color:inherit;width:100%;border:1px solid rgba(255,255,255,0.2);padding:6px 10px;border-radius:6px;font-size:13px">
+      <option value="en">English</option><option value="yo">Yoruba</option><option value="ha">Hausa</option><option value="ig">Igbo</option><option value="pcm">Pidgin</option>
+    </select>
+  </div>
+</nav>
+<div class="main">
+  <div class="mobile-topbar"><div class="mobile-logo-text">Naija<span>Routes</span> Operator</div><button class="mobile-hamburger" id="mobileHamburger">☰</button></div>
+  <div class="topbar"><div class="topbar-left"><div class="page-title" data-i18n="nav.notifications">Notifications</div></div><div class="topbar-right"><div class="notif-btn">🔔<div class="notif-dot"></div></div><div class="op-info"><div class="op-avatar">AB</div><div><div class="op-name-text">ABC Transport Ltd</div><div class="op-type">Verified Operator · Lagos</div></div></div></div></div>
+  <div class="content">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <div style="display:flex;gap:8px;">
+        <button class="export-btn" style="background:var(--green);color:white;border:none;" onclick="document.querySelectorAll('.nt-item.unread').forEach(el => el.classList.remove('unread'))">Mark All Read</button>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <select style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--white);font-size:13px;"><option>All Notifications</option><option>Unread</option><option>Bookings</option><option>System</option></select>
+      </div>
+    </div>
+    <div class="nt-list">
+      <div class="nt-item unread"><div class="nt-icon">🎫</div><div class="nt-body"><div class="nt-title">New Booking — Lagos → Abuja</div><div class="nt-desc">Emeka Okonkwo booked seat 12A for Dec 25, 06:00 AM. ₦9,500 paid via card.</div></div><div class="nt-time">5m ago</div></div>
+      <div class="nt-item unread"><div class="nt-icon">💳</div><div class="nt-body"><div class="nt-title">Payout Available</div><div class="nt-desc">₦1,284,000 is ready for withdrawal. Request your payout before the next settlement cycle.</div></div><div class="nt-time">1h ago</div></div>
+      <div class="nt-item unread"><div class="nt-icon">⭐</div><div class="nt-body"><div class="nt-title">New Review — ABC Transport</div><div class="nt-desc">Fatima Bello rated your service 4.5 ⭐ — "Comfortable ride, punctual departure."</div></div><div class="nt-time">3h ago</div></div>
+      <div class="nt-item"><div class="nt-icon">🚌</div><div class="nt-body"><div class="nt-title">Vehicle Maintenance Reminder</div><div class="nt-desc">LSD-203-GH (Mercedes Sprinter) is due for service. Schedule maintenance to avoid route disruptions.</div></div><div class="nt-time">1d ago</div></div>
+      <div class="nt-item"><div class="nt-icon">📊</div><div class="nt-body"><div class="nt-title">Weekly Analytics Report Ready</div><div class="nt-desc">Your route performance and revenue report for Dec 18–24 is now available in Analytics.</div></div><div class="nt-time">2d ago</div></div>
+      <div class="nt-item"><div class="nt-icon">⚙️</div><div class="nt-body"><div class="nt-title">System Update — Platform v2.4</div><div class="nt-desc">Naija Routes has been updated with new features including improved cargo tracking and enhanced security.</div></div><div class="nt-time">3d ago</div></div>
+    </div>
+  </div>
+</div>
+<script>
+  const overlay = document.getElementById('sidebarOverlay'); const sidebar = document.getElementById('sidebar'); const hamburger = document.getElementById('mobileHamburger');
+  hamburger.addEventListener('click', () => { sidebar.classList.add('open'); overlay.classList.add('open'); });
+  overlay.addEventListener('click', () => { sidebar.classList.remove('open'); overlay.classList.remove('open'); });
+  document.querySelectorAll('.nt-item').forEach(item => {
+    item.addEventListener('click', () => item.classList.remove('unread'));
+  });
+</script>
+<script>window.__I18N_CONFIG__ = { localePath: '/shared/i18n/' }</script>
+<script src="/shared/js/i18n.js"></script>
+</body>
+</html>

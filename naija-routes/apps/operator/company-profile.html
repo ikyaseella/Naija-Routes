@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Company Profile — Naija Routes Operator Portal</title>
+  <link rel="stylesheet" href="css/operator.css">
+  <link rel="stylesheet" href="/shared/css/i18n.css">
+  <style>
+    .cp-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .cp-field { margin-bottom: 12px; }
+    .cp-field label { display: block; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; font-weight: 700; }
+    .cp-field input, .cp-field textarea { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; background: var(--white); }
+    .cp-field input:focus, .cp-field textarea:focus { outline: none; border-color: var(--green); }
+    .cp-field textarea { resize: vertical; min-height: 80px; }
+  </style>
+</head>
+<body>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-logo"><div class="sidebar-logo-text">🚌 <span data-i18n="nav.logo">NaijaRoutes</span></div><div class="sidebar-logo-sub" data-i18n="operator.portal_label">Operator Portal</div></div>
+  <div class="sidebar-section"><div class="sidebar-section-label" data-i18n="operator.operations">Operations</div>
+    <a href="index.html" class="nav-item"><span class="nav-icon">📊</span> <span data-i18n="nav.dashboard">Dashboard</span></a>
+    <a href="bookings.html" class="nav-item"><span class="nav-icon">🎫</span> <span data-i18n="nav.bookings">Bookings</span> <span class="nav-badge">8</span></a>
+    <a href="schedules.html" class="nav-item"><span class="nav-icon">🗓</span> <span data-i18n="nav.schedules">Schedules</span></a>
+    <a href="fleet.html" class="nav-item"><span class="nav-icon">🚌</span> <span data-i18n="nav.fleet">Fleet</span></a>
+    <a href="drivers.html" class="nav-item"><span class="nav-icon">👤</span> <span data-i18n="nav.drivers">Drivers</span></a>
+  </div>
+  <div class="sidebar-section"><div class="sidebar-section-label" data-i18n="operator.routes_revenue">Routes &amp; Revenue</div>
+    <a href="routes.html" class="nav-item"><span class="nav-icon">🗺</span> <span data-i18n="nav.routes">Routes</span></a>
+    <a href="analytics.html" class="nav-item"><span class="nav-icon">📈</span> <span data-i18n="nav.analytics">Analytics</span></a>
+    <a href="payouts.html" class="nav-item"><span class="nav-icon">💳</span> <span data-i18n="nav.payouts">Payouts</span></a>
+    <a href="reviews.html" class="nav-item"><span class="nav-icon">⭐</span> <span data-i18n="nav.reviews">Reviews</span></a>
+  </div>
+  <div class="sidebar-section"><div class="sidebar-section-label" data-i18n="operator.account">Account</div>
+    <a href="company-profile.html" class="nav-item active"><span class="nav-icon">🏢</span> <span data-i18n="nav.company_profile">Company Profile</span></a>
+    <a href="notifications.html" class="nav-item"><span class="nav-icon">🔔</span> <span data-i18n="nav.notifications">Notifications</span></a>
+    <a href="settings.html" class="nav-item"><span class="nav-icon">⚙</span> <span data-i18n="nav.settings">Settings</span></a>
+  </div>
+  <div class="sidebar__item" style="margin-top:auto;padding:12px 20px;border-top:1px solid rgba(255,255,255,0.1)">
+    <select class="language-switcher__select" onchange="I18N.setLanguage(this.value)" style="background:transparent;color:inherit;width:100%;border:1px solid rgba(255,255,255,0.2);padding:6px 10px;border-radius:6px;font-size:13px">
+      <option value="en">English</option><option value="yo">Yoruba</option><option value="ha">Hausa</option><option value="ig">Igbo</option><option value="pcm">Pidgin</option>
+    </select>
+  </div>
+</nav>
+<div class="main">
+  <div class="mobile-topbar"><div class="mobile-logo-text">Naija<span>Routes</span> Operator</div><button class="mobile-hamburger" id="mobileHamburger">☰</button></div>
+  <div class="topbar"><div class="topbar-left"><div class="page-title" data-i18n="nav.company_profile">Company Profile</div></div><div class="topbar-right"><div class="notif-btn">🔔<div class="notif-dot"></div></div><div class="op-info"><div class="op-avatar">AB</div><div><div class="op-name-text">ABC Transport Ltd</div><div class="op-type">Verified Operator · Lagos</div></div></div></div></div>
+  <div class="content">
+    <div style="display:flex;gap:16px;margin-bottom:16px;align-items:center;">
+      <div style="width:64px;height:64px;border-radius:50%;background:var(--light);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:var(--muted);">AB</div>
+      <div><h2 style="margin:0;font-size:20px;">ABC Transport Ltd</h2><p style="color:var(--muted);margin:2px 0 0;">RC-2018-ABC · Since 2018</p></div>
+      <div style="flex:1;"></div>
+      <span class="status-pill pill-confirmed" style="font-size:13px;padding:6px 14px;">Verified Operator</span>
+    </div>
+    <div class="chart-card"><div class="card-header"><div class="card-title">Company Information</div><button class="export-btn" onclick="alert('Changes saved!')">Save Changes</button></div>
+      <div style="padding:16px;">
+        <div class="cp-layout">
+          <div class="cp-field"><label>Company Name</label><input type="text" value="ABC Transport Ltd"></div>
+          <div class="cp-field"><label>Registration Number</label><input type="text" value="RC-2018-ABC" disabled style="background:var(--light);"></div>
+          <div class="cp-field"><label>Phone Number</label><input type="text" value="+234 801 234 5678"></div>
+          <div class="cp-field"><label>Email Address</label><input type="email" value="admin@abctransport.com"></div>
+          <div class="cp-field"><label>Base City</label><input type="text" value="Lagos"></div>
+          <div class="cp-field"><label>Base Park</label><input type="text" value="Jibowu Motor Park"></div>
+          <div class="cp-field"><label>Bank Name</label><input type="text" value="GTBank"></div>
+          <div class="cp-field"><label>Account Number</label><input type="text" value="0123456789"></div>
+          <div class="cp-field" style="grid-column: 1 / -1;"><label>About</label><textarea>ABC Transport is a leading intercity bus operator based in Lagos, Nigeria. We serve major routes including Lagos–Abuja, Lagos–Ibadan, and Lagos–Benin City with a fleet of modern, air-conditioned buses.</textarea></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  const overlay = document.getElementById('sidebarOverlay'); const sidebar = document.getElementById('sidebar'); const hamburger = document.getElementById('mobileHamburger');
+  hamburger.addEventListener('click', () => { sidebar.classList.add('open'); overlay.classList.add('open'); });
+  overlay.addEventListener('click', () => { sidebar.classList.remove('open'); overlay.classList.remove('open'); });
+</script>
+<script>window.__I18N_CONFIG__ = { localePath: '/shared/i18n/' }</script>
+<script src="/shared/js/i18n.js"></script>
+</body>
+</html>

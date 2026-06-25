@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Track your bus in real-time on Naija Routes.">
+  <title data-i18n="tracking.title">Track Your Bus — Naija Routes</title>
+  <link rel="stylesheet" href="css/theme-deep-roots.css">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="/shared/css/i18n.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    .tracking-hero {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    .tracking-hero h1 {
+      font-family: var(--font-display);
+      font-size: var(--text-3xl);
+      color: var(--color-white);
+      margin-bottom: 8px;
+    }
+    .tracking-hero .sub {
+      color: var(--color-slate-400);
+      font-size: var(--text-sm);
+      margin-bottom: 24px;
+    }
+    .tracking-lookup {
+      display: flex;
+      gap: 12px;
+      max-width: 500px;
+      margin-bottom: 32px;
+    }
+    .tracking-lookup input {
+      flex: 1;
+      padding: 12px 16px;
+      border-radius: 8px;
+      border: 1px solid var(--color-slate-600);
+      background: var(--color-slate-800);
+      color: var(--color-white);
+      font-size: 14px;
+      outline: none;
+    }
+    .tracking-lookup input::placeholder { color: var(--color-slate-500); }
+    .tracking-lookup button {
+      padding: 12px 24px;
+      background: var(--color-gold);
+      border: none;
+      border-radius: 8px;
+      font-weight: 700;
+      color: var(--green-deep);
+      cursor: pointer;
+      font-size: 14px;
+    }
+    #trackingMap {
+      height: 400px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 2px solid var(--color-slate-700);
+      margin-bottom: 24px;
+    }
+    .tracking-info {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .info-card {
+      background: var(--color-slate-800);
+      border: 1px solid var(--color-slate-700);
+      border-radius: 10px;
+      padding: 16px;
+      text-align: center;
+    }
+    .info-card .val {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--color-gold);
+    }
+    .info-card .lbl {
+      font-size: 12px;
+      color: var(--color-slate-400);
+      margin-top: 4px;
+    }
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .status-badge.moving { background: #D1FAE5; color: #065F46; }
+    .status-badge.stopped { background: #FEF3C7; color: #92400E; }
+    .status-badge.arrived { background: #DBEAFE; color: #1E40AF; }
+    .status-badge.offline { background: #FEE2E2; color: #991B1B; }
+    .tracking-share {
+      text-align: center;
+      padding: 20px;
+      background: var(--color-slate-800);
+      border: 1px solid var(--color-slate-700);
+      border-radius: 10px;
+      margin-top: 16px;
+    }
+    .tracking-share input {
+      width: 100%;
+      max-width: 400px;
+      padding: 10px;
+      border: 1px solid var(--color-slate-600);
+      border-radius: 6px;
+      background: var(--color-slate-900);
+      color: var(--color-slate-300);
+      font-size: 13px;
+      text-align: center;
+      margin-top: 8px;
+    }
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--color-slate-500);
+    }
+    .empty-state .big-icon { font-size: 48px; margin-bottom: 16px; }
+    .load-spinner {
+      text-align: center;
+      padding: 60px;
+      color: var(--color-slate-500);
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="nav-logo" style="text-decoration:none;">🚌 <span data-i18n="nav.logo">NaijaRoutes</span></a>
+    <div class="nav-links">
+      <a href="index.html" data-i18n="nav.routes">Routes</a>
+      <a href="cargo.html" data-i18n="nav.cargo">Cargo</a>
+      <a href="corporate.html" data-i18n="nav.corporate">Corporate</a>
+      <a href="tracking.html" class="active" data-i18n="nav.track_bus">Track Bus</a>
+      <a href="ussd.html" data-i18n="nav.ussd">USSD</a>
+      <a href="insurance.html" data-i18n="nav.insurance">Insurance</a>
+      <a href="#" data-i18n="nav.help">Help</a>
+      <div class="nav__item" data-i18n-language-container>
+        <select class="language-switcher__select" onchange="I18N.setLanguage(this.value)">
+          <option value="en">English</option>
+          <option value="yo">Yoruba</option>
+          <option value="ha">Hausa</option>
+          <option value="ig">Igbo</option>
+          <option value="pcm">Pidgin</option>
+        </select>
+      </div>
+    </div>
+    <button class="nav-cta" data-i18n="nav.sign_in">Sign in</button>
+  </nav>
+
+  <div class="tracking-hero">
+    <h1 data-i18n="tracking.title">Track Your Bus</h1>
+    <p class="sub" data-i18n="tracking.subtitle">Enter your booking reference or vehicle plate to see your bus in real-time.</p>
+
+    <div class="tracking-lookup">
+      <input type="text" id="lookupInput" placeholder="e.g. NR-A7F3K2 or LSD-481-KA" data-i18n-placeholder="tracking.lookup_placeholder">
+      <button onclick="lookupVehicle()" data-i18n="tracking.track_btn">Track</button>
+    </div>
+
+    <div id="trackingContent" style="display:none;">
+      <div id="trackingMap"></div>
+
+      <div class="tracking-info" id="vehicleInfo">
+        <div class="info-card">
+          <div class="val" id="vSpeed">0</div>
+          <div class="lbl" data-i18n="tracking.speed">Speed (km/h)</div>
+        </div>
+        <div class="info-card">
+          <div class="val" id="vStatus">—</div>
+          <div class="lbl" data-i18n="tracking.status">Status</div>
+        </div>
+        <div class="info-card">
+          <div class="val" id="vDriver">—</div>
+          <div class="lbl" data-i18n="tracking.driver">Driver</div>
+        </div>
+        <div class="info-card">
+          <div class="val" style="font-size:16px;" id="vRoute">—</div>
+          <div class="lbl" data-i18n="tracking.route">Route</div>
+        </div>
+      </div>
+
+      <div class="tracking-share">
+        <div style="font-weight:600;color:var(--color-white);margin-bottom:4px;" data-i18n="tracking.share_title">Share with family</div>
+        <div style="font-size:13px;color:var(--color-slate-400);margin-bottom:8px;" data-i18n="tracking.share_desc">Send this link so your loved ones can track your bus too.</div>
+        <input type="text" id="shareLink" readonly onclick="this.select()" value="">
+      </div>
+    </div>
+
+    <div class="empty-state" id="emptyState">
+      <div class="big-icon">🚌</div>
+      <div style="font-size:18px;font-weight:600;color:var(--color-slate-400);margin-bottom:4px;" data-i18n="tracking.search_prompt">Enter a booking reference or plate number</div>
+      <div style="font-size:13px;" data-i18n="tracking.search_hint">For example: NR-A7F3K2 or LSD-481-KA</div>
+    </div>
+
+    <div class="load-spinner" id="loadSpinner" style="display:none;">
+      <div style="font-size:24px;margin-bottom:8px;">⏳</div>
+      <div data-i18n="tracking.loading">Locating your bus...</div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    const VEHICLE_MAP = {
+      'NR-A7F3K2': 'veh-001', 'LSD-481-KA': 'veh-001',
+      'NR-B8G4H3': 'veh-002', 'GGE-204-BD': 'veh-002',
+      'NR-C9H5J4': 'veh-003', 'ABJ-119-XY': 'veh-003',
+      'NR-D1I6K5': 'veh-004', 'LAG-775-WZ': 'veh-004',
+      'NR-E2J7L6': 'veh-005', 'KNO-336-RT': 'veh-005',
+    };
+
+    let map = null;
+    let marker = null;
+    let refreshInterval = null;
+
+    function lookupVehicle() {
+      const input = document.getElementById('lookupInput').value.trim().toUpperCase();
+      const vehicleId = VEHICLE_MAP[input];
+      if (!vehicleId) {
+        alert('Vehicle not found. Try: NR-A7F3K2 or LSD-481-KA');
+        return;
+      }
+      document.getElementById('emptyState').style.display = 'none';
+      document.getElementById('trackingContent').style.display = 'block';
+      document.getElementById('shareLink').value = window.location.href.split('?')[0] + '?vehicle=' + vehicleId;
+      startTracking(vehicleId);
+    }
+
+    function startTracking(vehicleId) {
+      document.getElementById('loadSpinner').style.display = 'block';
+      if (refreshInterval) clearInterval(refreshInterval);
+
+      fetchVehicle(vehicleId);
+      refreshInterval = setInterval(() => fetchVehicle(vehicleId), 10000);
+    }
+
+    async function fetchVehicle(vehicleId) {
+      try {
+        const res = await fetch(`http://localhost:3000/api/v1/tracking/vehicle/${vehicleId}`);
+        const json = await res.json();
+        if (!json.success) return;
+        const v = json.data;
+        document.getElementById('loadSpinner').style.display = 'none';
+        document.getElementById('vSpeed').textContent = v.speedKmh;
+        const statusEl = document.getElementById('vStatus');
+        statusEl.textContent = v.status.charAt(0).toUpperCase() + v.status.slice(1);
+        statusEl.className = 'val';
+        document.getElementById('vDriver').textContent = v.driver;
+        document.getElementById('vRoute').textContent = v.route.join(' → ');
+        updateMap(v.lat, v.lng, v.status, v.plate);
+      } catch {
+        // keep last known position
+      }
+    }
+
+    function updateMap(lat, lng, status, plate) {
+      if (!map) {
+        map = L.map('trackingMap').setView([lat, lng], 10);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+          maxZoom: 18,
+        }).addTo(map);
+      }
+      const iconColor = status === 'moving' ? '#22C55E' : status === 'stopped' ? '#F59E0B' : '#EF4444';
+      const icon = L.divIcon({
+        html: `<div style="width:28px;height:28px;background:${iconColor};border:3px solid white;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,0.3);"></div>`,
+        iconSize: [28, 28],
+        iconAnchor: [14, 14],
+        className: '',
+      });
+      if (marker) {
+        marker.setLatLng([lat, lng]);
+        marker.setIcon(icon);
+      } else {
+        marker = L.marker([lat, lng], { icon }).addTo(map);
+        marker.bindPopup(`<b>${plate}</b><br>Status: ${status}`);
+      }
+      map.setView([lat, lng], map.getZoom());
+    }
+
+    const urlVehicle = new URLSearchParams(window.location.search).get('vehicle');
+    if (urlVehicle) {
+      document.getElementById('lookupInput').value = urlVehicle;
+      document.getElementById('emptyState').style.display = 'none';
+      document.getElementById('trackingContent').style.display = 'block';
+      document.getElementById('shareLink').value = window.location.href;
+      startTracking(urlVehicle);
+    }
+  </script>
+  <script>
+  window.__I18N_CONFIG__ = { localePath: '/shared/i18n/' };
+  </script>
+  <script src="/shared/js/i18n.js"></script>
+</body>
+</html>

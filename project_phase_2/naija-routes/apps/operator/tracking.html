@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="tracking.operator_title">Fleet Tracking — Naija Routes Operator Portal</title>
+  <link rel="stylesheet" href="css/operator.css">
+  <link rel="stylesheet" href="../../packages/shared/web/css/i18n.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    .tracking-layout {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 20px;
+      height: calc(100vh - 120px);
+    }
+    #fleetMap {
+      height: 100%;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .fleet-list {
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+    .fleet-list::-webkit-scrollbar { width: 4px; }
+    .fleet-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+    .fleet-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .fleet-card:hover { border-color: var(--primary); }
+    .fleet-card.active { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(27,107,58,0.15); }
+    .fleet-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .fleet-plate {
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .fleet-status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .dot-moving { background: #22C55E; }
+    .dot-stopped { background: #F59E0B; }
+    .dot-arrived { background: #3B82F6; }
+    .dot-offline { background: #EF4444; }
+    .fleet-driver { font-size: 12px; color: var(--slate); }
+    .fleet-route { font-size: 12px; color: var(--slate); margin-top: 2px; }
+    .fleet-speed { font-size: 13px; font-weight: 600; }
+    .fleet-counts {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .count-chip {
+      font-size: 12px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: #F3F4F6;
+    }
+    .count-chip.moving { background: #D1FAE5; color: #065F46; }
+    .count-chip.stopped { background: #FEF3C7; color: #92400E; }
+    .count-chip.arrived { background: #DBEAFE; color: #1E40AF; }
+    .count-chip.offline { background: #FEE2E2; color: #991B1B; }
+    .page-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .refresh-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .refresh-btn:hover { background: var(--primary-d); }
+  </style>
+</head>
+<body>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-text">🚌 <span data-i18n="nav.logo">NaijaRoutes</span></div>
+      <div class="sidebar-logo-sub" data-i18n="operator.portal_label">Operator Portal</div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label" data-i18n="operator.operations">Operations</div>
+      <a href="index.html" class="nav-item"><span class="nav-icon">📊</span> <span data-i18n="nav.dashboard">Dashboard</span></a>
+      <a href="bookings.html" class="nav-item"><span class="nav-icon">🎫</span> <span data-i18n="nav.bookings">Bookings</span> <span class="nav-badge">8</span></a>
+      <a href="#" class="nav-item"><span class="nav-icon">🗓</span> <span data-i18n="nav.schedules">Schedules</span></a>
+      <a href="tracking.html" class="nav-item active"><span class="nav-icon">📍</span> <span data-i18n="nav.fleet_tracking">Fleet Tracking</span></a>
+      <a href="#" class="nav-item"><span class="nav-icon">👤</span> <span data-i18n="nav.drivers">Drivers</span></a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label" data-i18n="operator.routes_revenue">Routes &amp; Revenue</div>
+      <a href="routes.html" class="nav-item"><span class="nav-icon">🗺</span> <span data-i18n="nav.routes">Routes</span></a>
+      <a href="#" class="nav-item"><span class="nav-icon">📈</span> <span data-i18n="nav.analytics">Analytics</span></a>
+      <a href="#" class="nav-item"><span class="nav-icon">💳</span> <span data-i18n="nav.payouts">Payouts</span></a>
+      <a href="reviews.html" class="nav-item"><span class="nav-icon">⭐</span> <span data-i18n="nav.reviews">Reviews</span></a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label" data-i18n="operator.account">Account</div>
+      <a href="#" class="nav-item"><span class="nav-icon">🏢</span> <span data-i18n="nav.company_profile">Company Profile</span></a>
+      <a href="#" class="nav-item"><span class="nav-icon">🔔</span> <span data-i18n="nav.notifications">Notifications</span></a>
+      <a href="#" class="nav-item"><span class="nav-icon">⚙</span> <span data-i18n="nav.settings">Settings</span></a>
+    </div>
+    <div class="sidebar__item" style="margin-top:auto;padding:12px 20px;border-top:1px solid rgba(255,255,255,0.1)">
+      <select class="language-switcher__select" onchange="I18N.setLanguage(this.value)" style="background:transparent;color:inherit;width:100%;border:1px solid rgba(255,255,255,0.2);padding:6px 10px;border-radius:6px;font-size:13px">
+        <option value="en">English</option>
+        <option value="yo">Yoruba</option>
+        <option value="ha">Hausa</option>
+        <option value="ig">Igbo</option>
+        <option value="pcm">Pidgin</option>
+      </select>
+    </div>
+  </nav>
+
+  <div class="main">
+    <div class="mobile-topbar">
+      <div class="mobile-logo-text">Naija<span>Routes</span> Operator</div>
+      <button class="mobile-hamburger" id="mobileHamburger">☰</button>
+    </div>
+
+    <div class="topbar">
+      <div class="topbar-left">
+        <div class="page-title" data-i18n="tracking.operator_title">Fleet Tracking</div>
+      </div>
+      <div class="topbar-right">
+        <button class="refresh-btn" onclick="loadFleet()" data-i18n="tracking.refresh">🔄 Refresh</button>
+        <div class="notif-btn">🔔<div class="notif-dot"></div></div>
+        <div class="op-info">
+          <div class="op-avatar">AB</div>
+          <div>
+            <div class="op-name-text">ABC Transport Ltd</div>
+            <div class="op-type">Verified Operator · Lagos</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div id="fleetCounts" class="fleet-counts"></div>
+
+      <div class="tracking-layout">
+        <div class="fleet-list" id="fleetList"></div>
+        <div id="fleetMap"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    let map = null;
+    let markers = {};
+    let activeVehicleId = null;
+
+    const OPERATOR_ID = 'op-abc';
+
+    async function loadFleet() {
+      try {
+        const res = await fetch(`http://localhost:3000/api/v1/tracking/fleet/${OPERATOR_ID}`);
+        const json = await res.json();
+        if (!json.success) return;
+        const { fleet, counts } = json.data;
+        renderCounts(counts);
+        renderFleetList(fleet);
+        renderMapMarkers(fleet);
+      } catch (err) {
+        console.error('Failed to load fleet:', err);
+      }
+    }
+
+    function renderCounts(counts) {
+      const container = document.getElementById('fleetCounts');
+      container.innerHTML = '';
+      const total = Object.values(counts).reduce((a, b) => a + b, 0);
+      container.innerHTML += `<span class="count-chip">Total: ${total}</span>`;
+      Object.entries(counts).forEach(([status, count]) => {
+        if (count > 0) {
+          container.innerHTML += `<span class="count-chip ${status}">${status.charAt(0).toUpperCase() + status.slice(1)}: ${count}</span>`;
+        }
+      });
+    }
+
+    function renderFleetList(fleet) {
+      const container = document.getElementById('fleetList');
+      container.innerHTML = '';
+      fleet.forEach(v => {
+        const card = document.createElement('div');
+        card.className = 'fleet-card' + (v.vehicleId === activeVehicleId ? ' active' : '');
+        card.innerHTML = `
+          <div class="fleet-card-top">
+            <span class="fleet-plate">${v.plate}</span>
+            <span class="fleet-status-dot dot-${v.status}"></span>
+          </div>
+          <div class="fleet-driver">🚗 ${v.driver}</div>
+          <div class="fleet-route">📍 ${v.route.join(' → ')}</div>
+          <div class="fleet-speed">⚡ ${v.speedKmh} km/h</div>
+        `;
+        card.onclick = () => {
+          activeVehicleId = v.vehicleId;
+          loadFleet();
+          if (markers[v.vehicleId]) {
+            map.setView(markers[v.vehicleId].getLatLng(), 14);
+            markers[v.vehicleId].openPopup();
+          }
+        };
+        container.appendChild(card);
+      });
+    }
+
+    function renderMapMarkers(fleet) {
+      if (!map) {
+        map = L.map('fleetMap').setView([8.0, 5.5], 7);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; OpenStreetMap',
+          maxZoom: 18,
+        }).addTo(map);
+      }
+      fleet.forEach(v => {
+        const color = v.status === 'moving' ? '#22C55E' : v.status === 'stopped' ? '#F59E0B' : v.status === 'arrived' ? '#3B82F6' : '#EF4444';
+        const icon = L.divIcon({
+          html: `<div style="width:24px;height:24px;background:${color};border:3px solid white;border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,0.3);"></div>`,
+          iconSize: [24, 24],
+          iconAnchor: [12, 12],
+          className: '',
+        });
+        if (markers[v.vehicleId]) {
+          markers[v.vehicleId].setLatLng([v.lat, v.lng]);
+          markers[v.vehicleId].setIcon(icon);
+          markers[v.vehicleId].setPopupContent(`<b>${v.plate}</b><br>${v.driver}<br>${v.speedKmh} km/h<br>Status: ${v.status}`);
+        } else {
+          const marker = L.marker([v.lat, v.lng], { icon }).addTo(map);
+          marker.bindPopup(`<b>${v.plate}</b><br>${v.driver}<br>${v.speedKmh} km/h<br>Status: ${v.status}`);
+          markers[v.vehicleId] = marker;
+        }
+      });
+    }
+
+    const overlay = document.getElementById('sidebarOverlay');
+    const sidebar = document.getElementById('sidebar');
+    const hamburger = document.getElementById('mobileHamburger');
+    hamburger.addEventListener('click', () => { sidebar.classList.add('open'); overlay.classList.add('open'); });
+    overlay.addEventListener('click', () => { sidebar.classList.remove('open'); overlay.classList.remove('open'); });
+
+    loadFleet();
+    setInterval(loadFleet, 15000);
+  </script>
+  <script>window.__I18N_CONFIG__ = { localePath: '../../packages/shared/web/i18n/' }</script>
+  <script src="../../packages/shared/web/js/i18n.js"></script>
+</body>
+</html>

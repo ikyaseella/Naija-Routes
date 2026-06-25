@@ -1,0 +1,158 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent Dashboard â€” Naija Routes</title>
+  <link rel="stylesheet" href="css/agent.css">
+  <link rel="stylesheet" href="../../packages/shared/web/css/i18n.css">
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="app-header">
+  <div class="agent-info">
+    <div class="agent-avatar">TU</div>
+    <div>
+      <div class="agent-name">Tunde Adeyemi</div>
+      <div class="agent-park">ðŸ“ Jibowu Motor Park, Lagos</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="online-badge"><div class="online-dot"></div> <span data-i18n="agent.online">Online</span></div>
+    <div class="header-time">09:42 AM</div>
+  </div>
+</div>
+
+<!-- NAV TABS -->
+<div class="nav-tabs">
+  <a href="index.html" class="nav-tab active">ðŸ“Š <span data-i18n="nav.dashboard">Dashboard</span></a>
+  <a href="sell.html" class="nav-tab">ðŸŽ« <span data-i18n="nav.sell_ticket">Sell Ticket</span></a>
+  <a href="scan.html" class="nav-tab">ðŸ“· <span data-i18n="nav.scan_qr">Scan QR</span></a>
+  <a href="#" class="nav-tab">ðŸ¢ <span data-i18n="nav.onboard">Onboard</span></a>
+  <a href="reconcile.html" class="nav-tab">ðŸ’° <span data-i18n="nav.reconcile">Reconcile</span></a>
+  <div class="nav-tab language-switcher" style="margin-left:auto">
+    <select class="language-switcher__select" onchange="I18N.setLanguage(this.value)" style="background:transparent;color:inherit;border:1px solid rgba(255,255,255,0.3);padding:4px 8px;border-radius:4px;font-size:12px">
+      <option value="en">English</option>
+      <option value="yo">Yoruba</option>
+      <option value="ha">Hausa</option>
+      <option value="ig">Igbo</option>
+      <option value="pcm">Pidgin</option>
+    </select>
+  </div>
+</div>
+
+<div class="main">
+  <!-- STATS ROW -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-label" data-i18n="agent.tickets_today">Tickets Today</div>
+      <div class="stat-val green">47</div>
+      <div class="stat-sub"><span>â†‘ 12 </span><span data-i18n="agent.vs_yesterday">vs yesterday</span></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label" data-i18n="agent.cash_collected">Cash Collected</div>
+      <div class="stat-val gold">â‚¦185K</div>
+      <div class="stat-sub" data-i18n="agent.reconcile_by">Reconcile by 6PM</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label" data-i18n="agent.scans_done">Scans Done</div>
+      <div class="stat-val blue">34</div>
+      <div class="stat-sub"><span>13 </span><span data-i18n="agent.pending">pending</span></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label" data-i18n="agent.commission">Commission</div>
+      <div class="stat-val white">â‚¦9,250</div>
+      <div class="stat-sub" data-i18n="agent.this_week">This week</div>
+    </div>
+  </div>
+
+  <!-- QUICK ACTIONS -->
+  <div class="section-title" data-i18n="agent.quick_actions">Quick Actions</div>
+  <div class="action-grid">
+    <a href="sell.html" class="action-btn primary">
+      <div class="action-icon">ðŸŽ«</div>
+      <div>
+        <span class="action-label" data-i18n="agent.sell_ticket_action">Sell Ticket</span>
+        <span class="action-desc" data-i18n="agent.sell_ticket_desc">Walk-up passenger sale</span>
+      </div>
+    </a>
+    <a href="scan.html" class="action-btn">
+      <div class="action-icon">ðŸ“·</div>
+      <div>
+        <span class="action-label" data-i18n="agent.scan_board_action">Scan &amp; Board</span>
+        <span class="action-desc" data-i18n="agent.scan_board_desc">Verify QR ticket</span>
+      </div>
+    </a>
+    <a href="#" class="action-btn">
+      <div class="action-icon">ðŸ¢</div>
+      <div>
+        <span class="action-label" data-i18n="agent.add_operator_action">Add Operator</span>
+        <span class="action-desc" data-i18n="agent.add_operator_desc">Register new motor park</span>
+      </div>
+    </a>
+<a href="cargo.html" class="action-btn">
+    <div class="action-icon">ðŸ“¦</div>
+    <div>
+      <span class="action-label" data-i18n="agent.log_cargo_action">Log Cargo</span>
+      <span class="action-desc" data-i18n="agent.log_cargo_desc">Create waybill &amp; receipt</span>
+    </div>
+  </a>
+  </div>
+
+  <!-- RECENT TICKETS TABLE -->
+  <div class="section-title" style="margin-bottom:12px;" data-i18n="agent.todays_tickets">Today's Tickets</div>
+  <div class="tickets-table">
+    <div class="table-header">
+      <div class="table-header-title"><span>47 </span><span data-i18n="agent.tickets_issued">tickets issued today</span></div>
+      <button class="refresh-btn" data-i18n="agent.refresh">â†» Refresh</button>
+    </div>
+    <div class="ticket-row">
+      <div class="ticket-ref">NR-20251225-0047</div>
+      <div>
+        <div class="ticket-passenger">Emeka Okonkwo</div>
+        <div class="ticket-route">Lagos â†’ Abuja Â· 06:00 AM</div>
+      </div>
+      <div class="ticket-amount">â‚¦8,500</div>
+      <div class="ticket-method">ðŸ’µ Cash</div>
+      <div class="status-badge scanned">Boarded</div>
+    </div>
+    <div class="ticket-row">
+      <div class="ticket-ref">NR-20251225-0046</div>
+      <div>
+        <div class="ticket-passenger">Fatima Bello</div>
+        <div class="ticket-route">Lagos â†’ Kano Â· 07:30 AM</div>
+      </div>
+      <div class="ticket-amount">â‚¦12,000</div>
+      <div class="ticket-method">ðŸ’³ POS</div>
+      <div class="status-badge issued">Issued</div>
+    </div>
+    <div class="ticket-row">
+      <div class="ticket-ref">NR-20251225-0045</div>
+      <div>
+        <div class="ticket-passenger">Chisom Eze</div>
+        <div class="ticket-route">Lagos â†’ Enugu Â· 05:30 AM</div>
+      </div>
+      <div class="ticket-amount">â‚¦9,000</div>
+      <div class="ticket-method">ðŸ“² Transfer</div>
+      <div class="status-badge scanned">Boarded</div>
+    </div>
+    <div class="ticket-row">
+      <div class="ticket-ref">NR-20251225-0044</div>
+      <div>
+        <div class="ticket-passenger">Musa Ibrahim</div>
+        <div class="ticket-route">Lagos â†’ Abuja Â· 06:00 AM</div>
+      </div>
+      <div class="ticket-amount">â‚¦8,500</div>
+      <div class="ticket-method">ðŸ’µ Cash</div>
+      <div class="status-badge pending">Pending</div>
+    </div>
+  </div>
+
+</div>
+
+<script>window.__I18N_CONFIG__ = { localePath: '../../packages/shared/web/i18n/' }</script>
+<script src="../../packages/shared/web/js/i18n.js"></script>
+</body>
+</html>
+

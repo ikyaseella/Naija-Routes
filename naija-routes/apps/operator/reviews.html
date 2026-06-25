@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reviews — Naija Routes Operator Portal</title>
+  <link rel="stylesheet" href="css/operator.css">
+  <link rel="stylesheet" href="/shared/css/i18n.css">
+  <style>
+    .review-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+    .review-author {
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .review-date {
+      font-size: 12px;
+      color: var(--slate);
+    }
+    .stars {
+      color: #F59E0B;
+      font-size: 16px;
+      letter-spacing: 2px;
+    }
+    .review-stats {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+    .stat-chip {
+      font-size: 12px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: #F3F4F6;
+    }
+    .stat-chip.good { background: #D1FAE5; color: #065F46; }
+    .review-body {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #374151;
+    }
+    .rating-summary {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .rating-stat {
+      text-align: center;
+      padding: 16px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+    .rating-stat .big {
+      font-size: 32px;
+      font-weight: 800;
+      color: #1B6B3A;
+    }
+    .rating-stat .lbl {
+      font-size: 12px;
+      color: var(--slate);
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-text">🚌 <span data-i18n="nav.logo">NaijaRoutes</span></div>
+    <div class="sidebar-logo-sub" data-i18n="operator.portal_label">Operator Portal</div>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-label" data-i18n="operator.operations">Operations</div>
+    <a href="index.html" class="nav-item"><span class="nav-icon">📊</span> <span data-i18n="nav.dashboard">Dashboard</span></a>
+    <a href="bookings.html" class="nav-item"><span class="nav-icon">🎫</span> <span data-i18n="nav.bookings">Bookings</span> <span class="nav-badge">8</span></a>
+    <a href="schedules.html" class="nav-item"><span class="nav-icon">🗓</span> <span data-i18n="nav.schedules">Schedules</span></a>
+    <a href="fleet.html" class="nav-item"><span class="nav-icon">🚌</span> <span data-i18n="nav.fleet">Fleet</span></a>
+    <a href="drivers.html" class="nav-item"><span class="nav-icon">👤</span> <span data-i18n="nav.drivers">Drivers</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-label" data-i18n="operator.routes_revenue">Routes &amp; Revenue</div>
+    <a href="routes.html" class="nav-item"><span class="nav-icon">🗺</span> <span data-i18n="nav.routes">Routes</span></a>
+    <a href="analytics.html" class="nav-item"><span class="nav-icon">📈</span> <span data-i18n="nav.analytics">Analytics</span></a>
+    <a href="payouts.html" class="nav-item"><span class="nav-icon">💳</span> <span data-i18n="nav.payouts">Payouts</span></a>
+    <a href="reviews.html" class="nav-item active"><span class="nav-icon">⭐</span> <span data-i18n="nav.reviews">Reviews</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-label" data-i18n="operator.account">Account</div>
+    <a href="company-profile.html" class="nav-item"><span class="nav-icon">🏢</span> <span data-i18n="nav.company_profile">Company Profile</span></a>
+    <a href="notifications.html" class="nav-item"><span class="nav-icon">🔔</span> <span data-i18n="nav.notifications">Notifications</span></a>
+    <a href="settings.html" class="nav-item"><span class="nav-icon">⚙</span> <span data-i18n="nav.settings">Settings</span></a>
+  </div>
+  <div class="sidebar__item" style="margin-top:auto;padding:12px 20px;border-top:1px solid rgba(255,255,255,0.1)">
+    <select class="language-switcher__select" onchange="I18N.setLanguage(this.value)" style="background:transparent;color:inherit;width:100%;border:1px solid rgba(255,255,255,0.2);padding:6px 10px;border-radius:6px;font-size:13px">
+      <option value="en">English</option>
+      <option value="yo">Yoruba</option>
+      <option value="ha">Hausa</option>
+      <option value="ig">Igbo</option>
+      <option value="pcm">Pidgin</option>
+    </select>
+  </div>
+</nav>
+
+<div class="main">
+  <div class="mobile-topbar">
+    <div class="mobile-logo-text">Naija<span>Routes</span> Operator</div>
+    <button class="mobile-hamburger" id="mobileHamburger">☰</button>
+  </div>
+
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="page-title" data-i18n="review.reviews_title">Reviews</div>
+    </div>
+    <div class="topbar-right">
+      <div class="notif-btn">🔔<div class="notif-dot"></div></div>
+      <div class="op-info">
+        <div class="op-avatar">AB</div>
+        <div>
+          <div class="op-name-text">ABC Transport Ltd</div>
+          <div class="op-type">Verified Operator · Lagos</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="rating-summary">
+      <div class="rating-stat">
+        <div class="big">4.7</div>
+        <div class="stars">★★★★★</div>
+        <div class="lbl" data-i18n="review.overall_rating">Overall Rating</div>
+      </div>
+      <div class="rating-stat">
+        <div class="big">128</div>
+        <div class="lbl" data-i18n="review.total_reviews" data-i18n-attr="data-count">128 reviews</div>
+      </div>
+      <div class="rating-stat">
+        <div class="big" style="color:#059669;">4.8</div>
+        <div class="lbl" data-i18n="review.rate_vehicle">Vehicle Condition</div>
+      </div>
+      <div class="rating-stat">
+        <div class="big" style="color:#D97706;">4.2</div>
+        <div class="lbl" data-i18n="review.rate_punctuality">Punctuality</div>
+      </div>
+    </div>
+
+    <div id="reviewsContainer">
+      <div class="review-card">
+        <div class="review-header">
+          <div>
+            <div class="review-author">Emeka Okonkwo</div>
+            <div class="review-date" data-i18n="review.posted_on" data-i18n-attr="data-date">Posted on Dec 20, 2025</div>
+          </div>
+          <div class="stars">★★★★★</div>
+        </div>
+        <div class="review-stats">
+          <span class="stat-chip good" data-i18n="review.rate_operator">Operator: 5</span>
+          <span class="stat-chip good" data-i18n="review.rate_driver">Driver: 4</span>
+          <span class="stat-chip good" data-i18n="review.rate_vehicle">Vehicle: 5</span>
+          <span class="stat-chip" data-i18n="review.rate_punctuality">Punctuality: 4</span>
+        </div>
+        <div class="review-body">Very comfortable bus. AC was working perfectly and we arrived on time.</div>
+      </div>
+
+      <div class="review-card">
+        <div class="review-header">
+          <div>
+            <div class="review-author">Fatima Bello</div>
+            <div class="review-date" data-i18n="review.posted_on" data-i18n-attr="data-date">Posted on Dec 19, 2025</div>
+          </div>
+          <div class="stars">★★★★☆</div>
+        </div>
+        <div class="review-stats">
+          <span class="stat-chip good" data-i18n="review.rate_operator">Operator: 4</span>
+          <span class="stat-chip good" data-i18n="review.rate_driver">Driver: 5</span>
+          <span class="stat-chip good" data-i18n="review.rate_vehicle">Vehicle: 4</span>
+          <span class="stat-chip" data-i18n="review.rate_punctuality">Punctuality: 3</span>
+        </div>
+        <div class="review-body">Driver was excellent but we left 30 minutes late.</div>
+      </div>
+
+      <div class="review-card">
+        <div class="review-header">
+          <div>
+            <div class="review-author">Chisom Eze</div>
+            <div class="review-date" data-i18n="review.posted_on" data-i18n-attr="data-date">Posted on Dec 18, 2025</div>
+          </div>
+          <div class="stars">★★★★★</div>
+        </div>
+        <div class="review-stats">
+          <span class="stat-chip good" data-i18n="review.rate_operator">Operator: 5</span>
+          <span class="stat-chip good" data-i18n="review.rate_driver">Driver: 5</span>
+          <span class="stat-chip good" data-i18n="review.rate_vehicle">Vehicle: 5</span>
+          <span class="stat-chip good" data-i18n="review.rate_punctuality">Punctuality: 5</span>
+        </div>
+        <div class="review-body">Best transport experience I have had in Nigeria. Will definitely use again.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const overlay = document.getElementById('sidebarOverlay');
+  const sidebar = document.getElementById('sidebar');
+  const hamburger = document.getElementById('mobileHamburger');
+  hamburger.addEventListener('click', () => { sidebar.classList.add('open'); overlay.classList.add('open'); });
+  overlay.addEventListener('click', () => { sidebar.classList.remove('open'); overlay.classList.remove('open'); });
+</script>
+<script>window.__I18N_CONFIG__ = { localePath: '/shared/i18n/' }</script>
+<script src="/shared/js/i18n.js"></script>
+</body>
+</html>

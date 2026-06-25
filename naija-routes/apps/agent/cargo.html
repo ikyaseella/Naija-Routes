@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="cargo.agent_title">Log Cargo — Naija Routes Agent</title>
+  <link rel="stylesheet" href="css/agent.css">
+  <link rel="stylesheet" href="/shared/css/i18n.css">
+  <style>
+    .cargo-form { max-width: 600px; margin: 0 auto; padding: 24px; background: var(--white); border-radius: 12px; border: 1px solid var(--border); }
+    .cargo-form h2 { margin-bottom: 20px; font-size: 18px; }
+    .form-row { margin-bottom: 16px; }
+    .form-row label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px; color: var(--charcoal); }
+    .form-row input, .form-row select, .form-row textarea { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; font-family: inherit; }
+    .form-row textarea { resize: vertical; min-height: 70px; }
+    .form-row-inline { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .btn-primary { background: var(--primary); color: white; border: none; padding: 11px 24px; border-radius: 6px; font-weight: 600; font-size: 14px; cursor: pointer; width: 100%; }
+    .btn-primary:hover { background: var(--primary-d); }
+    .receipt { max-width: 600px; margin: 24px auto 0; padding: 24px; background: var(--white); border: 2px solid var(--primary); border-radius: 12px; display: none; }
+    .receipt h3 { color: var(--primary); margin-bottom: 16px; }
+    .receipt-table { width: 100%; font-size: 14px; }
+    .receipt-table td { padding: 6px 0; }
+    .receipt-table td:first-child { font-weight: 600; width: 140px; color: var(--slate); }
+    .receipt .waybill-big { font-size: 20px; font-weight: 800; color: var(--charcoal); text-align: center; padding: 16px; background: #F3F4F6; border-radius: 8px; margin: 16px 0; letter-spacing: 1px; }
+    .status-badge { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+    .status-badge.pending { background: #FEF3C7; color: #92400E; }
+    .status-badge.confirmed { background: #DBEAFE; color: #1E40AF; }
+    .status-badge.in_transit { background: #D1FAE5; color: #065F46; }
+    .status-badge.delivered { background: #D1FAE5; color: #065F46; }
+    .status-badge.cancelled { background: #FEE2E2; color: #991B1B; }
+    .back-link { display: block; margin-bottom: 16px; color: var(--primary); text-decoration: none; font-size: 14px; font-weight: 500; }
+  </style>
+</head>
+<body>
+  <nav class="agent-nav">
+    <div class="nav-inner">
+      <div class="nav-left">
+        <a href="index.html" class="nav-logo" data-i18n="nav.logo">🚌 NaijaRoutes</a>
+        <span class="nav-sub" data-i18n="cargo.agent_nav">Log Cargo</span>
+      </div>
+      <div class="nav-right">
+        <a href="index.html" data-i18n="nav.dashboard" style="color:rgba(255,255,255,0.75);text-decoration:none;font-size:13px;">Dashboard</a>
+        <a href="sell.html" data-i18n="nav.sell_ticket" style="color:rgba(255,255,255,0.75);text-decoration:none;font-size:13px;margin-left:16px;">Sell Ticket</a>
+        <a href="scan.html" data-i18n="nav.scan_qr" style="color:rgba(255,255,255,0.75);text-decoration:none;font-size:13px;margin-left:16px;">Scan QR</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container" style="padding:24px;max-width:700px;margin:0 auto;">
+    <a href="index.html" class="back-link">← <span data-i18n="common.back">Back</span></a>
+
+    <div class="cargo-form" id="cargoForm">
+      <h2 data-i18n="cargo.log_cargo">Log a Cargo Shipment</h2>
+
+      <div class="form-row">
+        <label data-i18n="cargo.shipper_name">Shipper Name</label>
+        <input type="text" id="shipperName" value="Chisom Eze" data-i18n-placeholder="cargo.shipper_name_placeholder">
+      </div>
+      <div class="form-row">
+        <label data-i18n="cargo.shipper_phone">Shipper Phone</label>
+        <input type="tel" id="shipperPhone" value="08044556677" data-i18n-placeholder="cargo.shipper_phone_placeholder">
+      </div>
+      <div class="form-row-inline">
+        <div class="form-row">
+          <label data-i18n="cargo.origin">Origin</label>
+          <select id="origin"><option value="Lagos">Lagos</option><option value="Abuja">Abuja</option><option value="Enugu">Enugu</option><option value="Kano">Kano</option><option value="Ibadan">Ibadan</option><option value="Port Harcourt">Port Harcourt</option></select>
+        </div>
+        <div class="form-row">
+          <label data-i18n="cargo.destination">Destination</label>
+          <select id="destination"><option value="Abuja">Abuja</option><option value="Lagos">Lagos</option><option value="Enugu">Enugu</option><option value="Kano">Kano</option><option value="Ibadan">Ibadan</option><option value="Port Harcourt">Port Harcourt</option></select>
+        </div>
+      </div>
+      <div class="form-row-inline">
+        <div class="form-row">
+          <label data-i18n="cargo.weight">Weight (kg)</label>
+          <input type="number" id="weight" value="10" min="1" max="500">
+        </div>
+        <div class="form-row">
+          <label data-i18n="cargo.travel_date">Travel Date</label>
+          <input type="date" id="travelDate">
+        </div>
+      </div>
+      <div class="form-row">
+        <label data-i18n="cargo.description">Item Description</label>
+        <textarea id="description" data-i18n-placeholder="cargo.description_placeholder"></textarea>
+      </div>
+      <div class="form-row-inline">
+        <div class="form-row">
+          <label data-i18n="cargo.recipient_name">Recipient Name</label>
+          <input type="text" id="recipientName" data-i18n-placeholder="cargo.recipient_name_placeholder">
+        </div>
+        <div class="form-row">
+          <label data-i18n="cargo.recipient_phone">Recipient Phone</label>
+          <input type="tel" id="recipientPhone" data-i18n-placeholder="cargo.recipient_phone_placeholder">
+        </div>
+      </div>
+      <div class="form-row">
+        <label data-i18n="cargo.operator">Operator</label>
+        <select id="operatorSelect"><option value="op-abc">ABC Transport Ltd</option><option value="op-gu001">GUO Transport</option></select>
+      </div>
+
+      <button class="btn-primary" onclick="submitCargo()" data-i18n="cargo.create_waybill">Create Waybill</button>
+    </div>
+
+    <div class="receipt" id="receipt">
+      <h3 data-i18n="cargo.waybill_created">✅ Waybill Created</h3>
+      <div class="waybill-big" id="waybillDisplay">NR-20260625-XXXX</div>
+      <table class="receipt-table">
+        <tr><td data-i18n="cargo.shipper_name">Shipper</td><td id="rShipper">—</td></tr>
+        <tr><td data-i18n="cargo.route_label">Route</td><td id="rRoute">—</td></tr>
+        <tr><td data-i18n="cargo.travel_date">Date</td><td id="rDate">—</td></tr>
+        <tr><td data-i18n="cargo.weight">Weight</td><td id="rWeight">—</td></tr>
+        <tr><td data-i18n="cargo.description">Item</td><td id="rDesc">—</td></tr>
+        <tr><td data-i18n="cargo.recipient">Recipient</td><td id="rRecipient">—</td></tr>
+        <tr><td data-i18n="cargo.price">Price</td><td id="rPrice" style="font-weight:700;font-size:16px;">—</td></tr>
+        <tr><td data-i18n="cargo.status_label">Status</td><td><span class="status-badge pending" id="rStatus">Pending</span></td></tr>
+      </table>
+      <button class="btn-primary" style="margin-top:16px;" onclick="resetForm()" data-i18n="cargo.book_another">Book Another</button>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('travelDate').valueAsDate = new Date(Date.now() + 86400000);
+
+    async function submitCargo() {
+      const payload = {
+        shipperId: 'usr-chisom',
+        shipperName: document.getElementById('shipperName').value,
+        shipperPhone: document.getElementById('shipperPhone').value,
+        operatorId: document.getElementById('operatorSelect').value,
+        origin: document.getElementById('origin').value,
+        destination: document.getElementById('destination').value,
+        travelDate: document.getElementById('travelDate').value,
+        weightKg: parseFloat(document.getElementById('weight').value),
+        description: document.getElementById('description').value,
+        recipientName: document.getElementById('recipientName').value,
+        recipientPhone: document.getElementById('recipientPhone').value,
+      };
+
+      try {
+        const res = await fetch('http://localhost:3000/api/v1/cargo', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const json = await res.json();
+        if (!json.success) { alert(json.error || 'Failed to create waybill'); return; }
+        showReceipt(json.data);
+      } catch {
+        alert('Could not reach server. Ensure the backend is running on port 3000.');
+      }
+    }
+
+    function showReceipt(data) {
+      document.getElementById('cargoForm').style.display = 'none';
+      document.getElementById('receipt').style.display = 'block';
+      document.getElementById('waybillDisplay').textContent = data.waybillNo;
+      document.getElementById('rShipper').textContent = data.shipperName;
+      document.getElementById('rRoute').textContent = `${data.origin} → ${data.destination}`;
+      document.getElementById('rDate').textContent = data.travelDate;
+      document.getElementById('rWeight').textContent = `${data.weightKg} kg`;
+      document.getElementById('rDesc').textContent = data.description;
+      document.getElementById('rRecipient').textContent = `${data.recipientName} (${data.recipientPhone})`;
+      document.getElementById('rPrice').textContent = `₦${(data.priceKobo / 100).toLocaleString()}`;
+      const s = document.getElementById('rStatus');
+      s.textContent = data.status.charAt(0).toUpperCase() + data.status.slice(1).replace('_', ' ');
+      s.className = 'status-badge ' + data.status;
+    }
+
+    function resetForm() {
+      document.getElementById('receipt').style.display = 'none';
+      document.getElementById('cargoForm').style.display = 'block';
+    }
+  </script>
+  <script>window.__I18N_CONFIG__ = { localePath: '/shared/i18n/' }</script>
+  <script src="/shared/js/i18n.js"></script>
+</body>
+</html>

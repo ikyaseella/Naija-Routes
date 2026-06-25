@@ -1,0 +1,812 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Select your seat and complete your booking on Naija Routes.">
+  <title>Seat Selection — Naija Routes</title>
+  <link rel="stylesheet" href="css/theme-deep-roots.css">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="../../packages/shared/web/css/i18n.css">
+  <style>
+    body { background: var(--color-slate-50); }
+
+    .booking-layout {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: var(--space-8);
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: var(--space-8) var(--space-6) var(--space-16);
+      align-items: start;
+    }
+
+    /* Progress Steps */
+    .progress-steps {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      margin-bottom: var(--space-8);
+    }
+
+    .step {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: var(--text-sm);
+      font-weight: var(--weight-semibold);
+    }
+
+    .step-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--text-xs);
+      font-weight: var(--weight-bold);
+    }
+
+    .step.active .step-num {
+      background: var(--color-primary);
+      color: var(--color-white);
+    }
+
+    .step.done .step-num {
+      background: var(--color-primary-l);
+      color: var(--color-primary);
+    }
+
+    .step.inactive .step-num {
+      background: var(--color-slate-200);
+      color: var(--color-slate-500);
+    }
+
+    .step.active { color: var(--color-slate-900); }
+    .step.inactive { color: var(--color-slate-400); }
+    .step-divider { flex: 1; height: 1px; background: var(--color-slate-200); }
+
+    /* Bus Layout */
+    .bus-section {
+      background: var(--color-white);
+      border: 1px solid var(--color-slate-200);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6);
+    }
+
+    .section-title {
+      font-weight: var(--weight-extrabold);
+      font-size: var(--text-lg);
+      margin-bottom: var(--space-6);
+    }
+
+    .bus-wrap {
+      max-width: 340px;
+      margin: 0 auto;
+    }
+
+    .bus-frame {
+      border: 3px solid var(--color-slate-300);
+      border-radius: 24px 24px 12px 12px;
+      padding: var(--space-5) var(--space-5) var(--space-6);
+      background: var(--color-slate-50);
+    }
+
+    .driver-row {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: var(--space-6);
+      padding-bottom: var(--space-5);
+      border-bottom: 2px dashed var(--color-slate-300);
+    }
+
+    .steering {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 4px solid var(--color-slate-400);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .steering::before {
+      content: '';
+      position: absolute;
+      width: 60%;
+      height: 4px;
+      background: var(--color-slate-400);
+      border-radius: 2px;
+    }
+
+    .seat-grid-row {
+      display: grid;
+      grid-template-columns: 1fr 24px 1fr 1fr;
+      gap: var(--space-2);
+      margin-bottom: var(--space-3);
+    }
+
+    .aisle { /* spacer column */ }
+
+    .seat {
+      height: 48px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: var(--weight-bold);
+      font-size: var(--text-xs);
+      cursor: pointer;
+      border: 2px solid;
+      transition: var(--ease-fast);
+      user-select: none;
+    }
+
+    .seat-available {
+      background: var(--color-white);
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+
+    .seat-available:hover {
+      background: var(--color-primary-l);
+      transform: scale(1.05);
+    }
+
+    .seat-booked {
+      background: var(--color-slate-100);
+      border-color: var(--color-slate-200);
+      color: var(--color-slate-300);
+      cursor: not-allowed;
+    }
+
+    .seat-selected {
+      background: var(--color-gold);
+      border-color: var(--color-gold-d);
+      color: var(--color-white);
+      box-shadow: var(--shadow-md);
+      transform: scale(1.05);
+    }
+
+    .back-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-2);
+      margin-top: var(--space-2);
+      padding-top: var(--space-4);
+      border-top: 2px dashed var(--color-slate-200);
+    }
+
+    .seat-legend {
+      display: flex;
+      justify-content: center;
+      gap: var(--space-6);
+      margin-top: var(--space-5);
+      padding-top: var(--space-5);
+      border-top: 1px solid var(--color-slate-100);
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: var(--text-xs);
+      color: var(--color-slate-600);
+    }
+
+    .legend-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      border: 2px solid;
+    }
+
+    /* Passenger Form */
+    .form-section {
+      background: var(--color-white);
+      border: 1px solid var(--color-slate-200);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6);
+      margin-top: var(--space-6);
+    }
+
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-4);
+    }
+
+    /* Summary Sidebar */
+    .summary-card {
+      position: sticky;
+      top: calc(var(--nav-height) + var(--space-8));
+      background: var(--color-white);
+      border: 1px solid var(--color-slate-200);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+    }
+
+    .summary-header {
+      background: var(--color-slate-900);
+      color: var(--color-white);
+      padding: var(--space-5) var(--space-6);
+    }
+
+    .summary-body { padding: var(--space-5) var(--space-6); }
+
+    .trip-info-card {
+      background: var(--color-slate-50);
+      border: 1px solid var(--color-slate-200);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+      margin-bottom: var(--space-5);
+    }
+
+    .summary-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-3);
+      font-size: var(--text-sm);
+    }
+
+    .summary-total {
+      display: flex;
+      justify-content: space-between;
+      font-size: var(--text-xl);
+      font-weight: var(--weight-extrabold);
+      padding-top: var(--space-4);
+      margin-top: var(--space-4);
+      border-top: 1px dashed var(--color-slate-300);
+    }
+
+    .summary-footer {
+      padding: var(--space-4) var(--space-6);
+      background: var(--color-slate-50);
+      border-top: 1px solid var(--color-slate-100);
+    }
+
+    .timer-bar {
+      display: none;
+      background: var(--color-warning-l);
+      border: 1px solid var(--color-warning);
+      border-radius: var(--radius-md);
+      padding: var(--space-3) var(--space-4);
+      font-size: var(--text-sm);
+      font-weight: var(--weight-semibold);
+      color: var(--color-warning);
+      margin-bottom: var(--space-4);
+      text-align: center;
+    }
+
+    @media (max-width: 900px) {
+      .booking-layout { grid-template-columns: 1fr; }
+      .summary-card { position: static; }
+    }
+
+    @media (max-width: 600px) {
+      .form-grid-2 { grid-template-columns: 1fr; }
+      .progress-steps { display: none; }
+    }
+
+    /* Payment Modal */
+    .pay-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+      z-index: 2000; align-items: center; justify-content: center;
+    }
+    .pay-overlay.open { display: flex; }
+    .pay-modal {
+      background: var(--color-white); border-radius: var(--radius-xl);
+      width: 100%; max-width: 440px; margin: var(--space-4);
+      max-height: 90vh; overflow-y: auto;
+    }
+    .pay-modal-header {
+      padding: var(--space-5) var(--space-6);
+      border-bottom: 1px solid var(--color-slate-200);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .pay-modal-header h3 { margin: 0; font-size: var(--text-lg); }
+    .pay-close-btn {
+      background: none; border: none; font-size: 24px; cursor: pointer;
+      color: var(--color-slate-400); padding: 4px 8px; border-radius: 6px;
+    }
+    .pay-close-btn:hover { background: var(--color-slate-100); }
+    .pay-modal-body { padding: var(--space-5) var(--space-6); }
+    .pay-summary {
+      background: var(--color-slate-50); border-radius: var(--radius-md);
+      padding: var(--space-4); margin-bottom: var(--space-5);
+    }
+    .pay-summary-row { display: flex; justify-content: space-between; margin-bottom: var(--space-2); font-size: var(--text-sm); }
+    .pay-summary-row:last-child { margin-bottom: 0; }
+    .pay-summary-total { font-weight: var(--weight-extrabold); font-size: var(--text-lg); color: var(--color-primary); padding-top: var(--space-2); margin-top: var(--space-2); border-top: 1px dashed var(--color-slate-300); }
+    .pay-methods { display: flex; flex-direction: column; gap: var(--space-2); margin-bottom: var(--space-5); }
+    .pay-method {
+      display: flex; align-items: center; gap: var(--space-3);
+      padding: var(--space-3) var(--space-4);
+      border: 2px solid var(--color-slate-200); border-radius: var(--radius-md);
+      cursor: pointer; transition: var(--ease-fast);
+      font-size: var(--text-sm); font-weight: var(--weight-semibold);
+    }
+    .pay-method:hover { border-color: var(--color-primary-l); }
+    .pay-method.selected { border-color: var(--color-primary); background: var(--color-primary-l); }
+    .pay-method-icon { font-size: 20px; }
+    .pay-method-info { flex: 1; }
+    .pay-method-name { font-weight: var(--weight-bold); }
+    .pay-method-desc { font-size: var(--text-xs); color: var(--color-slate-500); }
+    .pay-method-balance { font-size: var(--text-xs); color: var(--color-green); font-weight: var(--weight-semibold); }
+    .pay-method-check { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--color-slate-300); display: flex; align-items: center; justify-content: center; font-size: 12px; color: transparent; }
+    .pay-method.selected .pay-method-check { border-color: var(--color-primary); background: var(--color-primary); color: white; }
+    .pay-btn {
+      width: 100%; padding: var(--space-4); border: none; border-radius: var(--radius-md);
+      font-size: var(--text-base); font-weight: var(--weight-bold); cursor: pointer;
+      background: var(--color-primary); color: var(--color-white);
+      transition: var(--ease-fast);
+    }
+    .pay-btn:hover { background: var(--color-primary-d); }
+    .pay-btn:disabled { background: var(--color-slate-300); cursor: not-allowed; }
+    .pay-btn.loading { opacity: 0.7; pointer-events: none; }
+    .pay-error { display: none; background: var(--color-red-l); border: 1px solid var(--color-red); border-radius: var(--radius-md); padding: var(--space-3) var(--space-4); font-size: var(--text-sm); color: var(--color-red); margin-bottom: var(--space-4); }
+    .pay-error.show { display: block; }
+    .pay-wallet-empty { font-size: var(--text-xs); color: var(--color-slate-400); margin-top: var(--space-1); }
+  </style>
+</head>
+<body>
+
+    <div class="design-label">🎨 <span data-i18n="home.design_label">Naija Routes · Traveller Web App · Design 1 — "Deep Roots"</span></div>
+
+  <!-- NAV -->
+  <nav>
+    <a href="index.html" class="nav-logo" style="text-decoration:none;">🚌 <span data-i18n="nav.logo">NaijaRoutes</span></a>
+    <div class="nav-links">
+      <a href="index.html" data-i18n="nav.routes">Routes</a>
+      <a href="cargo.html" data-i18n="nav.cargo">Cargo</a>
+      <a href="tracking.html" data-i18n="nav.track_bus">Track Bus</a>
+      <a href="#" data-i18n="nav.help">Help</a>
+      <div class="nav__item" data-i18n-language-container>
+        <select class="language-switcher__select" onchange="I18N.setLanguage(this.value)">
+          <option value="en">English</option>
+          <option value="yo">Yoruba</option>
+          <option value="ha">Hausa</option>
+          <option value="ig">Igbo</option>
+          <option value="pcm">Pidgin</option>
+        </select>
+      </div>
+    </div>
+    <button class="nav-cta" data-i18n="nav.sign_in">Sign in</button>
+  </nav>
+
+  <div style="max-width: var(--max-width); margin: 0 auto; padding: var(--space-6) var(--space-6) 0;">
+    <a href="search.html" style="display:inline-flex; align-items:center; gap:var(--space-2); color:var(--color-primary); font-weight:var(--weight-bold); font-size:var(--text-sm);" data-i18n="booking.back_to_results">← Back to Results</a>
+
+    <!-- Progress Steps -->
+    <div class="progress-steps" style="margin-top: var(--space-4);">
+      <div class="step active">
+        <div class="step-num">1</div>
+        <span data-i18n="booking.step_1">Seat Selection</span>
+      </div>
+      <div class="step-divider"></div>
+      <div class="step inactive">
+        <div class="step-num">2</div>
+        <span data-i18n="booking.step_2">Passenger Details</span>
+      </div>
+      <div class="step-divider"></div>
+      <div class="step inactive">
+        <div class="step-num">3</div>
+        <span data-i18n="booking.step_3">Payment</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="booking-layout">
+    <!-- Left Column -->
+    <div>
+      <!-- Bus Seat Picker -->
+      <div class="bus-section">
+        <div class="section-title" data-i18n="booking.pick_seat">🪑 Pick your seat</div>
+
+        <div class="bus-wrap">
+          <div class="bus-frame">
+            <!-- Driver -->
+            <div class="driver-row">
+              <div style="text-align:center; font-size: var(--text-xs); color: var(--color-slate-500);">
+                <div class="steering"></div>
+                <div style="margin-top:4px;" data-i18n="booking.driver">Driver</div>
+              </div>
+            </div>
+
+            <!-- Row 1 -->
+            <div class="seat-grid-row">
+              <button class="seat seat-booked" disabled>1A</button>
+              <div class="aisle"></div>
+              <button class="seat seat-available" onclick="selectSeat(this,'1B')">1B</button>
+              <button class="seat seat-available" onclick="selectSeat(this,'1C')">1C</button>
+            </div>
+
+            <!-- Row 2 -->
+            <div class="seat-grid-row">
+              <button class="seat seat-available" onclick="selectSeat(this,'2A')">2A</button>
+              <div class="aisle"></div>
+              <button class="seat seat-booked" disabled>2B</button>
+              <button class="seat seat-available" onclick="selectSeat(this,'2C')">2C</button>
+            </div>
+
+            <!-- Row 3 -->
+            <div class="seat-grid-row">
+              <button class="seat seat-booked" disabled>3A</button>
+              <div class="aisle"></div>
+              <button class="seat seat-booked" disabled>3B</button>
+              <button class="seat seat-available" onclick="selectSeat(this,'3C')">3C</button>
+            </div>
+
+            <!-- Row 4 -->
+            <div class="seat-grid-row">
+              <button class="seat seat-booked" disabled>4A</button>
+              <div class="aisle"></div>
+              <button class="seat seat-available" onclick="selectSeat(this,'4B')">4B</button>
+              <button class="seat seat-available" onclick="selectSeat(this,'4C')">4C</button>
+            </div>
+
+            <!-- Back Row (5 across) -->
+            <div class="back-row">
+              <button class="seat seat-available" onclick="selectSeat(this,'5A')">5A</button>
+              <button class="seat seat-booked" disabled>5B</button>
+              <button class="seat seat-available" onclick="selectSeat(this,'5C')">5C</button>
+              <button class="seat seat-available" onclick="selectSeat(this,'5D')">5D</button>
+            </div>
+          </div>
+
+          <div class="seat-legend">
+            <div class="legend-item"><div class="legend-dot" style="background:var(--color-white); border-color:var(--color-primary);"></div> <span data-i18n="booking.available">Available</span></div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--color-gold); border-color:var(--color-gold-d);"></div> <span data-i18n="booking.selected">Selected</span></div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--color-slate-100); border-color:var(--color-slate-200);"></div> <span data-i18n="booking.taken">Taken</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Passenger Form -->
+      <div class="form-section">
+        <div class="section-title" data-i18n="booking.passenger_details">👤 Passenger Details</div>
+        <form id="bookingForm" novalidate>
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label" for="fullName" data-i18n="booking.full_name">Full Name *</label>
+              <input type="text" id="fullName" class="form-input" data-i18n-placeholder="booking.name_placeholder" placeholder="e.g. Emeka Okonkwo" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="phone" data-i18n="booking.phone_number">Phone Number *</label>
+              <input type="tel" id="phone" class="form-input" data-i18n-placeholder="booking.phone_placeholder" placeholder="080XXXXXXXX" required pattern="^(070|080|081|090|091)\d{8}$">
+              <span class="error-text" id="phoneError" style="display:none;" data-i18n="booking.phone_error">Enter a valid Nigerian number (e.g. 08012345678)</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="email" data-i18n="booking.email_optional">Email Address (Optional — for PDF receipt)</label>
+            <input type="email" id="email" class="form-input" data-i18n-placeholder="booking.email_placeholder" placeholder="you@email.com">
+          </div>
+
+          <h5 style="margin: var(--space-5) 0 var(--space-4); padding-top: var(--space-5); border-top: 1px solid var(--color-slate-100);" data-i18n="booking.emergency_contact">🆘 Next of Kin (Emergency Contact)</h5>
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label" for="nokName" data-i18n="booking.emergency_name">Full Name *</label>
+              <input type="text" id="nokName" class="form-input" data-i18n-placeholder="booking.emergency_name_placeholder" placeholder="e.g. Chisom Okonkwo" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="nokPhone" data-i18n="booking.emergency_phone">Phone Number *</label>
+              <input type="tel" id="nokPhone" class="form-input" data-i18n-placeholder="booking.emergency_phone_placeholder" placeholder="080XXXXXXXX" required>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Right Column — Summary -->
+    <div>
+      <div class="summary-card">
+        <div class="summary-header">
+          <div style="font-size:var(--text-xs); opacity:0.6; margin-bottom:4px;" data-i18n="booking.your_booking">YOUR BOOKING</div>
+          <div style="font-weight:var(--weight-extrabold); font-size:var(--text-lg);" id="summaryOperator">GUO Transport</div>
+        </div>
+        <div class="summary-body">
+          <div class="trip-info-card">
+            <div style="display:flex; align-items:center; gap:var(--space-4);">
+              <div style="text-align:center;">
+                <div style="font-weight:var(--weight-extrabold); font-size:var(--text-lg);" id="summaryDep">06:30</div>
+                <div style="font-size:var(--text-xs); color:var(--color-slate-500);" id="summaryFrom">Lagos</div>
+              </div>
+              <div style="flex:1; text-align:center; font-size:var(--text-xs); color:var(--color-slate-400);">————→</div>
+              <div style="text-align:center;">
+                <div style="font-weight:var(--weight-extrabold); font-size:var(--text-lg);" id="summaryArr">17:00</div>
+                <div style="font-size:var(--text-xs); color:var(--color-slate-500);" id="summaryTo">Abuja</div>
+              </div>
+            </div>
+          </div>
+
+          <div id="timerBar" class="timer-bar"><span data-i18n="booking.seat_reserved">⏱ Seat reserved for</span> <strong id="timerDisplay">10:00</strong></div>
+
+          <div class="summary-line">
+            <span class="text-muted" data-i18n="booking.selected_seat">Selected Seat</span>
+            <span style="font-weight:var(--weight-bold); font-family:var(--font-mono); color:var(--color-gold);" id="summarySeat">—</span>
+          </div>
+          <div class="summary-line">
+            <span class="text-muted" data-i18n="booking.ticket_price">Ticket Price</span>
+            <span id="summaryTicketPrice">₦0</span>
+          </div>
+          <div class="summary-line">
+            <span class="text-muted" data-i18n="booking.booking_fee">Booking Fee</span>
+            <span>₦0</span>
+          </div>
+
+          <div class="summary-total">
+            <span data-i18n="booking.total">Total</span>
+            <span style="color:var(--color-primary);" id="summaryTotal">₦0</span>
+          </div>
+        </div>
+
+        <div class="summary-footer">
+          <button id="checkoutBtn" class="btn btn-primary btn-block" disabled onclick="handleCheckout()" data-i18n="booking.proceed_to_payment">
+            Proceed to Payment
+          </button>
+          <p class="text-center text-muted" style="font-size:var(--text-xs); margin-top:var(--space-2); margin-bottom:0;" data-i18n="booking.seat_locked_note">
+            🔒 Seat locked for 10 minutes after clicking
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Payment Modal -->
+  <div class="pay-overlay" id="payOverlay">
+    <div class="pay-modal" onclick="event.stopPropagation()">
+      <div class="pay-modal-header">
+        <h3 data-i18n="payment.title">Complete Payment</h3>
+        <button class="pay-close-btn" onclick="closePayModal()">&times;</button>
+      </div>
+      <div class="pay-modal-body">
+        <div class="pay-summary">
+          <div class="pay-summary-row"><span data-i18n="payment.ticket_price">Ticket Price</span><span id="paySummaryPrice">₦0</span></div>
+          <div class="pay-summary-row"><span data-i18n="payment.booking_fee">Booking Fee</span><span>₦0</span></div>
+          <div class="pay-summary-total" style="display:flex;justify-content:space-between;">
+            <span data-i18n="payment.total">Total</span>
+            <span id="paySummaryTotal">₦0</span>
+          </div>
+        </div>
+
+        <div class="pay-error" id="payError"></div>
+
+        <div style="font-weight:var(--weight-bold);font-size:var(--text-sm);margin-bottom:var(--space-3);" data-i18n="payment.choose_method">Choose payment method</div>
+        <div class="pay-methods" id="payMethods">
+          <div class="pay-method" data-method="wallet" onclick="selectPayMethod('wallet')">
+            <span class="pay-method-icon">💰</span>
+            <div class="pay-method-info">
+              <div class="pay-method-name" data-i18n="payment.wallet">Wallet</div>
+              <div class="pay-method-desc"><span data-i18n="payment.balance_label">Balance</span>: <strong id="walletBalanceDisplay">—</strong></div>
+            </div>
+            <div class="pay-method-check" id="walletCheck">✓</div>
+          </div>
+          <div class="pay-method" data-method="card" onclick="selectPayMethod('card')">
+            <span class="pay-method-icon">💳</span>
+            <div class="pay-method-info">
+              <div class="pay-method-name" data-i18n="payment.card">Card Payment</div>
+              <div class="pay-method-desc" data-i18n="payment.card_desc">Pay with debit/credit card</div>
+            </div>
+            <div class="pay-method-check" id="cardCheck">✓</div>
+          </div>
+          <div class="pay-method" data-method="bank_transfer" onclick="selectPayMethod('bank_transfer')">
+            <span class="pay-method-icon">🏦</span>
+            <div class="pay-method-info">
+              <div class="pay-method-name" data-i18n="payment.bank_transfer">Bank Transfer</div>
+              <div class="pay-method-desc" data-i18n="payment.transfer_desc">Transfer via internet banking</div>
+            </div>
+            <div class="pay-method-check" id="bankCheck">✓</div>
+          </div>
+        </div>
+
+        <button class="pay-btn" id="payBtn" onclick="processPayment()" disabled data-i18n="payment.pay">Pay</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let selectedSeat = null;
+    let timerInterval = null;
+    let secondsRemaining = 0;
+
+    // Read URL params
+    const params = new URLSearchParams(window.location.search);
+    const operatorName = decodeURIComponent(params.get('operator') || 'GUO Transport');
+    const price = parseInt(params.get('price') || '12500');
+
+    document.getElementById('summaryOperator').textContent = operatorName;
+    document.getElementById('summaryTicketPrice').textContent = `₦${price.toLocaleString()}`;
+
+    function selectSeat(btn, seatNo) {
+      // Deselect current
+      if (selectedSeat) {
+        selectedSeat.className = selectedSeat.className.replace('seat-selected', 'seat-available');
+      }
+
+      // If same seat clicked again, deselect
+      if (selectedSeat === btn) {
+        selectedSeat = null;
+        updateSummary(null);
+        return;
+      }
+
+      // Select new
+      selectedSeat = btn;
+      btn.className = btn.className.replace('seat-available', 'seat-selected');
+      updateSummary(seatNo);
+    }
+
+    function updateSummary(seatNo) {
+      const checkoutBtn = document.getElementById('checkoutBtn');
+      const summarySeat = document.getElementById('summarySeat');
+      const summaryTotal = document.getElementById('summaryTotal');
+
+      if (seatNo) {
+        summarySeat.textContent = seatNo;
+        summaryTotal.textContent = `₦${price.toLocaleString()}`;
+        checkoutBtn.disabled = false;
+        checkoutBtn.textContent = I18N.t('booking.pay_now', { amount: `₦${price.toLocaleString()}` }) + ' →';
+      } else {
+        summarySeat.textContent = I18N.t('booking.not_selected');
+        summaryTotal.textContent = '₦0';
+        checkoutBtn.disabled = true;
+        checkoutBtn.textContent = I18N.t('booking.proceed_to_payment');
+      }
+    }
+
+    function validatePhone(phone) {
+      return /^(070|080|081|090|091)\d{8}$/.test(phone);
+    }
+
+    function handleCheckout() {
+      // Validate form
+      const phone = document.getElementById('phone').value;
+      const fullName = document.getElementById('fullName').value.trim();
+      const nokName = document.getElementById('nokName').value.trim();
+      const nokPhone = document.getElementById('nokPhone').value;
+
+      if (!fullName || !phone || !nokName || !nokPhone) {
+        alert(I18N.t('booking.fill_fields_alert'));
+        document.getElementById('bookingForm').scrollIntoView({ behavior: 'smooth' });
+        return;
+      }
+
+      if (!validatePhone(phone)) {
+        document.getElementById('phoneError').style.display = 'block';
+        document.getElementById('phone').focus();
+        return;
+      }
+
+      document.getElementById('phoneError').style.display = 'none';
+      showPayModal();
+    }
+
+    // ── Payment Modal ──────────────────────────────────────────
+    const USER_ID = 'usr-emeka';
+    let selectedMethod = null;
+    let walletBalanceKobo = 0;
+
+    function showPayModal() {
+      selectedMethod = null;
+      document.getElementById('payError').classList.remove('show');
+      document.querySelectorAll('.pay-method').forEach(m => m.classList.remove('selected'));
+
+      const total = document.getElementById('summaryTotal').textContent;
+      document.getElementById('paySummaryPrice').textContent = total;
+      document.getElementById('paySummaryTotal').textContent = total;
+
+      document.getElementById('payBtn').disabled = true;
+      document.getElementById('payBtn').textContent = I18N.t('payment.pay');
+
+      fetchWallet();
+      document.getElementById('payOverlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closePayModal() {
+      document.getElementById('payOverlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    async function fetchWallet() {
+      try {
+        const res = await fetch(`http://localhost:3000/api/v1/wallet/${USER_ID}`);
+        const json = await res.json();
+        if (json.success) {
+          walletBalanceKobo = json.data.availableKobo;
+          const formatted = '₦' + (walletBalanceKobo / 100).toLocaleString();
+          document.getElementById('walletBalanceDisplay').textContent = formatted;
+        } else {
+          document.getElementById('walletBalanceDisplay').textContent = '—';
+        }
+      } catch {
+        document.getElementById('walletBalanceDisplay').textContent = 'Offline';
+      }
+    }
+
+    function selectPayMethod(method) {
+      selectedMethod = method;
+      document.querySelectorAll('.pay-method').forEach(m => {
+        m.classList.toggle('selected', m.dataset.method === method);
+      });
+      document.getElementById('payBtn').disabled = false;
+
+      const seatNo = selectedSeat?.textContent || '3C';
+      document.getElementById('payBtn').textContent = `${I18N.t('payment.pay')} ${document.getElementById('paySummaryTotal').textContent} via ${method === 'wallet' ? I18N.t('payment.wallet') : method === 'card' ? I18N.t('payment.card') : I18N.t('payment.bank_transfer')}`;
+    }
+
+    async function processPayment() {
+      if (!selectedMethod) return;
+
+      const btn = document.getElementById('payBtn');
+      btn.disabled = true;
+      btn.classList.add('loading');
+      btn.textContent = I18N.t('payment.processing');
+      document.getElementById('payError').classList.remove('show');
+
+      const fullName = document.getElementById('fullName').value.trim();
+      const phone = document.getElementById('phone').value;
+      const seatNo = selectedSeat?.textContent || '3C';
+
+      try {
+        const res = await fetch('http://localhost:3000/api/v1/payments/initiate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            bookingId: `bk-${Date.now()}`,
+            userId: USER_ID,
+            method: selectedMethod,
+            amountKobo: price * 100,
+            metadata: { passengerName: fullName, seatNo, route: `${document.getElementById('summaryFrom').textContent} → ${document.getElementById('summaryTo').textContent}` },
+          }),
+        });
+
+        const json = await res.json();
+        if (json.success && json.data.status === 'success') {
+          closePayModal();
+          window.location.href = `ticket.html?seat=${encodeURIComponent(seatNo)}&name=${encodeURIComponent(fullName)}&phone=${encodeURIComponent(phone)}&price=${price}&operator=${encodeURIComponent(operatorName)}&payment_ref=${encodeURIComponent(json.data.ref)}&payment_method=${encodeURIComponent(selectedMethod)}`;
+        } else if (json.data && json.data.status === 'failed') {
+          document.getElementById('payError').textContent = json.data.metadata?.error || I18N.t('payment.failed');
+          document.getElementById('payError').classList.add('show');
+          btn.disabled = false;
+          btn.classList.remove('loading');
+          btn.textContent = I18N.t('payment.retry');
+        } else {
+          document.getElementById('payError').textContent = json.error || I18N.t('payment.failed');
+          document.getElementById('payError').classList.add('show');
+          btn.disabled = false;
+          btn.classList.remove('loading');
+          btn.textContent = I18N.t('payment.retry');
+        }
+      } catch (err) {
+        document.getElementById('payError').textContent = I18N.t('common.error') + ': ' + err.message;
+        document.getElementById('payError').classList.add('show');
+        btn.disabled = false;
+        btn.classList.remove('loading');
+        btn.textContent = I18N.t('payment.retry');
+      }
+    }
+
+    function updateTimerDisplay() {
+      const mins = String(Math.floor(secondsRemaining / 60)).padStart(2, '0');
+      const secs = String(secondsRemaining % 60).padStart(2, '0');
+      document.getElementById('timerDisplay').textContent = `${mins}:${secs}`;
+    }
+
+    // Hide phone error on input
+    document.getElementById('phone').addEventListener('input', () => {
+      document.getElementById('phoneError').style.display = 'none';
+    });
+  </script>
+  <script>
+  window.__I18N_CONFIG__ = { localePath: '../../packages/shared/web/i18n/' };
+  </script>
+  <script src="../../packages/shared/web/js/i18n.js"></script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Drivers — Naija Routes Operator Portal</title>
+  <link rel="stylesheet" href="css/operator.css">
+  <link rel="stylesheet" href="/shared/css/i18n.css">
+  <style>
+    .dr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+    .dr-card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 16px; display: flex; align-items: center; gap: 16px; }
+    .dr-avatar { width: 48px; height: 48px; border-radius: 50%; background: var(--light); display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 800; color: var(--muted); flex-shrink: 0; }
+    .dr-info { flex: 1; }
+    .dr-name { font-weight: 700; font-size: 15px; }
+    .dr-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .dr-stats { display: flex; gap: 16px; margin-top: 6px; }
+    .dr-stat { font-size: 12px; }
+    .dr-stat strong { color: var(--text); }
+  </style>
+</head>
+<body>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-logo"><div class="sidebar-logo-text">🚌 <span data-i18n="nav.logo">NaijaRoutes</span></div><div class="sidebar-logo-sub" data-i18n="operator.portal_label">Operator Portal</div></div>
+  <div class="sidebar-section"><div class="sidebar-section-label" data-i18n="operator.operations">Operations</div>
+    <a href="index.html" class="nav-item"><span class="nav-icon">📊</span> <span data-i18n="nav.dashboard">Dashboard</span></a>
+    <a href="bookings.html" class="nav-item"><span class="nav-icon">🎫</span> <span data-i18n="nav.bookings">Bookings</span> <span class="nav-badge">8</span></a>
+    <a href="schedules.html" class="nav-item"><span class="nav-icon">🗓</span> <span data-i18n="nav.schedules">Schedules</span></a>
+    <a href="fleet.html" class="nav-item"><span class="nav-icon">🚌</span> <span data-i18n="nav.fleet">Fleet</span></a>
+    <a href="drivers.html" class="nav-item active"><span class="nav-icon">👤</span> <span data-i18n="nav.drivers">Drivers</span></a>
+  </div>
+  <div class="sidebar-section"><div class="sidebar-section-label" data-i18n="operator.routes_revenue">Routes &amp; Revenue</div>
+    <a href="routes.html" class="nav-item"><span class="nav-icon">🗺</span> <span data-i18n="nav.routes">Routes</span></a>
+    <a href="analytics.html" class="nav-item"><span class="nav-icon">📈</span> <span data-i18n="nav.analytics">Analytics</span></a>
+    <a href="payouts.html" class="nav-item"><span class="nav-icon">💳</span> <span data-i18n="nav.payouts">Payouts</span></a>
+    <a href="reviews.html" class="nav-item"><span class="nav-icon">⭐</span> <span data-i18n="nav.reviews">Reviews</span></a>
+  </div>
+  <div class="sidebar-section"><div class="sidebar-section-label" data-i18n="operator.account">Account</div>
+    <a href="company-profile.html" class="nav-item"><span class="nav-icon">🏢</span> <span data-i18n="nav.company_profile">Company Profile</span></a>
+    <a href="notifications.html" class="nav-item"><span class="nav-icon">🔔</span> <span data-i18n="nav.notifications">Notifications</span></a>
+    <a href="settings.html" class="nav-item"><span class="nav-icon">⚙</span> <span data-i18n="nav.settings">Settings</span></a>
+  </div>
+  <div class="sidebar__item" style="margin-top:auto;padding:12px 20px;border-top:1px solid rgba(255,255,255,0.1)">
+    <select class="language-switcher__select" onchange="I18N.setLanguage(this.value)" style="background:transparent;color:inherit;width:100%;border:1px solid rgba(255,255,255,0.2);padding:6px 10px;border-radius:6px;font-size:13px">
+      <option value="en">English</option><option value="yo">Yoruba</option><option value="ha">Hausa</option><option value="ig">Igbo</option><option value="pcm">Pidgin</option>
+    </select>
+  </div>
+</nav>
+<div class="main">
+  <div class="mobile-topbar"><div class="mobile-logo-text">Naija<span>Routes</span> Operator</div><button class="mobile-hamburger" id="mobileHamburger">☰</button></div>
+  <div class="topbar"><div class="topbar-left"><div class="page-title" data-i18n="nav.drivers">Driver Management</div></div><div class="topbar-right"><div class="notif-btn">🔔<div class="notif-dot"></div></div><div class="op-info"><div class="op-avatar">AB</div><div><div class="op-name-text">ABC Transport Ltd</div><div class="op-type">Verified Operator · Lagos</div></div></div></div></div>
+  <div class="content">
+    <div style="display:flex;gap:12px;margin-bottom:16px;">
+      <div style="flex:1;background:var(--green-l);border-radius:10px;padding:16px;text-align:center;"><div style="font-size:32px;font-weight:800;color:var(--green);">6</div><div style="font-size:13px;color:var(--green);font-weight:600;">Active Drivers</div></div>
+      <div style="flex:1;background:var(--gold-l);border-radius:10px;padding:16px;text-align:center;"><div style="font-size:32px;font-weight:800;color:var(--gold);">2</div><div style="font-size:13px;color:var(--gold);font-weight:600;">Off Duty</div></div>
+      <div style="flex:1;background:var(--red-l);border-radius:10px;padding:16px;text-align:center;"><div style="font-size:32px;font-weight:800;color:var(--red);">0</div><div style="font-size:13px;color:var(--red);font-weight:600;">On Leave</div></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <input type="text" placeholder="Search drivers..." style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--white);font-size:13px;width:300px;">
+      <button class="export-btn">+ Add Driver</button>
+    </div>
+    <div class="dr-grid">
+      <div class="dr-card"><div class="dr-avatar">MB</div><div class="dr-info"><div class="dr-name">Musa Bello</div><div class="dr-meta">LSD-481-KA · Lagos → Abuja</div><div class="dr-stats"><span class="dr-stat"><strong>14</strong> trips</span><span class="dr-stat"><strong>4.8</strong> ⭐</span><span class="dr-stat" style="color:var(--green);">● On Route</span></div></div></div>
+      <div class="dr-card"><div class="dr-avatar">CO</div><div class="dr-info"><div class="dr-name">Chinedu Obi</div><div class="dr-meta">LSD-392-DE · Lagos → Ibadan</div><div class="dr-stats"><span class="dr-stat"><strong>11</strong> trips</span><span class="dr-stat"><strong>4.6</strong> ⭐</span><span class="dr-stat" style="color:var(--green);">● On Route</span></div></div></div>
+      <div class="dr-card"><div class="dr-avatar">GE</div><div class="dr-info"><div class="dr-name">Godwin Eze</div><div class="dr-meta">LSD-771-BB · Parked</div><div class="dr-stats"><span class="dr-stat"><strong>9</strong> trips</span><span class="dr-stat"><strong>4.3</strong> ⭐</span><span class="dr-stat" style="color:var(--gold);">● Off Duty</span></div></div></div>
+      <div class="dr-card"><div class="dr-avatar">SA</div><div class="dr-info"><div class="dr-name">Samuel Ade</div><div class="dr-meta">LSD-203-GH · Maintenance</div><div class="dr-stats"><span class="dr-stat"><strong>7</strong> trips</span><span class="dr-stat"><strong>4.5</strong> ⭐</span><span class="dr-stat" style="color:var(--gold);">● Off Duty</span></div></div></div>
+      <div class="dr-card"><div class="dr-avatar">AB</div><div class="dr-info"><div class="dr-name">Adebayo Johnson</div><div class="dr-meta">Relief Driver</div><div class="dr-stats"><span class="dr-stat"><strong>3</strong> trips</span><span class="dr-stat"><strong>4.1</strong> ⭐</span><span class="dr-stat" style="color:var(--green);">● Available</span></div></div></div>
+      <div class="dr-card"><div class="dr-avatar">KO</div><div class="dr-info"><div class="dr-name">Kelechi Okafor</div><div class="dr-meta">Relief Driver</div><div class="dr-stats"><span class="dr-stat"><strong>2</strong> trips</span><span class="dr-stat"><strong>4.0</strong> ⭐</span><span class="dr-stat" style="color:var(--green);">● Available</span></div></div></div>
+    </div>
+  </div>
+</div>
+<script>
+  const overlay = document.getElementById('sidebarOverlay'); const sidebar = document.getElementById('sidebar'); const hamburger = document.getElementById('mobileHamburger');
+  hamburger.addEventListener('click', () => { sidebar.classList.add('open'); overlay.classList.add('open'); });
+  overlay.addEventListener('click', () => { sidebar.classList.remove('open'); overlay.classList.remove('open'); });
+</script>
+<script>window.__I18N_CONFIG__ = { localePath: '/shared/i18n/' }</script>
+<script src="/shared/js/i18n.js"></script>
+</body>
+</html>

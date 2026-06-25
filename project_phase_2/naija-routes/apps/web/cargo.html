@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Send cargo across Nigeria with Naija Routes. Book waybills, track shipments.">
+  <title data-i18n="cargo.title">Send Cargo — Naija Routes</title>
+  <link rel="stylesheet" href="css/theme-deep-roots.css">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="../../packages/shared/web/css/i18n.css">
+  <style>
+    .cargo-hero { max-width: 960px; margin: 0 auto; padding: 40px 20px; }
+    .cargo-hero h1 { font-family: var(--font-display); font-size: var(--text-3xl); color: var(--color-white); margin-bottom: 8px; }
+    .cargo-hero .sub { color: var(--color-slate-400); font-size: var(--text-sm); margin-bottom: 32px; }
+    .cargo-tabs { display: flex; gap: 0; margin-bottom: 24px; background: var(--color-slate-800); border-radius: 10px; overflow: hidden; border: 1px solid var(--color-slate-700); }
+    .cargo-tab { flex: 1; padding: 12px; text-align: center; cursor: pointer; font-weight: 600; font-size: 14px; color: var(--color-slate-400); background: transparent; border: none; transition: all 0.2s; }
+    .cargo-tab.active { background: var(--color-gold); color: var(--green-deep); }
+    .cargo-panel { display: none; }
+    .cargo-panel.active { display: block; }
+    .cargo-card { background: var(--color-slate-800); border: 1px solid var(--color-slate-700); border-radius: 12px; padding: 24px; max-width: 560px; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--color-slate-300); margin-bottom: 4px; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid var(--color-slate-600); border-radius: 6px; background: var(--color-slate-900); color: var(--color-white); font-size: 14px; font-family: inherit; }
+    .form-group textarea { resize: vertical; min-height: 70px; }
+    .form-inline { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .btn-gold { background: var(--color-gold); color: var(--green-deep); border: none; padding: 12px 24px; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; width: 100%; }
+    .track-result { margin-top: 16px; padding: 16px; background: var(--color-slate-800); border: 1px solid var(--color-slate-700); border-radius: 10px; display: none; }
+    .track-result .row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 14px; }
+    .track-result .row .lbl { color: var(--color-slate-400); }
+    .track-result .row .val { color: var(--color-white); font-weight: 600; }
+    .status-badge { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+    .status-badge.pending { background: #FEF3C7; color: #92400E; }
+    .status-badge.confirmed { background: #DBEAFE; color: #1E40AF; }
+    .status-badge.in_transit { background: #D1FAE5; color: #065F46; }
+    .status-badge.delivered { background: #D1FAE5; color: #065F46; }
+    .status-badge.cancelled { background: #FEE2E2; color: #991B1B; }
+    .waybill-big { font-size: 22px; font-weight: 800; color: var(--color-gold); text-align: center; padding: 16px; background: var(--color-slate-900); border-radius: 8px; margin: 16px 0; letter-spacing: 1px; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="nav-logo" style="text-decoration:none;">🚌 <span data-i18n="nav.logo">NaijaRoutes</span></a>
+    <div class="nav-links">
+      <a href="index.html" data-i18n="nav.routes">Routes</a>
+      <a href="cargo.html" class="active" data-i18n="nav.cargo">Cargo</a>
+      <a href="tracking.html" data-i18n="nav.track_bus">Track Bus</a>
+      <a href="#" data-i18n="nav.help">Help</a>
+      <div class="nav__item" data-i18n-language-container>
+        <select class="language-switcher__select" onchange="I18N.setLanguage(this.value)">
+          <option value="en">English</option>
+          <option value="yo">Yoruba</option>
+          <option value="ha">Hausa</option>
+          <option value="ig">Igbo</option>
+          <option value="pcm">Pidgin</option>
+        </select>
+      </div>
+    </div>
+    <button class="nav-cta" data-i18n="nav.sign_in">Sign in</button>
+  </nav>
+
+  <div class="cargo-hero">
+    <h1 data-i18n="cargo.title">Send Cargo</h1>
+    <p class="sub" data-i18n="cargo.subtitle">Ship goods across Nigeria with trusted transport operators. Get a waybill number and track your shipment.</p>
+
+    <div class="cargo-tabs">
+      <button class="cargo-tab active" onclick="switchTab('book')" data-i18n="cargo.book_tab">📦 Book Shipment</button>
+      <button class="cargo-tab" onclick="switchTab('track')" data-i18n="cargo.track_tab">🔍 Track Waybill</button>
+    </div>
+
+    <div id="panel-book" class="cargo-panel active">
+      <div class="cargo-card">
+        <div class="form-inline">
+          <div class="form-group">
+            <label data-i18n="cargo.origin">Origin</label>
+            <select id="wOrigin"><option>Lagos</option><option>Abuja</option><option>Enugu</option><option>Kano</option><option>Ibadan</option><option>Port Harcourt</option></select>
+          </div>
+          <div class="form-group">
+            <label data-i18n="cargo.destination">Destination</label>
+            <select id="wDestination"><option>Abuja</option><option>Lagos</option><option>Enugu</option><option>Kano</option><option>Ibadan</option><option>Port Harcourt</option></select>
+          </div>
+        </div>
+        <div class="form-inline">
+          <div class="form-group">
+            <label data-i18n="cargo.weight">Weight (kg)</label>
+            <input type="number" id="wWeight" value="10" min="1" max="500">
+          </div>
+          <div class="form-group">
+            <label data-i18n="cargo.travel_date">Travel Date</label>
+            <input type="date" id="wDate">
+          </div>
+        </div>
+        <div class="form-group">
+          <label data-i18n="cargo.description">Item Description</label>
+          <textarea id="wDescription" data-i18n-placeholder="cargo.description_placeholder"></textarea>
+        </div>
+        <div class="form-inline">
+          <div class="form-group">
+            <label data-i18n="cargo.recipient_name">Recipient Name</label>
+            <input type="text" id="wRecipientName" data-i18n-placeholder="cargo.recipient_name_placeholder">
+          </div>
+          <div class="form-group">
+            <label data-i18n="cargo.recipient_phone">Recipient Phone</label>
+            <input type="tel" id="wRecipientPhone" data-i18n-placeholder="cargo.recipient_phone_placeholder">
+          </div>
+        </div>
+        <div class="form-group">
+          <label data-i18n="cargo.operator">Operator</label>
+          <select id="wOperator"><option value="op-abc">ABC Transport Ltd</option><option value="op-gu001">GUO Transport</option></select>
+        </div>
+        <button class="btn-gold" onclick="bookCargo()" data-i18n="cargo.book_cargo">Book Shipment</button>
+        <div class="track-result" id="bookResult">
+          <div class="waybill-big" id="bookWaybill">NR-XXXXXXXX</div>
+          <div id="bookDetails"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="panel-track" class="cargo-panel">
+      <div class="cargo-card">
+        <div class="form-group">
+          <label data-i18n="cargo.waybill_label">Waybill Number</label>
+          <input type="text" id="trackWaybill" placeholder="NR-20260625-A7F3" data-i18n-placeholder="cargo.waybill_placeholder">
+        </div>
+        <button class="btn-gold" onclick="trackWaybill()" data-i18n="cargo.track_btn">Track</button>
+        <div class="track-result" id="trackResult">
+          <div class="waybill-big" id="trackWaybillDisplay">NR-XXXXXXXX</div>
+          <div id="trackDetails"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('wDate').valueAsDate = new Date(Date.now() + 86400000);
+
+    function switchTab(tab) {
+      document.querySelectorAll('.cargo-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.cargo-panel').forEach(p => p.classList.remove('active'));
+      if (tab === 'book') {
+        document.querySelectorAll('.cargo-tab')[0].classList.add('active');
+        document.getElementById('panel-book').classList.add('active');
+      } else {
+        document.querySelectorAll('.cargo-tab')[1].classList.add('active');
+        document.getElementById('panel-track').classList.add('active');
+      }
+    }
+
+    async function bookCargo() {
+      const payload = {
+        shipperId: 'usr-web-' + Date.now(),
+        shipperName: 'Web User',
+        shipperPhone: '08000000000',
+        operatorId: document.getElementById('wOperator').value,
+        origin: document.getElementById('wOrigin').value,
+        destination: document.getElementById('wDestination').value,
+        travelDate: document.getElementById('wDate').value,
+        weightKg: parseFloat(document.getElementById('wWeight').value),
+        description: document.getElementById('wDescription').value,
+        recipientName: document.getElementById('wRecipientName').value,
+        recipientPhone: document.getElementById('wRecipientPhone').value,
+      };
+      try {
+        const res = await fetch('http://localhost:3000/api/v1/cargo', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const json = await res.json();
+        if (!json.success) { alert(json.error || 'Failed'); return; }
+        const d = json.data;
+        document.getElementById('bookWaybill').textContent = d.waybillNo;
+        document.getElementById('bookDetails').innerHTML = `
+          <div class="row"><span class="lbl" data-i18n="cargo.route_label">Route</span><span class="val">${d.origin} → ${d.destination}</span></div>
+          <div class="row"><span class="lbl" data-i18n="cargo.weight">Weight</span><span class="val">${d.weightKg} kg</span></div>
+          <div class="row"><span class="lbl" data-i18n="cargo.travel_date">Date</span><span class="val">${d.travelDate}</span></div>
+          <div class="row"><span class="lbl" data-i18n="cargo.price">Price</span><span class="val" style="color:var(--color-gold);">₦${(d.priceKobo / 100).toLocaleString()}</span></div>
+          <div class="row"><span class="lbl" data-i18n="cargo.recipient">Recipient</span><span class="val">${d.recipientName}</span></div>
+        `;
+        document.getElementById('bookResult').style.display = 'block';
+      } catch { alert('Backend must be running on port 3000'); }
+    }
+
+    async function trackWaybill() {
+      const wb = document.getElementById('trackWaybill').value.trim();
+      if (!wb) { alert('Enter a waybill number'); return; }
+      try {
+        const res = await fetch(`http://localhost:3000/api/v1/cargo/waybill/${wb}`);
+        const json = await res.json();
+        if (!json.success) { alert('Waybill not found'); return; }
+        const d = json.data;
+        document.getElementById('trackWaybillDisplay').textContent = d.waybillNo;
+        document.getElementById('trackDetails').innerHTML = `
+          <div class="row"><span class="lbl" data-i18n="cargo.route_label">Route</span><span class="val">${d.origin} → ${d.destination}</span></div>
+          <div class="row"><span class="lbl" data-i18n="cargo.shipper_name">Shipper</span><span class="val">${d.shipperName}</span></div>
+          <div class="row"><span class="lbl" data-i18n="cargo.recipient">Recipient</span><span class="val">${d.recipientName} (${d.recipientPhone})</span></div>
+          <div class="row"><span class="lbl" data-i18n="cargo.status_label">Status</span><span class="val"><span class="status-badge ${d.status}">${d.status.replace('_', ' ')}</span></span></div>
+          <div class="row"><span class="lbl" data-i18n="cargo.travel_date">Date</span><span class="val">${d.travelDate}</span></div>
+          <div class="row"><span class="lbl" data-i18n="cargo.operator">Operator</span><span class="val">${d.operatorName}</span></div>
+        `;
+        document.getElementById('trackResult').style.display = 'block';
+      } catch { alert('Backend must be running on port 3000'); }
+    }
+  </script>
+  <script>window.__I18N_CONFIG__ = { localePath: '../../packages/shared/web/i18n/' }</script>
+  <script src="../../packages/shared/web/js/i18n.js"></script>
+</body>
+</html>

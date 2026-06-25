@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sell Ticket — Naija Routes</title>
+  <link rel="stylesheet" href="css/agent.css">
+  <link rel="stylesheet" href="../../packages/shared/web/css/i18n.css">
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="app-header">
+  <div class="agent-info">
+    <div class="agent-avatar">TU</div>
+    <div>
+      <div class="agent-name">Tunde Adeyemi</div>
+      <div class="agent-park">📍 Jibowu Motor Park, Lagos</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="online-badge"><div class="online-dot"></div> <span data-i18n="agent.online">Online</span></div>
+    <div class="header-time">09:42 AM</div>
+  </div>
+</div>
+
+<!-- NAV TABS -->
+<div class="nav-tabs">
+  <a href="index.html" class="nav-tab">📊 <span data-i18n="nav.dashboard">Dashboard</span></a>
+  <a href="sell.html" class="nav-tab active">🎫 <span data-i18n="nav.sell_ticket">Sell Ticket</span></a>
+  <a href="scan.html" class="nav-tab">📷 <span data-i18n="nav.scan_qr">Scan QR</span></a>
+  <a href="#" class="nav-tab">🏢 <span data-i18n="nav.onboard">Onboard</span></a>
+  <a href="reconcile.html" class="nav-tab">💰 <span data-i18n="nav.reconcile">Reconcile</span></a>
+  <div class="nav-tab language-switcher" style="margin-left:auto">
+    <select class="language-switcher__select" onchange="I18N.setLanguage(this.value)" style="background:transparent;color:inherit;border:1px solid rgba(255,255,255,0.3);padding:4px 8px;border-radius:4px;font-size:12px">
+      <option value="en">English</option>
+      <option value="yo">Yoruba</option>
+      <option value="ha">Hausa</option>
+      <option value="ig">Igbo</option>
+      <option value="pcm">Pidgin</option>
+    </select>
+  </div>
+</div>
+
+<div class="main">
+  <!-- SELL TICKET FORM -->
+  <div class="sell-form">
+    <div class="form-title" data-i18n="agent.sell_title">🎫 Issue Ticket</div>
+    <div class="form-grid">
+      <div class="form-field">
+        <label data-i18n="agent.operator_field">Operator</label>
+        <select>
+          <option>ABC Transport</option>
+          <option>GUO Motors</option>
+          <option>Peace Mass Transit</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label data-i18n="agent.route_field">Route</label>
+        <select>
+          <option>Lagos → Abuja (06:00)</option>
+          <option>Lagos → Ibadan (07:00)</option>
+          <option>Lagos → PH (05:30)</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label data-i18n="agent.passenger_name">Passenger Name</label>
+        <input type="text" data-i18n-placeholder="agent.passenger_name" placeholder="Full name">
+      </div>
+      <div class="form-field">
+        <label data-i18n="agent.phone_field">Phone Number</label>
+        <input type="tel" placeholder="08012345678">
+      </div>
+      <div class="form-field">
+        <label data-i18n="agent.seat_field">Seat Number</label>
+        <input type="text" data-i18n-placeholder="agent.auto_assign" placeholder="Auto-assign" value="12A">
+      </div>
+      <div class="form-field">
+        <label data-i18n="agent.amount_field">Amount (₦)</label>
+        <input type="text" value="8,500" style="font-family:'Space Mono',monospace;color:var(--gold);">
+      </div>
+    </div>
+    <div class="section-title" style="margin-bottom:10px;" data-i18n="agent.payment_method">Payment Method</div>
+    <div class="payment-methods">
+      <div class="pay-chip active" data-i18n="agent.cash">💵 Cash</div>
+      <div class="pay-chip" data-i18n="agent.pos_card">💳 POS/Card</div>
+      <div class="pay-chip" data-i18n="agent.transfer">📲 Transfer</div>
+      <div class="pay-chip" data-i18n="agent.ussd">📟 USSD</div>
+    </div>
+    <button class="issue-btn" data-i18n="agent.issue_ticket_btn">🎫 Issue Ticket &amp; Print QR</button>
+  </div>
+</div>
+
+<script>
+  // Pay chip switching
+  document.querySelectorAll('.pay-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('.pay-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+    });
+  });
+</script>
+
+<script>window.__I18N_CONFIG__ = { localePath: '/__i18n/' }</script>
+<script src="../../packages/shared/web/js/i18n.js"></script>
+</body>
+</html>

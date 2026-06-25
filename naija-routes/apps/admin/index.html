@@ -5,315 +5,740 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard — Naija Routes</title>
   <link rel="stylesheet" href="css/admin.css">
+  <link rel="stylesheet" href="/shared/css/i18n.css">
+  <style>
+    .view { display: none; }
+    .view.active { display: block; }
+    .tb-wrap { overflow-x: auto; }
+    .tb { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .tb th { text-align: left; padding: 8px 12px; font-family: 'IBM Plex Mono',monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); border-bottom: 1px solid var(--border); }
+    .tb td { padding: 8px 12px; border-bottom: 1px solid var(--border); }
+    .tb tr:hover { background: var(--surface2); }
+    .status-badge { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 10px; font-weight: 700; font-family: 'IBM Plex Mono',monospace; }
+    .status-badge.active { background: var(--green-pale); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
+    .status-badge.pending { background: var(--gold-pale); color: var(--gold); border: 1px solid rgba(234,179,8,0.3); }
+    .status-badge.suspended { background: var(--red-pale); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
+    .search-bar { display: flex; gap: 8px; margin-bottom: 16px; }
+    .search-bar input { flex: 1; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; background: var(--surface); color: var(--text); font-size: 13px; font-family: inherit; }
+    .search-bar input:focus { outline: none; border-color: var(--green); }
+    .search-bar button { padding: 8px 16px; border: none; border-radius: 6px; background: var(--green); color: var(--bg); font-weight: 700; font-size: 12px; cursor: pointer; font-family: 'IBM Plex Mono',monospace; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .form-group { margin-bottom: 12px; }
+    .form-group label { display: block; font-size: 11px; color: var(--muted); margin-bottom: 4px; font-family: 'IBM Plex Mono',monospace; text-transform: uppercase; letter-spacing: 1px; }
+    .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; background: var(--surface); color: var(--text); font-size: 13px; font-family: inherit; }
+    .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--green); }
+    .form-group textarea { resize: vertical; min-height: 80px; }
+    .btn-primary { padding: 8px 20px; border: none; border-radius: 6px; background: var(--green); color: var(--bg); font-weight: 700; font-size: 12px; cursor: pointer; font-family: 'IBM Plex Mono',monospace; }
+    .btn-primary:hover { opacity: 0.9; }
+    .alerts-list { display: flex; flex-direction: column; gap: 8px; }
+    .alert-card { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); font-size: 13px; }
+    .alert-card.critical { border-color: rgba(239,68,68,0.3); background: var(--red-pale); }
+    .alert-card.warning { border-color: rgba(234,179,8,0.3); background: var(--gold-pale); }
+    .alert-card.info { border-color: rgba(59,130,246,0.3); background: var(--blue-pale); }
+    .alert-icon { font-size: 20px; flex-shrink: 0; }
+    .alert-body { flex: 1; }
+    .alert-body strong { display: block; margin-bottom: 2px; }
+    .alert-time { font-size: 10px; color: var(--muted); font-family: 'IBM Plex Mono',monospace; }
+    .empty-state { text-align: center; padding: 48px 16px; color: var(--muted); font-size: 14px; }
+    .split-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .config-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+    .config-row:last-child { border-bottom: none; }
+    .toggle { width: 36px; height: 20px; border-radius: 10px; border: none; cursor: pointer; position: relative; background: var(--dim); transition: background .2s; }
+    .toggle.on { background: var(--green); }
+    .toggle::after { content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: white; transition: transform .2s; }
+    .toggle.on::after { transform: translateX(16px); }
+    .security-card { padding: 16px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); margin-bottom: 12px; }
+    .security-card h4 { margin-bottom: 8px; font-size: 14px; }
+    .log-row { padding: 8px 0; border-bottom: 1px solid var(--border); display: flex; gap: 12px; font-size: 12px; font-family: 'IBM Plex Mono',monospace; }
+    .log-row .log-time { color: var(--muted); flex-shrink: 0; width: 70px; }
+    .log-row .log-level { flex-shrink: 0; width: 50px; font-weight: 700; }
+    .log-row .log-level.info { color: var(--blue); }
+    .log-row .log-level.warn { color: var(--gold); }
+    .log-row .log-level.error { color: var(--red); }
+    .log-row .log-msg { color: var(--text); }
+    .announcement-card { padding: 16px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); margin-bottom: 12px; }
+    .announcement-card h4 { margin-bottom: 4px; }
+    .announcement-card .ann-meta { font-size: 11px; color: var(--muted); margin-bottom: 8px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    @media (max-width: 768px) { .split-panel, .form-grid, .grid-3 { grid-template-columns: 1fr; } }
+  </style>
 </head>
 <body>
 
-<!-- Sidebar Overlay (mobile) -->
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
 <!-- SIDEBAR -->
 <nav class="sidebar" id="sidebar">
   <div class="sb-logo">
-    <div class="sb-logo-text">NR_ADMIN</div>
-    <div class="sb-logo-sub">System Console v1.0</div>
+    <div class="sb-logo-text" data-i18n="nav.logo">NR_ADMIN</div>
+    <div class="sb-logo-sub" data-i18n="admin.system_console">System Console v1.0</div>
   </div>
   <div class="sb-section">
-    <div class="sb-section-lbl">Platform</div>
-    <button class="sb-item active">📊 Overview</button>
-    <button class="sb-item">📡 Live Feed</button>
-    <button class="sb-item">🗺 Route Map</button>
-    <button class="sb-item">💰 Transactions</button>
+    <div class="sb-section-lbl" data-i18n="admin.platform">Platform</div>
+    <button class="sb-item active" data-view="overview" data-i18n="nav.overview">📊 Overview</button>
+    <button class="sb-item" data-view="livefeed" data-i18n="nav.live_feed">📡 Live Feed</button>
+    <button class="sb-item" data-view="routemap" data-i18n="nav.route_map">🗺 Route Map</button>
+    <button class="sb-item" data-view="transactions" data-i18n="nav.transactions">💰 Transactions</button>
   </div>
   <div class="sb-section">
-    <div class="sb-section-lbl">Management</div>
-    <button class="sb-item">🏢 Operators <span class="sb-badge gold">12</span></button>
-    <button class="sb-item">🧑‍💼 Agents</button>
-    <button class="sb-item">👤 Users</button>
-    <button class="sb-item">📋 KYC Queue <span class="sb-badge">5</span></button>
+    <div class="sb-section-lbl" data-i18n="admin.management">Management</div>
+    <button class="sb-item" data-view="operators" data-i18n="nav.operators">🏢 Operators <span class="sb-badge gold">12</span></button>
+    <button class="sb-item" data-view="agents" data-i18n="nav.agents">🧑‍💼 Agents</button>
+    <button class="sb-item" data-view="users" data-i18n="nav.users">👤 Users</button>
+    <button class="sb-item" data-view="kyc" data-i18n="nav.kyc_queue">📋 KYC Queue <span class="sb-badge">5</span></button>
   </div>
   <div class="sb-section">
-    <div class="sb-section-lbl">Operations</div>
-    <button class="sb-item">⚠️ Alerts <span class="sb-badge">3</span></button>
-    <button class="sb-item">🚌 Fleet Tracking</button>
-    <button class="sb-item">📦 Cargo</button>
-    <button class="sb-item">📣 Announcements</button>
+    <div class="sb-section-lbl" data-i18n="admin.operations">Operations</div>
+    <button class="sb-item" data-view="alerts" data-i18n="nav.alerts">⚠️ Alerts <span class="sb-badge">3</span></button>
+    <button class="sb-item" data-view="fleet" data-i18n="nav.fleet_tracking">🚌 Fleet Tracking</button>
+    <button class="sb-item" data-view="cargo" data-i18n="nav.cargo_nav">📦 Cargo</button>
+    <button class="sb-item" data-view="announcements" data-i18n="nav.announcements">📣 Announcements</button>
   </div>
   <div class="sb-section">
-    <div class="sb-section-lbl">System</div>
-    <button class="sb-item">⚙️ Config</button>
-    <button class="sb-item">🔒 Security</button>
-    <button class="sb-item">📁 Audit Logs</button>
+    <div class="sb-section-lbl" data-i18n="admin.system">System</div>
+    <button class="sb-item" data-view="config" data-i18n="nav.config">⚙️ Config</button>
+    <button class="sb-item" data-view="security" data-i18n="nav.security">🔒 Security</button>
+    <button class="sb-item" data-view="audit" data-i18n="nav.audit_logs">📁 Audit Logs</button>
+  </div>
+  <div class="sidebar__item" style="margin-top:auto;padding:12px 16px;border-top:1px solid rgba(255,255,255,0.08)">
+    <select class="language-switcher__select" onchange="I18N.setLanguage(this.value)" style="background:transparent;color:#fff;width:100%;border:1px solid rgba(255,255,255,0.2);padding:6px 10px;border-radius:6px;font-size:12px">
+      <option value="en">English</option>
+      <option value="yo">Yoruba</option>
+      <option value="ha">Hausa</option>
+      <option value="ig">Igbo</option>
+      <option value="pcm">Pidgin</option>
+    </select>
   </div>
 </nav>
 
 <!-- MAIN -->
 <div class="main">
-  <!-- MOBILE TOPBAR -->
   <div class="mobile-topbar">
-    <div class="mobile-topbar-logo">NR_ADMIN</div>
+    <div class="mobile-topbar-logo" data-i18n="nav.logo">NR_ADMIN</div>
     <button class="mobile-hamburger" id="mobileHamburger">☰</button>
   </div>
 
-  <!-- DESKTOP TOPBAR -->
   <div class="topbar">
-    <div class="topbar-title">admin / <span>overview</span> / dashboard</div>
+    <div class="topbar-title" data-i18n="admin.breadcrumb">admin / <span id="bcSection">overview</span> / dashboard</div>
     <div class="topbar-right">
-      <div class="live-indicator"><div class="live-dot"></div> LIVE — Refreshing every 30s</div>
+      <div class="live-indicator"><div class="live-dot"></div> <span data-i18n="admin.live_refreshing">LIVE — Refreshing every 30s</span></div>
       <div class="admin-chip">👤 Chidi Okeke · Super Admin</div>
     </div>
   </div>
 
   <div class="content">
 
-    <!-- METRIC GRID -->
-    <div class="metric-grid">
-      <div class="metric-block span2">
-        <div class="metric-lbl">Platform GMV — Today</div>
-        <div class="metric-val green">₦14.2M</div>
-        <div class="metric-delta delta-up">↑ +28% vs same day last week</div>
-      </div>
-      <div class="metric-block">
-        <div class="metric-lbl">Bookings Today</div>
-        <div class="metric-val gold">1,847</div>
-        <div class="metric-delta delta-up">↑ +412</div>
-      </div>
-      <div class="metric-block">
-        <div class="metric-lbl">Active Operators</div>
-        <div class="metric-val blue">483</div>
-        <div class="metric-delta delta-up">↑ +12 this week</div>
-      </div>
-      <div class="metric-block">
-        <div class="metric-lbl">Active Agents</div>
-        <div class="metric-val white">218</div>
-        <div class="metric-delta" style="color:var(--muted);">Across 24 states</div>
-      </div>
-      <div class="metric-block">
-        <div class="metric-lbl">Failed Payments</div>
-        <div class="metric-val red">24</div>
-        <div class="metric-delta delta-down">↑ +6 (1.3%)</div>
-      </div>
-      <div class="metric-block">
-        <div class="metric-lbl">Routes Live</div>
-        <div class="metric-val purple">1,284</div>
-        <div class="metric-delta" style="color:var(--muted);">36 states</div>
-      </div>
-      <div class="metric-block">
-        <div class="metric-lbl">Buses Tracked</div>
-        <div class="metric-val green">342</div>
-        <div class="metric-delta delta-up">↑ GPS active</div>
-      </div>
-      <div class="metric-block">
-        <div class="metric-lbl">Cargo Waybills</div>
-        <div class="metric-val gold">287</div>
-        <div class="metric-delta" style="color:var(--muted);">Today</div>
-      </div>
-      <div class="metric-block">
-        <div class="metric-lbl">NR Commission</div>
-        <div class="metric-val green">₦924K</div>
-        <div class="metric-delta delta-up">↑ +31% MoM</div>
-      </div>
-      <div class="metric-block">
-        <div class="metric-lbl">KYC Pending</div>
-        <div class="metric-val red">5</div>
-        <div class="metric-delta" style="color:var(--muted);">Needs review</div>
-      </div>
-      <div class="metric-block">
-        <div class="metric-lbl">Active Users</div>
-        <div class="metric-val blue">28,441</div>
-        <div class="metric-delta delta-up">↑ 8,200 new this month</div>
-      </div>
-    </div>
-
-    <!-- PANELS -->
-    <div class="panels">
-      <!-- Live Event Feed -->
-      <div class="panel">
-        <div class="panel-head">
-          Live Events
-          <div class="panel-head-badge">● LIVE</div>
+    <!-- ═══ VIEW: OVERVIEW ═══ -->
+    <div class="view active" id="view-overview">
+      <div class="metric-grid">
+        <div class="metric-block span2">
+          <div class="metric-lbl" data-i18n="admin.gmv_today">Platform GMV — Today</div>
+          <div class="metric-val green">₦14.2M</div>
+          <div class="metric-delta delta-up">↑ +28% <span data-i18n="admin.vs_same_day">vs same day last week</span></div>
         </div>
-        <div class="feed-item">
-          <div class="feed-time">09:42:11</div>
-          <div class="feed-text"><strong>Booking confirmed</strong> — Emeka Okonkwo → Lagos–Abuja ABC Transport ₦9,500</div>
-          <div class="feed-tag tag-booking">BOOKING</div>
+        <div class="metric-block">
+          <div class="metric-lbl" data-i18n="operator.bookings_today">Bookings Today</div>
+          <div class="metric-val gold">1,847</div>
+          <div class="metric-delta delta-up">↑ +412</div>
         </div>
-        <div class="feed-item">
-          <div class="feed-time">09:41:58</div>
-          <div class="feed-text"><strong>Payment success</strong> — NR-20251225-1847 Paystack card ₦12,000</div>
-          <div class="feed-tag tag-payment">PAYMENT</div>
+        <div class="metric-block">
+          <div class="metric-lbl" data-i18n="admin.active_operators">Active Operators</div>
+          <div class="metric-val blue">483</div>
+          <div class="metric-delta delta-up">↑ +12 this week</div>
         </div>
-        <div class="feed-item">
-          <div class="feed-time">09:40:33</div>
-          <div class="feed-text"><strong>KYC submitted</strong> — Rimbo Transport Ltd · Abuja · Documents uploaded</div>
-          <div class="feed-tag tag-kyc">KYC</div>
+        <div class="metric-block">
+          <div class="metric-lbl" data-i18n="admin.active_agents">Active Agents</div>
+          <div class="metric-val white">218</div>
+          <div class="metric-delta" style="color:var(--muted);"><span data-i18n="admin.across_states">Across 24 states</span></div>
         </div>
-        <div class="feed-item">
-          <div class="feed-time">09:39:12</div>
-          <div class="feed-text" style="color:var(--red)"><strong>Payment failed</strong> — NR-20251225-1843 card declined · retry 1/3</div>
-          <div class="feed-tag tag-alert">ALERT</div>
+        <div class="metric-block">
+          <div class="metric-lbl" data-i18n="admin.failed_payments">Failed Payments</div>
+          <div class="metric-val red">24</div>
+          <div class="metric-delta delta-down">↑ +6 (1.3%)</div>
         </div>
-        <div class="feed-item">
-          <div class="feed-time">09:38:54</div>
-          <div class="feed-text"><strong>Agent reconciled</strong> — Tunde Adeyemi · Jibowu Park · ₦185,500 cash</div>
-          <div class="feed-tag tag-payment">AGENT</div>
+        <div class="metric-block">
+          <div class="metric-lbl" data-i18n="admin.routes_live">Routes Live</div>
+          <div class="metric-val purple">1,284</div>
+          <div class="metric-delta" style="color:var(--muted);">36 states</div>
         </div>
-        <div class="feed-item">
-          <div class="feed-time">09:37:20</div>
-          <div class="feed-text"><strong>New operator registered</strong> — YTC Motors · Kano State · Pending KYC</div>
-          <div class="feed-tag tag-kyc">KYC</div>
+        <div class="metric-block">
+          <div class="metric-lbl" data-i18n="admin.buses_tracked">Buses Tracked</div>
+          <div class="metric-val green">342</div>
+          <div class="metric-delta delta-up">↑ <span data-i18n="admin.gps_active">GPS active</span></div>
         </div>
-        <div class="feed-item">
-          <div class="feed-time">09:35:08</div>
-          <div class="feed-text"><strong>Booking confirmed</strong> — Fatima Bello → Kano–Abuja ₦5,000</div>
-          <div class="feed-tag tag-booking">BOOKING</div>
+        <div class="metric-block">
+          <div class="metric-lbl" data-i18n="admin.cargo_waybills">Cargo Waybills</div>
+          <div class="metric-val gold">287</div>
+          <div class="metric-delta" style="color:var(--muted);" data-i18n="admin.today">Today</div>
+        </div>
+        <div class="metric-block">
+          <div class="metric-lbl" data-i18n="admin.nr_commission">NR Commission</div>
+          <div class="metric-val green">₦924K</div>
+          <div class="metric-delta delta-up">↑ +31% <span data-i18n="admin.mom">MoM</span></div>
+        </div>
+        <div class="metric-block">
+          <div class="metric-lbl" data-i18n="admin.kyc_pending">KYC Pending</div>
+          <div class="metric-val red">5</div>
+          <div class="metric-delta" style="color:var(--muted);" data-i18n="admin.needs_review">Needs review</div>
+        </div>
+        <div class="metric-block">
+          <div class="metric-lbl" data-i18n="admin.active_users">Active Users</div>
+          <div class="metric-val blue">28,441</div>
+          <div class="metric-delta delta-up">↑ 8,200 <span data-i18n="admin.new_this_month">new this month</span></div>
         </div>
       </div>
 
-      <!-- KYC Queue -->
-      <div class="panel">
-        <div class="panel-head">
-          KYC / Operator Approval Queue
-          <div class="panel-head-badge" style="background:var(--red-pale);color:var(--red);border-color:rgba(239,68,68,0.3);">5 PENDING</div>
-        </div>
-        <div class="kyc-row">
-          <div>
-            <div class="kyc-name">Rimbo Transport Ltd</div>
-            <div class="kyc-detail">Abuja · 12 buses · CAC ✓ · NIN ✓ · Bank ✓</div>
+      <div class="panels">
+        <div class="panel">
+          <div class="panel-head">
+            <span data-i18n="admin.live_events">Live Events</span>
+            <div class="panel-head-badge" data-i18n="admin.live">● LIVE</div>
           </div>
-          <div class="kyc-status kyc-pending">Pending</div>
-          <div style="font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace;">2h ago</div>
-          <button class="kyc-btn">REVIEW</button>
+          <div class="feed-item"><div class="feed-time">09:42:11</div><div class="feed-text"><strong>Booking confirmed</strong> — Emeka Okonkwo → Lagos–Abuja ABC Transport ₦9,500</div><div class="feed-tag tag-booking">BOOKING</div></div>
+          <div class="feed-item"><div class="feed-time">09:41:58</div><div class="feed-text"><strong>Payment success</strong> — NR-20251225-1847 Paystack card ₦12,000</div><div class="feed-tag tag-payment">PAYMENT</div></div>
+          <div class="feed-item"><div class="feed-time">09:40:33</div><div class="feed-text"><strong>KYC submitted</strong> — Rimbo Transport Ltd · Abuja · Documents uploaded</div><div class="feed-tag tag-kyc">KYC</div></div>
+          <div class="feed-item"><div class="feed-time">09:39:12</div><div class="feed-text" style="color:var(--red)"><strong>Payment failed</strong> — NR-20251225-1843 card declined · retry 1/3</div><div class="feed-tag tag-alert">ALERT</div></div>
+          <div class="feed-item"><div class="feed-time">09:38:54</div><div class="feed-text"><strong>Agent reconciled</strong> — Tunde Adeyemi · Jibowu Park · ₦185,500 cash</div><div class="feed-tag tag-payment">AGENT</div></div>
+          <div class="feed-item"><div class="feed-time">09:37:20</div><div class="feed-text"><strong>New operator registered</strong> — YTC Motors · Kano State · Pending KYC</div><div class="feed-tag tag-kyc">KYC</div></div>
+          <div class="feed-item"><div class="feed-time">09:35:08</div><div class="feed-text"><strong>Booking confirmed</strong> — Fatima Bello → Kano–Abuja ₦5,000</div><div class="feed-tag tag-booking">BOOKING</div></div>
         </div>
-        <div class="kyc-row">
-          <div>
-            <div class="kyc-name">YTC Motors</div>
-            <div class="kyc-detail">Kano · 8 buses · CAC ✓ · NIN pending</div>
+        <div class="panel">
+          <div class="panel-head">
+            <span data-i18n="admin.kyc_approval_queue">KYC / Operator Approval Queue</span>
+            <div class="panel-head-badge" style="background:var(--red-pale);color:var(--red);border-color:rgba(239,68,68,0.3);">5 <span data-i18n="admin.pending_count">PENDING</span></div>
           </div>
-          <div class="kyc-status kyc-pending">Pending</div>
-          <div style="font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace;">4h ago</div>
-          <button class="kyc-btn">REVIEW</button>
+          <div class="kyc-row"><div><div class="kyc-name">Rimbo Transport Ltd</div><div class="kyc-detail">Abuja · 12 buses · CAC ✓ · NIN ✓ · Bank ✓</div></div><div class="kyc-status kyc-pending" data-i18n="admin.pending_status">Pending</div><div style="font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace;">2h ago</div><button class="kyc-btn" data-i18n="admin.review">REVIEW</button></div>
+          <div class="kyc-row"><div><div class="kyc-name">YTC Motors</div><div class="kyc-detail">Kano · 8 buses · CAC ✓ · NIN pending</div></div><div class="kyc-status kyc-pending" data-i18n="admin.pending_status">Pending</div><div style="font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace;">4h ago</div><button class="kyc-btn" data-i18n="admin.review">REVIEW</button></div>
+          <div class="kyc-row"><div><div class="kyc-name">Eagle Express Transport</div><div class="kyc-detail">Enugu · 5 buses · All docs submitted</div></div><div class="kyc-status kyc-pending" data-i18n="admin.pending_status">Pending</div><div style="font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace;">6h ago</div><button class="kyc-btn" data-i18n="admin.review">REVIEW</button></div>
+          <div class="kyc-row"><div><div class="kyc-name">Star Line Ltd</div><div class="kyc-detail">Lagos · 20 buses · Docs complete</div></div><div class="kyc-status kyc-approved" data-i18n="admin.approved_status">Approved</div><div style="font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace;">1d ago</div><button class="kyc-btn" style="background:var(--dim);color:var(--muted);cursor:default;" data-i18n="admin.done_status">DONE</button></div>
+          <div class="kyc-row"><div><div class="kyc-name">Chisco Transport</div><div class="kyc-detail">PH · 30 buses · Legacy operator migration</div></div><div class="kyc-status kyc-pending" data-i18n="admin.pending_status">Pending</div><div style="font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace;">8h ago</div><button class="kyc-btn" data-i18n="admin.review">REVIEW</button></div>
         </div>
-        <div class="kyc-row">
-          <div>
-            <div class="kyc-name">Eagle Express Transport</div>
-            <div class="kyc-detail">Enugu · 5 buses · All docs submitted</div>
+      </div>
+
+      <div class="bottom-panels">
+        <div class="panel">
+          <div class="panel-head" data-i18n="admin.state_coverage">State Coverage Heat Map</div>
+          <div class="state-grid">
+            <div class="state-cell sc-high">LG</div><div class="state-cell sc-high">AB</div><div class="state-cell sc-mid">KN</div><div class="state-cell sc-mid">RV</div><div class="state-cell sc-mid">EN</div><div class="state-cell sc-low">PL</div>
+            <div class="state-cell sc-mid">OY</div><div class="state-cell sc-mid">OG</div><div class="state-cell sc-low">KD</div><div class="state-cell sc-mid">AN</div><div class="state-cell sc-low">IM</div><div class="state-cell sc-none">EB</div>
+            <div class="state-cell sc-low">ON</div><div class="state-cell sc-low">EK</div><div class="state-cell sc-low">OS</div><div class="state-cell sc-low">OD</div><div class="state-cell sc-none">BS</div><div class="state-cell sc-none">CR</div>
+            <div class="state-cell sc-none">AK</div><div class="state-cell sc-none">KW</div><div class="state-cell sc-none">SO</div><div class="state-cell sc-none">ZA</div><div class="state-cell sc-none">KT</div><div class="state-cell sc-none">BN</div>
+            <div class="state-cell sc-none">NG</div><div class="state-cell sc-none">NI</div><div class="state-cell sc-none">KC</div><div class="state-cell sc-none">GE</div><div class="state-cell sc-none">YB</div><div class="state-cell sc-none">BU</div>
+            <div class="state-cell sc-none">AD</div><div class="state-cell sc-none">TT</div><div class="state-cell sc-none">NA</div><div class="state-cell sc-none">KB</div><div class="state-cell sc-none">BE</div><div class="state-cell sc-none">FC</div>
           </div>
-          <div class="kyc-status kyc-pending">Pending</div>
-          <div style="font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace;">6h ago</div>
-          <button class="kyc-btn">REVIEW</button>
+          <div style="padding:8px 16px 14px;display:flex;gap:14px;font-size:10px;font-family:'IBM Plex Mono',monospace;flex-wrap:wrap;">
+            <div style="display:flex;align-items:center;gap:4px;"><div style="width:10px;height:10px;border-radius:2px;background:var(--green)"></div><span data-i18n="admin.legend_high">High</span></div>
+            <div style="display:flex;align-items:center;gap:4px;"><div style="width:10px;height:10px;border-radius:2px;background:var(--green-d)"></div><span data-i18n="admin.legend_medium">Medium</span></div>
+            <div style="display:flex;align-items:center;gap:4px;"><div style="width:10px;height:10px;border-radius:2px;background:var(--dim)"></div><span data-i18n="admin.legend_low">Low</span></div>
+            <div style="display:flex;align-items:center;gap:4px;"><div style="width:10px;height:10px;border-radius:2px;background:var(--surface2)"></div><span data-i18n="admin.legend_none">None</span></div>
+          </div>
         </div>
-        <div class="kyc-row">
-          <div>
-            <div class="kyc-name">Star Line Ltd</div>
-            <div class="kyc-detail">Lagos · 20 buses · Docs complete</div>
-          </div>
-          <div class="kyc-status kyc-approved">Approved</div>
-          <div style="font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace;">1d ago</div>
-          <button class="kyc-btn" style="background:var(--dim);color:var(--muted);cursor:default;">DONE</button>
+        <div class="panel">
+          <div class="panel-head" data-i18n="admin.platform_transactions">Platform Transactions</div>
+          <div class="pay-row"><div class="pay-icon">💳</div><div class="pay-desc"><strong data-i18n="admin.paystack_settlement">Paystack card settlement</strong><span>1,284 transactions · Dec 24</span></div><div class="pay-amount in">+₦8.2M</div></div>
+          <div class="pay-row"><div class="pay-icon">📲</div><div class="pay-desc"><strong data-i18n="admin.bank_transfers">Bank transfer receipts</strong><span>342 transfers · Dec 24</span></div><div class="pay-amount in">+₦2.8M</div></div>
+          <div class="pay-row"><div class="pay-icon">💵</div><div class="pay-desc"><strong data-i18n="admin.agent_reconciliations">Agent cash reconciliations</strong><span>218 agents · Dec 24</span></div><div class="pay-amount in">+₦3.1M</div></div>
+          <div class="pay-row"><div class="pay-icon">🏦</div><div class="pay-desc"><strong data-i18n="admin.operator_settlements">Operator settlements paid</strong><span>48 operators · Dec 23</span></div><div class="pay-amount out">-₦12.4M</div></div>
+          <div class="pay-row"><div class="pay-icon">↩️</div><div class="pay-desc"><strong data-i18n="admin.refunds">Refunds processed</strong><span>7 cancellations · Dec 24</span></div><div class="pay-amount out">-₦58K</div></div>
         </div>
-        <div class="kyc-row">
-          <div>
-            <div class="kyc-name">Chisco Transport</div>
-            <div class="kyc-detail">PH · 30 buses · Legacy operator migration</div>
+        <div class="panel">
+          <div class="panel-head" data-i18n="admin.system_health">System Health</div>
+          <div style="padding:14px 16px;display:flex;flex-direction:column;gap:10px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;"><span style="font-family:'IBM Plex Mono',monospace;color:var(--muted);" data-i18n="admin.api_gateway">API Gateway</span><span style="color:var(--green);font-weight:700;font-family:'IBM Plex Mono',monospace;">● 99.98% <span data-i18n="admin.uptime">uptime</span></span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;"><span style="font-family:'IBM Plex Mono',monospace;color:var(--muted);" data-i18n="admin.paystack_webhook">Paystack Webhook</span><span style="color:var(--green);font-weight:700;font-family:'IBM Plex Mono',monospace;">● <span data-i18n="admin.healthy">Healthy</span></span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;"><span style="font-family:'IBM Plex Mono',monospace;color:var(--muted);" data-i18n="admin.termii_sms">Termii SMS</span><span style="color:var(--green);font-weight:700;font-family:'IBM Plex Mono',monospace;">● 99.1% <span data-i18n="admin.delivery_rate">delivery</span></span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;"><span style="font-family:'IBM Plex Mono',monospace;color:var(--muted);" data-i18n="admin.gps_tracking">GPS Tracking</span><span style="color:var(--gold);font-weight:700;font-family:'IBM Plex Mono',monospace;">⚠ 342/400 online</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;"><span style="font-family:'IBM Plex Mono',monospace;color:var(--muted);" data-i18n="admin.postgresql_db">PostgreSQL DB</span><span style="color:var(--green);font-weight:700;font-family:'IBM Plex Mono',monospace;">● 14ms <span data-i18n="admin.avg_query">avg query</span></span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;"><span style="font-family:'IBM Plex Mono',monospace;color:var(--muted);" data-i18n="admin.redis_cache">Redis Cache</span><span style="color:var(--green);font-weight:700;font-family:'IBM Plex Mono',monospace;">● 98% <span data-i18n="admin.hit_rate">hit rate</span></span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;"><span style="font-family:'IBM Plex Mono',monospace;color:var(--muted);" data-i18n="admin.job_queue">Job Queue (BullMQ)</span><span style="color:var(--green);font-weight:700;font-family:'IBM Plex Mono',monospace;">● 0 <span data-i18n="admin.stuck_jobs">stuck jobs</span></span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;"><span style="font-family:'IBM Plex Mono',monospace;color:var(--muted);" data-i18n="admin.search_typesense">Search (Typesense)</span><span style="color:var(--green);font-weight:700;font-family:'IBM Plex Mono',monospace;">● 38ms P95</span></div>
+            <div style="background:var(--red-pale);border:1px solid rgba(239,68,68,0.3);border-radius:6px;padding:10px 12px;margin-top:4px;"><div style="font-size:10px;font-family:'IBM Plex Mono',monospace;color:var(--red);font-weight:700;margin-bottom:4px;">⚠ <span data-i18n="admin.active_alert">ACTIVE ALERT</span></div><div style="font-size:12px;color:var(--red);" data-i18n="admin.alert_text">24 payment failures in last 60 min — Paystack card processing elevated error rate</div></div>
           </div>
-          <div class="kyc-status kyc-pending">Pending</div>
-          <div style="font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace;">8h ago</div>
-          <button class="kyc-btn">REVIEW</button>
         </div>
       </div>
     </div>
 
-    <!-- BOTTOM PANELS -->
-    <div class="bottom-panels">
-      <!-- State Coverage -->
-      <div class="panel">
-        <div class="panel-head">State Coverage Heat Map</div>
-        <div class="state-grid">
-          <div class="state-cell sc-high">LG</div><div class="state-cell sc-high">AB</div><div class="state-cell sc-mid">KN</div><div class="state-cell sc-mid">RV</div><div class="state-cell sc-mid">EN</div><div class="state-cell sc-low">PL</div>
-          <div class="state-cell sc-mid">OY</div><div class="state-cell sc-mid">OG</div><div class="state-cell sc-low">KD</div><div class="state-cell sc-mid">AN</div><div class="state-cell sc-low">IM</div><div class="state-cell sc-none">EB</div>
-          <div class="state-cell sc-low">ON</div><div class="state-cell sc-low">EK</div><div class="state-cell sc-low">OS</div><div class="state-cell sc-low">OD</div><div class="state-cell sc-none">BS</div><div class="state-cell sc-none">CR</div>
-          <div class="state-cell sc-none">AK</div><div class="state-cell sc-none">KW</div><div class="state-cell sc-none">SO</div><div class="state-cell sc-none">ZA</div><div class="state-cell sc-none">KT</div><div class="state-cell sc-none">BN</div>
-          <div class="state-cell sc-none">NG</div><div class="state-cell sc-none">NI</div><div class="state-cell sc-none">KC</div><div class="state-cell sc-none">GE</div><div class="state-cell sc-none">YB</div><div class="state-cell sc-none">BU</div>
-          <div class="state-cell sc-none">AD</div><div class="state-cell sc-none">TT</div><div class="state-cell sc-none">NA</div><div class="state-cell sc-none">KB</div><div class="state-cell sc-none">BE</div><div class="state-cell sc-none">FC</div>
+    <!-- ═══ VIEW: LIVE FEED ═══ -->
+    <div class="view" id="view-livefeed">
+      <div class="panel-head" style="margin-bottom:16px;background:var(--surface);border-radius:8px;border:1px solid var(--border);">
+        <span data-i18n="admin.live_events">Live Event Feed</span>
+        <div class="panel-head-badge" data-i18n="admin.live">● LIVE</div>
+      </div>
+      <div class="search-bar">
+        <input type="text" id="feedSearch" placeholder="Filter events..." oninput="filterFeed(this.value)">
+        <select id="feedTypeFilter" onchange="filterFeed(document.getElementById('feedSearch').value)" style="padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font-size:12px;">
+          <option value="all">All Types</option>
+          <option value="BOOKING">Bookings</option>
+          <option value="PAYMENT">Payments</option>
+          <option value="KYC">KYC</option>
+          <option value="ALERT">Alerts</option>
+          <option value="AGENT">Agent</option>
+        </select>
+      </div>
+      <div class="panel" id="feedContainer">
+        <div class="feed-item" data-type="BOOKING"><div class="feed-time">09:42:11</div><div class="feed-text"><strong>Booking confirmed</strong> — Emeka Okonkwo → Lagos–Abuja ABC Transport ₦9,500</div><div class="feed-tag tag-booking">BOOKING</div></div>
+        <div class="feed-item" data-type="PAYMENT"><div class="feed-time">09:41:58</div><div class="feed-text"><strong>Payment success</strong> — NR-20251225-1847 Paystack card ₦12,000</div><div class="feed-tag tag-payment">PAYMENT</div></div>
+        <div class="feed-item" data-type="KYC"><div class="feed-time">09:40:33</div><div class="feed-text"><strong>KYC submitted</strong> — Rimbo Transport Ltd · Abuja · Documents uploaded</div><div class="feed-tag tag-kyc">KYC</div></div>
+        <div class="feed-item" data-type="ALERT"><div class="feed-time">09:39:12</div><div class="feed-text" style="color:var(--red)"><strong>Payment failed</strong> — NR-20251225-1843 card declined · retry 1/3</div><div class="feed-tag tag-alert">ALERT</div></div>
+        <div class="feed-item" data-type="AGENT"><div class="feed-time">09:38:54</div><div class="feed-text"><strong>Agent reconciled</strong> — Tunde Adeyemi · Jibowu Park · ₦185,500 cash</div><div class="feed-tag tag-payment">AGENT</div></div>
+        <div class="feed-item" data-type="KYC"><div class="feed-time">09:37:20</div><div class="feed-text"><strong>New operator registered</strong> — YTC Motors · Kano State · Pending KYC</div><div class="feed-tag tag-kyc">KYC</div></div>
+        <div class="feed-item" data-type="BOOKING"><div class="feed-time">09:35:08</div><div class="feed-text"><strong>Booking confirmed</strong> — Fatima Bello → Kano–Abuja ₦5,000</div><div class="feed-tag tag-booking">BOOKING</div></div>
+        <div class="feed-item" data-type="PAYMENT"><div class="feed-time">09:33:45</div><div class="feed-text"><strong>Payment success</strong> — NR-20251225-1839 Transfer ₦8,500</div><div class="feed-tag tag-payment">PAYMENT</div></div>
+        <div class="feed-item" data-type="KYC"><div class="feed-time">09:31:22</div><div class="feed-text"><strong>KYC approved</strong> — Bendel Express · Benin City</div><div class="feed-tag tag-kyc">KYC</div></div>
+        <div class="feed-item" data-type="BOOKING"><div class="feed-time">09:30:05</div><div class="feed-text"><strong>Booking cancelled</strong> — Chisom Okafor → Onitsha–Enugu Refund initiated</div><div class="feed-tag tag-booking">BOOKING</div></div>
+      </div>
+    </div>
+
+    <!-- ═══ VIEW: ROUTE MAP ═══ -->
+    <div class="view" id="view-routemap">
+      <div class="panel-head" style="margin-bottom:16px;background:var(--surface);border-radius:8px;border:1px solid var(--border);">
+        <span data-i18n="nav.route_map">Route Map — State Coverage</span>
+      </div>
+      <div class="split-panel">
+        <div class="panel">
+          <div class="panel-head">Route Density by Corridor</div>
+          <div style="padding:16px;display:flex;flex-direction:column;gap:12px;">
+            <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span>Lagos → Abuja</span><span style="color:var(--green);font-weight:700;">142 routes</span></div><div style="height:6px;background:var(--surface2);border-radius:3px;overflow:hidden;"><div style="width:100%;height:100%;background:var(--green);border-radius:3px;"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span>Abuja → Lagos</span><span style="color:var(--green);font-weight:700;">138 routes</span></div><div style="height:6px;background:var(--surface2);border-radius:3px;overflow:hidden;"><div style="width:95%;height:100%;background:var(--green);border-radius:3px;"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span>Lagos → Onitsha</span><span style="color:var(--gold);font-weight:700;">89 routes</span></div><div style="height:6px;background:var(--surface2);border-radius:3px;overflow:hidden;"><div style="width:62%;height:100%;background:var(--gold);border-radius:3px;"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span>Kano → Abuja</span><span style="color:var(--gold);font-weight:700;">76 routes</span></div><div style="height:6px;background:var(--surface2);border-radius:3px;overflow:hidden;"><div style="width:53%;height:100%;background:var(--gold);border-radius:3px;"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span>Enugu → Lagos</span><span style="color:var(--blue);font-weight:700;">54 routes</span></div><div style="height:6px;background:var(--surface2);border-radius:3px;overflow:hidden;"><div style="width:38%;height:100%;background:var(--blue);border-radius:3px;"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span>Port Harcourt → Abuja</span><span style="color:var(--blue);font-weight:700;">41 routes</span></div><div style="height:6px;background:var(--surface2);border-radius:3px;overflow:hidden;"><div style="width:29%;height:100%;background:var(--blue);border-radius:3px;"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span>Ibadan → Abuja</span><span style="color:var(--purple);font-weight:700;">33 routes</span></div><div style="height:6px;background:var(--surface2);border-radius:3px;overflow:hidden;"><div style="width:23%;height:100%;background:var(--purple);border-radius:3px;"></div></div></div>
+          </div>
         </div>
-        <div style="padding:8px 16px 14px;display:flex;gap:14px;font-size:10px;font-family:'IBM Plex Mono',monospace;flex-wrap:wrap;">
-          <div style="display:flex;align-items:center;gap:4px;"><div style="width:10px;height:10px;border-radius:2px;background:var(--green)"></div>High</div>
-          <div style="display:flex;align-items:center;gap:4px;"><div style="width:10px;height:10px;border-radius:2px;background:var(--green-d)"></div>Medium</div>
-          <div style="display:flex;align-items:center;gap:4px;"><div style="width:10px;height:10px;border-radius:2px;background:var(--dim)"></div>Low</div>
-          <div style="display:flex;align-items:center;gap:4px;"><div style="width:10px;height:10px;border-radius:2px;background:var(--surface2)"></div>None</div>
+        <div class="panel">
+          <div class="panel-head">Top Operators by Route Count</div>
+          <div style="padding:16px;display:flex;flex-direction:column;gap:12px;">
+            <div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-bottom:1px solid var(--border);"><span>ABC Transport</span><span style="color:var(--green);font-weight:700;">24 routes</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-bottom:1px solid var(--border);"><span>GUO Transport</span><span style="color:var(--green);font-weight:700;">18 routes</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-bottom:1px solid var(--border);"><span>Chisco Transport</span><span style="color:var(--gold);font-weight:700;">15 routes</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-bottom:1px solid var(--border);"><span>Rimbo Transport</span><span style="color:var(--gold);font-weight:700;">12 routes</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-bottom:1px solid var(--border);"><span>YTC Motors</span><span style="color:var(--blue);font-weight:700;">8 routes</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0;"><span>Eagle Express</span><span style="color:var(--blue);font-weight:700;">5 routes</span></div>
+          </div>
         </div>
       </div>
-
-      <!-- Recent Transactions -->
-      <div class="panel">
-        <div class="panel-head">Platform Transactions</div>
-        <div class="pay-row">
-          <div class="pay-icon">💳</div>
-          <div class="pay-desc"><strong>Paystack card settlement</strong><span>1,284 transactions · Dec 24</span></div>
-          <div class="pay-amount in">+₦8.2M</div>
-        </div>
-        <div class="pay-row">
-          <div class="pay-icon">📲</div>
-          <div class="pay-desc"><strong>Bank transfer receipts</strong><span>342 transfers · Dec 24</span></div>
-          <div class="pay-amount in">+₦2.8M</div>
-        </div>
-        <div class="pay-row">
-          <div class="pay-icon">💵</div>
-          <div class="pay-desc"><strong>Agent cash reconciliations</strong><span>218 agents · Dec 24</span></div>
-          <div class="pay-amount in">+₦3.1M</div>
-        </div>
-        <div class="pay-row">
-          <div class="pay-icon">🏦</div>
-          <div class="pay-desc"><strong>Operator settlements paid</strong><span>48 operators · Dec 23</span></div>
-          <div class="pay-amount out">-₦12.4M</div>
-        </div>
-        <div class="pay-row">
-          <div class="pay-icon">↩️</div>
-          <div class="pay-desc"><strong>Refunds processed</strong><span>7 cancellations · Dec 24</span></div>
-          <div class="pay-amount out">-₦58K</div>
+      <div class="panel" style="margin-top:16px;">
+        <div class="panel-head">36 States Coverage Summary</div>
+        <div style="padding:16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:6px;font-size:12px;">
+          <div style="display:flex;justify-content:space-between;padding:4px 8px;background:var(--surface2);border-radius:4px;"><span>Lagos</span><span style="color:var(--green)">High</span></div>
+          <div style="display:flex;justify-content:space-between;padding:4px 8px;background:var(--surface2);border-radius:4px;"><span>Abuja (FCT)</span><span style="color:var(--green)">High</span></div>
+          <div style="display:flex;justify-content:space-between;padding:4px 8px;background:var(--surface2);border-radius:4px;"><span>Kano</span><span style="color:var(--gold)">Medium</span></div>
+          <div style="display:flex;justify-content:space-between;padding:4px 8px;background:var(--surface2);border-radius:4px;"><span>Rivers</span><span style="color:var(--gold)">Medium</span></div>
+          <div style="display:flex;justify-content:space-between;padding:4px 8px;background:var(--surface2);border-radius:4px;"><span>Enugu</span><span style="color:var(--gold)">Medium</span></div>
+          <div style="display:flex;justify-content:space-between;padding:4px 8px;background:var(--surface2);border-radius:4px;"><span>Plateau</span><span style="color:var(--muted)">Low</span></div>
+          <div style="display:flex;justify-content:space-between;padding:4px 8px;background:var(--surface2);border-radius:4px;"><span>Oyo</span><span style="color:var(--gold)">Medium</span></div>
+          <div style="display:flex;justify-content:space-between;padding:4px 8px;background:var(--surface2);border-radius:4px;"><span>Ogun</span><span style="color:var(--gold)">Medium</span></div>
+          <div style="display:flex;justify-content:space-between;padding:4px 8px;background:var(--surface2);border-radius:4px;"><span>Kaduna</span><span style="color:var(--muted)">Low</span></div>
+          <div style="display:flex;justify-content:space-between;padding:4px 8px;background:var(--surface2);border-radius:4px;"><span>Anambra</span><span style="color:var(--gold)">Medium</span></div>
+          <div style="display:flex;justify-content:space-between;padding:4px 8px;background:var(--surface2);border-radius:4px;"><span>Imo</span><span style="color:var(--muted)">Low</span></div>
+          <div style="display:flex;justify-content:space-between;padding:4px 8px;background:var(--surface2);border-radius:4px;"><span>Others</span><span style="color:var(--dim)">None/Dev</span></div>
         </div>
       </div>
+    </div>
 
-      <!-- System Health -->
+    <!-- ═══ VIEW: TRANSACTIONS ═══ -->
+    <div class="view" id="view-transactions">
+      <div class="panel-head" style="margin-bottom:16px;background:var(--surface);border-radius:8px;border:1px solid var(--border);">
+        <span data-i18n="admin.platform_transactions">All Platform Transactions</span>
+      </div>
+      <div class="search-bar">
+        <input type="text" id="txSearch" placeholder="Search by reference, passenger, or operator..." oninput="filterTransactions(this.value)">
+        <select id="txMethodFilter" onchange="filterTransactions(document.getElementById('txSearch').value)" style="padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font-size:12px;">
+          <option value="all">All Methods</option>
+          <option value="card">Card</option>
+          <option value="transfer">Transfer</option>
+          <option value="cash">Cash</option>
+          <option value="ussd">USSD</option>
+          <option value="wallet">Wallet</option>
+        </select>
+        <select id="txStatusFilter" onchange="filterTransactions(document.getElementById('txSearch').value)" style="padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font-size:12px;">
+          <option value="all">All Status</option>
+          <option value="success">Success</option>
+          <option value="pending">Pending</option>
+          <option value="failed">Failed</option>
+        </select>
+      </div>
       <div class="panel">
-        <div class="panel-head">System Health</div>
-        <div style="padding:14px 16px;display:flex;flex-direction:column;gap:10px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;">
-            <span style="font-family:'IBM Plex Mono',monospace;color:var(--muted);">API Gateway</span>
-            <span style="color:var(--green);font-weight:700;font-family:'IBM Plex Mono',monospace;">● 99.98% uptime</span>
+        <div class="tb-wrap">
+          <table class="tb">
+            <thead><tr><th>Ref</th><th>Passenger</th><th>Route</th><th>Amount</th><th>Method</th><th>Status</th><th>Time</th></tr></thead>
+            <tbody id="txBody">
+              <tr data-method="card" data-status="success"><td style="font-family:'IBM Plex Mono',monospace;">NR-A7F3K2</td><td>Emeka Okonkwo</td><td>Lagos → Abuja</td><td style="color:var(--green);font-weight:600;">₦9,500</td><td>Card</td><td><span class="status-badge active">Success</span></td><td style="color:var(--muted);font-size:11px;">09:42</td></tr>
+              <tr data-method="card" data-status="success"><td style="font-family:'IBM Plex Mono',monospace;">NR-B8G4L3</td><td>Fatima Bello</td><td>Kano → Abuja</td><td style="color:var(--green);font-weight:600;">₦5,000</td><td>Card</td><td><span class="status-badge active">Success</span></td><td style="color:var(--muted);font-size:11px;">09:35</td></tr>
+              <tr data-method="transfer" data-status="success"><td style="font-family:'IBM Plex Mono',monospace;">NR-C9H5M4</td><td>Chisom Okafor</td><td>Onitsha → Enugu</td><td style="color:var(--green);font-weight:600;">₦3,200</td><td>Transfer</td><td><span class="status-badge active">Success</span></td><td style="color:var(--muted);font-size:11px;">09:33</td></tr>
+              <tr data-method="cash" data-status="success"><td style="font-family:'IBM Plex Mono',monospace;">NR-D1I6N5</td><td>Abubakar Sani</td><td>Kano → Lagos</td><td style="color:var(--green);font-weight:600;">₦12,000</td><td>Cash</td><td><span class="status-badge active">Success</span></td><td style="color:var(--muted);font-size:11px;">09:28</td></tr>
+              <tr data-method="card" data-status="failed"><td style="font-family:'IBM Plex Mono',monospace;">NR-E2J7O6</td><td>Ngozi Eze</td><td>Enugu → Abuja</td><td style="color:var(--red);font-weight:600;">₦8,500</td><td>Card</td><td><span class="status-badge suspended">Failed</span></td><td style="color:var(--muted);font-size:11px;">09:25</td></tr>
+              <tr data-method="ussd" data-status="success"><td style="font-family:'IBM Plex Mono',monospace;">NR-F3K8P7</td><td>Habiba Yusuf</td><td>Abuja → Kaduna</td><td style="color:var(--green);font-weight:600;">₦2,800</td><td>USSD</td><td><span class="status-badge active">Success</span></td><td style="color:var(--muted);font-size:11px;">09:20</td></tr>
+              <tr data-method="wallet" data-status="success"><td style="font-family:'IBM Plex Mono',monospace;">NR-G4L9Q8</td><td>Emeka Okonkwo</td><td>Lagos → PH</td><td style="color:var(--green);font-weight:600;">₦11,200</td><td>Wallet</td><td><span class="status-badge active">Success</span></td><td style="color:var(--muted);font-size:11px;">09:15</td></tr>
+              <tr data-method="card" data-status="pending"><td style="font-family:'IBM Plex Mono',monospace;">NR-H5M0R9</td><td>Adaobi Nwosu</td><td>PH → Lagos</td><td style="color:var(--gold);font-weight:600;">₦10,000</td><td>Card</td><td><span class="status-badge pending">Pending</span></td><td style="color:var(--muted);font-size:11px;">09:12</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ VIEW: OPERATORS ═══ -->
+    <div class="view" id="view-operators">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <div class="panel-head" style="margin:0;background:var(--surface);border-radius:8px;border:1px solid var(--border);flex:1;">
+          <span data-i18n="nav.operators">Operator Management</span>
+          <span style="color:var(--muted);font-size:11px;">483 active · 12 pending</span>
+        </div>
+        <button class="btn-primary" style="margin-left:12px;">+ Add Operator</button>
+      </div>
+      <div class="search-bar">
+        <input type="text" id="opSearch" placeholder="Search operators by name, city, or reg number..." oninput="filterOperators(this.value)">
+        <button onclick="filterOperators(document.getElementById('opSearch').value)">Search</button>
+      </div>
+      <div class="panel">
+        <div class="tb-wrap">
+          <table class="tb">
+            <thead><tr><th>Name</th><th>Reg No</th><th>Base City</th><th>Buses</th><th>Routes</th><th>Rating</th><th>Status</th></tr></thead>
+            <tbody id="opBody">
+              <tr><td style="font-weight:600;">ABC Transport</td><td style="font-family:'IBM Plex Mono',monospace;font-size:11px;">RC-2018-ABC</td><td>Lagos</td><td>24</td><td>24</td><td>4.5 ⭐</td><td><span class="status-badge active">Active</span></td></tr>
+              <tr><td style="font-weight:600;">GUO Transport</td><td style="font-family:'IBM Plex Mono',monospace;font-size:11px;">RC-2019-GUO</td><td>Lagos</td><td>18</td><td>18</td><td>4.3 ⭐</td><td><span class="status-badge active">Active</span></td></tr>
+              <tr><td style="font-weight:600;">Chisco Transport</td><td style="font-family:'IBM Plex Mono',monospace;font-size:11px;">RC-2015-CHI</td><td>Port Harcourt</td><td>30</td><td>15</td><td>4.1 ⭐</td><td><span class="status-badge active">Active</span></td></tr>
+              <tr><td style="font-weight:600;">Rimbo Transport Ltd</td><td style="font-family:'IBM Plex Mono',monospace;font-size:11px;">RC-2020-RIM</td><td>Abuja</td><td>12</td><td>12</td><td>4.0 ⭐</td><td><span class="status-badge pending">Pending</span></td></tr>
+              <tr><td style="font-weight:600;">YTC Motors</td><td style="font-family:'IBM Plex Mono',monospace;font-size:11px;">RC-2021-YTC</td><td>Kano</td><td>8</td><td>8</td><td>3.8 ⭐</td><td><span class="status-badge pending">Pending</span></td></tr>
+              <tr><td style="font-weight:600;">Eagle Express Transport</td><td style="font-family:'IBM Plex Mono',monospace;font-size:11px;">RC-2022-EAG</td><td>Enugu</td><td>5</td><td>5</td><td>4.2 ⭐</td><td><span class="status-badge pending">Pending</span></td></tr>
+              <tr><td style="font-weight:600;">Star Line Ltd</td><td style="font-family:'IBM Plex Mono',monospace;font-size:11px;">RC-2017-STA</td><td>Lagos</td><td>20</td><td>20</td><td>4.4 ⭐</td><td><span class="status-badge active">Active</span></td></tr>
+              <tr><td style="font-weight:600;">Bendel Express</td><td style="font-family:'IBM Plex Mono',monospace;font-size:11px;">RC-2023-BEN</td><td>Benin City</td><td>6</td><td>4</td><td>3.9 ⭐</td><td><span class="status-badge active">Active</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ VIEW: AGENTS ═══ -->
+    <div class="view" id="view-agents">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <div class="panel-head" style="margin:0;background:var(--surface);border-radius:8px;border:1px solid var(--border);flex:1;">
+          <span data-i18n="nav.agents">Agent Management</span>
+          <span style="color:var(--muted);font-size:11px;">218 active agents</span>
+        </div>
+      </div>
+      <div class="grid-3" style="margin-bottom:16px;">
+        <div class="metric-block"><div class="metric-lbl">Total Agents</div><div class="metric-val white">218</div></div>
+        <div class="metric-block"><div class="metric-lbl">Online Now</div><div class="metric-val green">164</div></div>
+        <div class="metric-block"><div class="metric-lbl">Pending Reconciliation</div><div class="metric-val gold">23</div></div>
+      </div>
+      <div class="panel">
+        <div class="tb-wrap">
+          <table class="tb">
+            <thead><tr><th>Name</th><th>Park</th><th>State</th><th>Tickets Today</th><th>Cash Collected</th><th>Commission</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td style="font-weight:600;">Tunde Adeyemi</td><td>Jibowu Park</td><td>Lagos</td><td>47</td><td style="color:var(--green);">₦185,500</td><td style="color:var(--gold);">₦9,275</td><td><span class="status-badge active">Online</span></td></tr>
+              <tr><td style="font-weight:600;">Fatima Bello</td><td>Utako Park</td><td>Abuja</td><td>38</td><td style="color:var(--green);">₦142,000</td><td style="color:var(--gold);">₦7,100</td><td><span class="status-badge active">Online</span></td></tr>
+              <tr><td style="font-weight:600;">Chinedu Okafor</td><td>Asata Park</td><td>Enugu</td><td>29</td><td style="color:var(--green);">₦98,500</td><td style="color:var(--gold);">₦4,925</td><td><span class="status-badge active">Online</span></td></tr>
+              <tr><td style="font-weight:600;">Habiba Yusuf</td><td>Kano Line</td><td>Kano</td><td>22</td><td style="color:var(--green);">₦76,000</td><td style="color:var(--gold);">₦3,800</td><td><span class="status-badge active">Online</span></td></tr>
+              <tr><td style="font-weight:600;">Paul Eze</td><td>Mile 3 Park</td><td>PH</td><td>15</td><td style="color:var(--green);">₦52,000</td><td style="color:var(--gold);">₦2,600</td><td><span class="status-badge pending">Offline</span></td></tr>
+              <tr><td style="font-weight:600;">Simi Ogun</td><td>Gate Park</td><td>Ibadan</td><td>12</td><td style="color:var(--green);">₦41,000</td><td style="color:var(--gold);">₦2,050</td><td><span class="status-badge pending">Offline</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ VIEW: USERS ═══ -->
+    <div class="view" id="view-users">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <div class="panel-head" style="margin:0;background:var(--surface);border-radius:8px;border:1px solid var(--border);flex:1;">
+          <span data-i18n="nav.users">User Management</span>
+          <span style="color:var(--muted);font-size:11px;">28,441 total users</span>
+        </div>
+      </div>
+      <div class="grid-3" style="margin-bottom:16px;">
+        <div class="metric-block"><div class="metric-lbl">Total Users</div><div class="metric-val blue">28,441</div></div>
+        <div class="metric-block"><div class="metric-lbl">New This Month</div><div class="metric-val green">8,200</div></div>
+        <div class="metric-block"><div class="metric-lbl">Verified Users</div><div class="metric-val white">22,184</div></div>
+      </div>
+      <div class="panel">
+        <div class="tb-wrap">
+          <table class="tb">
+            <thead><tr><th>Name</th><th>Phone</th><th>Email</th><th>Role</th><th>Bookings</th><th>Joined</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td style="font-weight:600;">Emeka Okonkwo</td><td style="font-family:'IBM Plex Mono',monospace;font-size:11px;">08031234567</td><td style="font-size:11px;">emeka@email.com</td><td>Traveller</td><td>12</td><td style="color:var(--muted);font-size:11px;">Jan 2026</td><td><span class="status-badge active">Active</span></td></tr>
+              <tr><td style="font-weight:600;">Fatima Bello</td><td style="font-family:'IBM Plex Mono',monospace;font-size:11px;">07098765432</td><td style="font-size:11px;">fatima@email.com</td><td>Traveller</td><td>8</td><td style="color:var(--muted);font-size:11px;">Feb 2026</td><td><span class="status-badge active">Active</span></td></tr>
+              <tr><td style="font-weight:600;">Tunde Adeyemi</td><td style="font-family:'IBM Plex Mono',monospace;font-size:11px;">08123456789</td><td style="font-size:11px;">tunde@naija.com</td><td>Agent</td><td>—</td><td style="color:var(--muted);font-size:11px;">Mar 2026</td><td><span class="status-badge active">Active</span></td></tr>
+              <tr><td style="font-weight:600;">Alhaji Musa</td><td style="font-family:'IBM Plex Mono',monospace;font-size:11px;">09012345678</td><td style="font-size:11px;">musa@guo.com</td><td>Operator</td><td>—</td><td style="color:var(--muted);font-size:11px;">Jan 2026</td><td><span class="status-badge active">Active</span></td></tr>
+              <tr><td style="font-weight:600;">Chidi Okeke</td><td style="font-family:'IBM Plex Mono',monospace;font-size:11px;">07033445566</td><td style="font-size:11px;">chidi@naijaroutes.com</td><td>Admin</td><td>—</td><td style="color:var(--muted);font-size:11px;">Dec 2025</td><td><span class="status-badge active">Active</span></td></tr>
+              <tr><td style="font-weight:600;">Ngozi Eze</td><td style="font-family:'IBM Plex Mono',monospace;font-size:11px;">08099887766</td><td style="font-size:11px;">ngozi@email.com</td><td>Traveller</td><td>3</td><td style="color:var(--muted);font-size:11px;">Apr 2026</td><td><span class="status-badge pending">Inactive</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ VIEW: KYC ═══ -->
+    <div class="view" id="view-kyc">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <div class="panel-head" style="margin:0;background:var(--surface);border-radius:8px;border:1px solid var(--border);flex:1;">
+          <span data-i18n="admin.kyc_approval_queue">KYC / Operator Approval Queue</span>
+          <span class="panel-head-badge" style="background:var(--red-pale);color:var(--red);border-color:rgba(239,68,68,0.3);">5 PENDING</span>
+        </div>
+      </div>
+      <div class="search-bar">
+        <input type="text" placeholder="Search by operator name or reg number...">
+        <select style="padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font-size:12px;">
+          <option value="all">All Status</option>
+          <option value="pending">Pending</option>
+          <option value="approved">Approved</option>
+          <option value="rejected">Rejected</option>
+        </select>
+      </div>
+      <div class="panel">
+        <div class="kyc-row"><div><div class="kyc-name">Rimbo Transport Ltd</div><div class="kyc-detail">Abuja · 12 buses · CAC ✓ · NIN ✓ · Bank ✓ · TIN ✓ · Insurance ✓</div></div><div class="kyc-status kyc-pending">Pending</div><div style="font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace;">2h ago</div><div><button class="kyc-btn" style="background:var(--green);" onclick="approveKYC(this)">APPROVE</button><button class="kyc-btn" style="background:var(--red);margin-left:6px;" onclick="rejectKYC(this)">REJECT</button></div></div>
+        <div class="kyc-row"><div><div class="kyc-name">YTC Motors</div><div class="kyc-detail">Kano · 8 buses · CAC ✓ · NIN pending · Bank pending</div></div><div class="kyc-status kyc-pending">Pending</div><div style="font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace;">4h ago</div><div><button class="kyc-btn" style="background:var(--green);" onclick="approveKYC(this)">APPROVE</button><button class="kyc-btn" style="background:var(--red);margin-left:6px;" onclick="rejectKYC(this)">REJECT</button></div></div>
+        <div class="kyc-row"><div><div class="kyc-name">Eagle Express Transport</div><div class="kyc-detail">Enugu · 5 buses · All docs submitted</div></div><div class="kyc-status kyc-pending">Pending</div><div style="font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace;">6h ago</div><div><button class="kyc-btn" style="background:var(--green);" onclick="approveKYC(this)">APPROVE</button><button class="kyc-btn" style="background:var(--red);margin-left:6px;" onclick="rejectKYC(this)">REJECT</button></div></div>
+        <div class="kyc-row"><div><div class="kyc-name">Star Line Ltd</div><div class="kyc-detail">Lagos · 20 buses · Docs complete</div></div><div class="kyc-status kyc-approved">Approved</div><div style="font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace;">1d ago</div><div><button class="kyc-btn" style="background:var(--dim);color:var(--muted);cursor:default;">DONE</button></div></div>
+        <div class="kyc-row"><div><div class="kyc-name">Chisco Transport</div><div class="kyc-detail">PH · 30 buses · Legacy operator migration</div></div><div class="kyc-status kyc-pending">Pending</div><div style="font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace;">8h ago</div><div><button class="kyc-btn" style="background:var(--green);" onclick="approveKYC(this)">APPROVE</button><button class="kyc-btn" style="background:var(--red);margin-left:6px;" onclick="rejectKYC(this)">REJECT</button></div></div>
+      </div>
+    </div>
+
+    <!-- ═══ VIEW: ALERTS ═══ -->
+    <div class="view" id="view-alerts">
+      <div class="panel-head" style="margin-bottom:16px;background:var(--surface);border-radius:8px;border:1px solid var(--border);">
+        <span data-i18n="nav.alerts">System Alerts</span>
+        <span class="panel-head-badge" style="background:var(--red-pale);color:var(--red);border-color:rgba(239,68,68,0.3);">3 ACTIVE</span>
+      </div>
+      <div class="alerts-list">
+        <div class="alert-card critical">
+          <div class="alert-icon">🚨</div>
+          <div class="alert-body"><strong>Payment processing elevated error rate</strong><span style="font-size:12px;color:var(--muted);">24 payment failures in last 60 min — Paystack card processing elevated error rate</span></div>
+          <div class="alert-time">Active · 18m ago</div>
+        </div>
+        <div class="alert-card warning">
+          <div class="alert-icon">⚠️</div>
+          <div class="alert-body"><strong>GPS device offline cluster</strong><span style="font-size:12px;color:var(--muted);">58 GPS devices offline in North-East region — possible network outage</span></div>
+          <div class="alert-time">Active · 42m ago</div>
+        </div>
+        <div class="alert-card warning">
+          <div class="alert-icon">⚡</div>
+          <div class="alert-body"><strong>API latency spike detected</strong><span style="font-size:12px;color:var(--muted);">P95 latency exceeded 2.5s for /api/v1/routes/search — increased traffic</span></div>
+          <div class="alert-time">Active · 1h ago</div>
+        </div>
+        <div class="alert-card info" style="opacity:0.6;">
+          <div class="alert-icon">✅</div>
+          <div class="alert-body"><strong>Redis cache hit rate recovered</strong><span style="font-size:12px;color:var(--muted);">Cache hit rate returned to 98% after configuration update</span></div>
+          <div class="alert-time">Resolved · 3h ago</div>
+        </div>
+        <div class="alert-card info" style="opacity:0.6;">
+          <div class="alert-icon">✅</div>
+          <div class="alert-body"><strong>SMS delivery queue cleared</strong><span style="font-size:12px;color:var(--muted);">All pending SMS messages delivered successfully</span></div>
+          <div class="alert-time">Resolved · 5h ago</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ VIEW: FLEET ═══ -->
+    <div class="view" id="view-fleet">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <div class="panel-head" style="margin:0;background:var(--surface);border-radius:8px;border:1px solid var(--border);flex:1;">
+          <span data-i18n="nav.fleet_tracking">Fleet Tracking Overview</span>
+          <span style="color:var(--muted);font-size:11px;">342/400 GPS online</span>
+        </div>
+      </div>
+      <div class="grid-3" style="margin-bottom:16px;">
+        <div class="metric-block"><div class="metric-lbl" data-i18n="admin.fleet_total">Total Buses</div><div class="metric-val white">400</div></div>
+        <div class="metric-block"><div class="metric-lbl" data-i18n="admin.fleet_moving">Moving</div><div class="metric-val green">214</div></div>
+        <div class="metric-block"><div class="metric-lbl" data-i18n="admin.fleet_stopped">Stopped</div><div class="metric-val gold">128</div></div>
+      </div>
+      <div class="panel">
+        <div class="tb-wrap">
+          <table class="tb">
+            <thead><tr><th>Plate</th><th>Operator</th><th>Route</th><th>Driver</th><th>Speed</th><th>Last Update</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td style="font-family:'IBM Plex Mono',monospace;">LSD-481-KA</td><td>ABC Transport</td><td>Lagos → Abuja</td><td>Musa Bello</td><td style="color:var(--green);">82 km/h</td><td style="color:var(--muted);font-size:11px;">30s ago</td><td><span class="status-badge active">Moving</span></td></tr>
+              <tr><td style="font-family:'IBM Plex Mono',monospace;">ABJ-723-XZ</td><td>GUO Transport</td><td>Abuja → Kano</td><td>Adamu Sani</td><td style="color:var(--green);">65 km/h</td><td style="color:var(--muted);font-size:11px;">45s ago</td><td><span class="status-badge active">Moving</span></td></tr>
+              <tr><td style="font-family:'IBM Plex Mono',monospace;">LAG-192-MN</td><td>Chisco Transport</td><td>Lagos → PH</td><td>Godwin Eze</td><td style="color:var(--gold);">0 km/h</td><td style="color:var(--muted);font-size:11px;">2m ago</td><td><span class="status-badge pending">Stopped</span></td></tr>
+              <tr><td style="font-family:'IBM Plex Mono',monospace;">KAN-555-OP</td><td>YTC Motors</td><td>Kano → Abuja</td><td>Habibu Yusuf</td><td style="color:var(--green);">71 km/h</td><td style="color:var(--muted);font-size:11px;">1m ago</td><td><span class="status-badge active">Moving</span></td></tr>
+              <tr><td style="font-family:'IBM Plex Mono',monospace;">ENU-888-QR</td><td>Eagle Express</td><td>Enugu → Onitsha</td><td>Chinedu Okafor</td><td style="color:var(--green);">55 km/h</td><td style="color:var(--muted);font-size:11px;">50s ago</td><td><span class="status-badge active">Moving</span></td></tr>
+              <tr><td style="font-family:'IBM Plex Mono',monospace;">IBA-333-ST</td><td>Bendel Express</td><td>Ibadan → Lagos</td><td>Simi Ogun</td><td style="color:var(--red);">0 km/h</td><td style="color:var(--muted);font-size:11px;">15m ago</td><td><span class="status-badge suspended">Offline</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ VIEW: CARGO ═══ -->
+    <div class="view" id="view-cargo">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <div class="panel-head" style="margin:0;background:var(--surface);border-radius:8px;border:1px solid var(--border);flex:1;">
+          <span data-i18n="nav.cargo_nav">Cargo Operations</span>
+          <span style="color:var(--muted);font-size:11px;">287 waybills today</span>
+        </div>
+      </div>
+      <div class="grid-3" style="margin-bottom:16px;">
+        <div class="metric-block"><div class="metric-lbl" data-i18n="admin.total_shipments">Total Shipments</div><div class="metric-val gold">287</div></div>
+        <div class="metric-block"><div class="metric-lbl" data-i18n="admin.active_shipments">Active</div><div class="metric-val green">186</div></div>
+        <div class="metric-block"><div class="metric-lbl" data-i18n="admin.delivered_count">Delivered</div><div class="metric-val blue">94</div></div>
+      </div>
+      <div class="panel">
+        <div class="tb-wrap">
+          <table class="tb">
+            <thead><tr><th>Waybill</th><th>Shipper</th><th>Route</th><th>Weight</th><th>Operator</th><th>Recipient</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td style="font-family:'IBM Plex Mono',monospace;font-size:11px;">NR-WB-2024-001</td><td>Emeka Okonkwo</td><td>Lagos → Abuja</td><td>15 kg</td><td>ABC Transport</td><td>Chisom Okafor</td><td><span class="status-badge active">In Transit</span></td></tr>
+              <tr><td style="font-family:'IBM Plex Mono',monospace;font-size:11px;">NR-WB-2024-002</td><td>Chukwuemeka Nwosu</td><td>Onitsha → Lagos</td><td>42 kg</td><td>GUO Transport</td><td>Adaobi Nwosu</td><td><span class="status-badge active">In Transit</span></td></tr>
+              <tr><td style="font-family:'IBM Plex Mono',monospace;font-size:11px;">NR-WB-2024-003</td><td>Fatima Bello</td><td>Kano → Abuja</td><td>8 kg</td><td>YTC Motors</td><td>Habiba Yusuf</td><td><span class="status-badge active">In Transit</span></td></tr>
+              <tr><td style="font-family:'IBM Plex Mono',monospace;font-size:11px;">NR-WB-2024-004</td><td>Ngozi Eze</td><td>Enugu → PH</td><td>23 kg</td><td>Eagle Express</td><td>Paul Eze</td><td><span class="status-badge" style="background:var(--blue-pale);color:var(--blue);border:1px solid rgba(59,130,246,0.3);">Delivered</span></td></tr>
+              <tr><td style="font-family:'IBM Plex Mono',monospace;font-size:11px;">NR-WB-2024-005</td><td>Alhaji Musa</td><td>Abuja → Kano</td><td>120 kg</td><td>GUO Transport</td><td>Adamu Sani</td><td><span class="status-badge pending">Pending</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ VIEW: ANNOUNCEMENTS ═══ -->
+    <div class="view" id="view-announcements">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <div class="panel-head" style="margin:0;background:var(--surface);border-radius:8px;border:1px solid var(--border);flex:1;">
+          <span data-i18n="nav.announcements">Announcements</span>
+        </div>
+        <button class="btn-primary" style="margin-left:12px;" onclick="showNewAnnouncement()">+ New Announcement</button>
+      </div>
+      <div id="announcementList">
+        <div class="announcement-card">
+          <h4>⚠️ Scheduled Maintenance — Dec 26</h4>
+          <div class="ann-meta">Posted by Chidi Okeke · Dec 24, 2026 · <span class="status-badge active">Active</span></div>
+          <p style="font-size:13px;color:var(--text);">Platform will be in read-only mode from 02:00–04:00 WAT on Dec 26 for database optimization. Bookings and payments will be paused during this window. Tickets and tracking remain available offline.</p>
+        </div>
+        <div class="announcement-card">
+          <h4>🎄 Happy Holidays — Operating Hours Update</h4>
+          <div class="ann-meta">Posted by Admin · Dec 23, 2026 · <span class="status-badge active">Active</span></div>
+          <p style="font-size:13px;color:var(--text);">Agent support hours will be extended during the Christmas and New Year period (Dec 24–Jan 2). All parks operating on holiday schedule. Please check operator dashboards for updated departure times.</p>
+        </div>
+        <div class="announcement-card" style="opacity:0.6;">
+          <h4>✅ Cargo Module Live — Waybill Tracking Now Available</h4>
+          <div class="ann-meta">Posted by Product Team · Dec 18, 2026 · <span class="status-badge" style="background:var(--dim);color:var(--muted);border:1px solid var(--border);">Archived</span></div>
+          <p style="font-size:13px;color:var(--text);">Cargo shippers can now create digital waybills and track shipments in real time. All agents have been trained on the new cargo workflow.</p>
+        </div>
+      </div>
+      <div id="newAnnouncementForm" style="display:none;margin-top:16px;">
+        <div class="panel-head" style="margin-bottom:12px;background:var(--surface);border-radius:8px;border:1px solid var(--border);">New Announcement</div>
+        <div class="panel" style="padding:16px;">
+          <div class="form-group"><label>Title</label><input type="text" id="annTitle" placeholder="Announcement title"></div>
+          <div class="form-group"><label>Message</label><textarea id="annBody" placeholder="Write your announcement..." style="min-height:120px;"></textarea></div>
+          <div class="form-group"><label>Audience</label><select style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font-size:13px;">
+            <option>All Users</option>
+            <option>Operators Only</option>
+            <option>Agents Only</option>
+            <option>Travellers Only</option>
+          </select></div>
+          <button class="btn-primary" onclick="postAnnouncement()">Post Announcement</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ VIEW: CONFIG ═══ -->
+    <div class="view" id="view-config">
+      <div class="panel-head" style="margin-bottom:16px;background:var(--surface);border-radius:8px;border:1px solid var(--border);">
+        <span data-i18n="nav.config">System Configuration</span>
+      </div>
+      <div class="split-panel">
+        <div class="panel">
+          <div class="panel-head">Platform Settings</div>
+          <div style="padding:16px;">
+            <div class="config-row"><span>Platform Name</span><input type="text" value="Naija Routes" style="padding:6px 10px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);color:var(--text);font-size:12px;width:200px;text-align:right;"></div>
+            <div class="config-row"><span>Maintenance Mode</span><button class="toggle" onclick="this.classList.toggle('on')"></button></div>
+            <div class="config-row"><span>New Registrations</span><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
+            <div class="config-row"><span>Agent Commission Rate</span><input type="text" value="5%" style="padding:6px 10px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);color:var(--text);font-size:12px;width:80px;text-align:right;"></div>
+            <div class="config-row"><span>Booking Fee (₦)</span><input type="text" value="500" style="padding:6px 10px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);color:var(--text);font-size:12px;width:80px;text-align:right;"></div>
+            <div class="config-row"><span>Seat Lock TTL (minutes)</span><input type="text" value="10" style="padding:6px 10px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);color:var(--text);font-size:12px;width:80px;text-align:right;"></div>
+            <div class="config-row" style="border-bottom:none;"><span>Default Language</span><select style="padding:6px 10px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);color:var(--text);font-size:12px;"><option>English</option><option>Yoruba</option><option>Hausa</option><option>Igbo</option><option>Pidgin</option></select></div>
           </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;">
-            <span style="font-family:'IBM Plex Mono',monospace;color:var(--muted);">Paystack Webhook</span>
-            <span style="color:var(--green);font-weight:700;font-family:'IBM Plex Mono',monospace;">● Healthy</span>
+        </div>
+        <div class="panel">
+          <div class="panel-head">Integration Status</div>
+          <div style="padding:16px;">
+            <div class="config-row"><span>Paystack</span><span style="color:var(--green);font-weight:600;">● Connected</span></div>
+            <div class="config-row"><span>Flutterwave</span><span style="color:var(--muted);">○ Not configured</span></div>
+            <div class="config-row"><span>Termii SMS</span><span style="color:var(--green);font-weight:600;">● Connected</span></div>
+            <div class="config-row"><span>Resend Email</span><span style="color:var(--green);font-weight:600;">● Connected</span></div>
+            <div class="config-row"><span>Supabase DB</span><span style="color:var(--green);font-weight:600;">● Connected</span></div>
+            <div class="config-row"><span>Upstash Redis</span><span style="color:var(--green);font-weight:600;">● Connected</span></div>
+            <div class="config-row"><span>Typesense Search</span><span style="color:var(--green);font-weight:600;">● Connected</span></div>
+            <div class="config-row"><span>Cloudflare R2</span><span style="color:var(--muted);">○ Not configured</span></div>
+            <div class="config-row"><span>Mapbox GL</span><span style="color:var(--green);font-weight:600;">● Connected</span></div>
+            <div class="config-row" style="border-bottom:none;"><span>NIBSS NIN Verification</span><span style="color:var(--muted);">○ Not configured</span></div>
           </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;">
-            <span style="font-family:'IBM Plex Mono',monospace;color:var(--muted);">Termii SMS</span>
-            <span style="color:var(--green);font-weight:700;font-family:'IBM Plex Mono',monospace;">● 99.1% delivery</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ VIEW: SECURITY ═══ -->
+    <div class="view" id="view-security">
+      <div class="panel-head" style="margin-bottom:16px;background:var(--surface);border-radius:8px;border:1px solid var(--border);">
+        <span data-i18n="nav.security">Security Settings</span>
+      </div>
+      <div class="split-panel">
+        <div class="panel">
+          <div class="panel-head">Access Control</div>
+          <div style="padding:16px;">
+            <div class="config-row"><span>Two-Factor Auth (Admin)</span><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
+            <div class="config-row"><span>Require OTP for Agent Login</span><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
+            <div class="config-row"><span>IP Whitelist Enabled</span><button class="toggle" onclick="this.classList.toggle('on')"></button></div>
+            <div class="config-row"><span>Session Timeout (minutes)</span><input type="text" value="60" style="padding:6px 10px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);color:var(--text);font-size:12px;width:80px;text-align:right;"></div>
+            <div class="config-row"><span>Max Login Attempts</span><input type="text" value="5" style="padding:6px 10px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);color:var(--text);font-size:12px;width:80px;text-align:right;"></div>
+            <div class="config-row" style="border-bottom:none;"><span>Password Min Length</span><input type="text" value="8" style="padding:6px 10px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);color:var(--text);font-size:12px;width:80px;text-align:right;"></div>
           </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;">
-            <span style="font-family:'IBM Plex Mono',monospace;color:var(--muted);">GPS Tracking</span>
-            <span style="color:var(--gold);font-weight:700;font-family:'IBM Plex Mono',monospace;">⚠ 342/400 online</span>
+        </div>
+        <div class="panel">
+          <div class="panel-head">API Security</div>
+          <div style="padding:16px;">
+            <div class="config-row"><span>Rate Limiting (req/min)</span><input type="text" value="100" style="padding:6px 10px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);color:var(--text);font-size:12px;width:80px;text-align:right;"></div>
+            <div class="config-row"><span>JWT Token Expiry (hours)</span><input type="text" value="24" style="padding:6px 10px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);color:var(--text);font-size:12px;width:80px;text-align:right;"></div>
+            <div class="config-row"><span>CORS Allowed Origins</span><input type="text" value="* (dev)" style="padding:6px 10px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);color:var(--text);font-size:12px;width:160px;text-align:right;"></div>
+            <div class="config-row"><span>TLS Version</span><span style="color:var(--green);font-weight:600;">TLS 1.3</span></div>
+            <div class="config-row" style="border-bottom:none;"><span>Encryption at Rest</span><span style="color:var(--green);font-weight:600;">AES-256</span></div>
           </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;">
-            <span style="font-family:'IBM Plex Mono',monospace;color:var(--muted);">PostgreSQL DB</span>
-            <span style="color:var(--green);font-weight:700;font-family:'IBM Plex Mono',monospace;">● 14ms avg query</span>
-          </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;">
-            <span style="font-family:'IBM Plex Mono',monospace;color:var(--muted);">Redis Cache</span>
-            <span style="color:var(--green);font-weight:700;font-family:'IBM Plex Mono',monospace;">● 98% hit rate</span>
-          </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;">
-            <span style="font-family:'IBM Plex Mono',monospace;color:var(--muted);">Job Queue (BullMQ)</span>
-            <span style="color:var(--green);font-weight:700;font-family:'IBM Plex Mono',monospace;">● 0 stuck jobs</span>
-          </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;">
-            <span style="font-family:'IBM Plex Mono',monospace;color:var(--muted);">Search (Typesense)</span>
-            <span style="color:var(--green);font-weight:700;font-family:'IBM Plex Mono',monospace;">● 38ms P95</span>
-          </div>
-          <div style="background:var(--red-pale);border:1px solid rgba(239,68,68,0.3);border-radius:6px;padding:10px 12px;margin-top:4px;">
-            <div style="font-size:10px;font-family:'IBM Plex Mono',monospace;color:var(--red);font-weight:700;margin-bottom:4px;">⚠ ACTIVE ALERT</div>
-            <div style="font-size:12px;color:var(--red);">24 payment failures in last 60 min — Paystack card processing elevated error rate</div>
-          </div>
+        </div>
+      </div>
+      <div class="panel" style="margin-top:16px;">
+        <div class="panel-head">API Keys</div>
+        <div style="padding:16px;">
+          <div class="config-row"><span>Paystack Secret</span><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);">sk_live_••••••••••••abcd</span><button style="padding:4px 10px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);color:var(--text);font-size:11px;cursor:pointer;">Rotate</button></div>
+          <div class="config-row"><span>Supabase Service Key</span><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);">eyJ•••••••••••••••</span><button style="padding:4px 10px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);color:var(--text);font-size:11px;cursor:pointer;">Rotate</button></div>
+          <div class="config-row"><span>Termii API Key</span><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);">TLI•••••••••••••••</span><button style="padding:4px 10px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);color:var(--text);font-size:11px;cursor:pointer;">Rotate</button></div>
+          <div class="config-row" style="border-bottom:none;"><span>Resend API Key</span><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);">re_••••••••••••••••</span><button style="padding:4px 10px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);color:var(--text);font-size:11px;cursor:pointer;">Rotate</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ VIEW: AUDIT ═══ -->
+    <div class="view" id="view-audit">
+      <div class="panel-head" style="margin-bottom:16px;background:var(--surface);border-radius:8px;border:1px solid var(--border);">
+        <span data-i18n="nav.audit_logs">Audit Logs</span>
+        <select style="padding:4px 8px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);color:var(--text);font-size:10px;font-family:'IBM Plex Mono',monospace;">
+          <option>Last 24 hours</option>
+          <option>Last 7 days</option>
+          <option>Last 30 days</option>
+          <option>All time</option>
+        </select>
+      </div>
+      <div class="panel">
+        <div style="padding:12px 16px;border-bottom:1px solid var(--border);font-size:12px;display:flex;justify-content:space-between;">
+          <span style="color:var(--muted);font-family:'IBM Plex Mono',monospace;">Showing 50 of 12,847 events</span>
+          <button style="padding:4px 10px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);color:var(--text);font-size:11px;cursor:pointer;">Export CSV</button>
+        </div>
+        <div style="padding:12px 16px;max-height:500px;overflow-y:auto;">
+          <div class="log-row"><span class="log-time">09:42:11</span><span class="log-level info">INFO</span><span class="log-msg">Booking confirmed: NR-A7F3K2 — Emeka Okonkwo, Lagos→Abuja, ₦9,500</span></div>
+          <div class="log-row"><span class="log-time">09:41:58</span><span class="log-level info">INFO</span><span class="log-msg">Payment processed: NR-20251225-1847, Paystack card, ₦12,000 — success</span></div>
+          <div class="log-row"><span class="log-time">09:40:33</span><span class="log-level info">INFO</span><span class="log-msg">KYC submitted: Rimbo Transport Ltd, Abuja — all documents uploaded</span></div>
+          <div class="log-row"><span class="log-time">09:39:12</span><span class="log-level error">ERROR</span><span class="log-msg">Payment failed: NR-20251225-1843, card declined by issuer, retry 1/3</span></div>
+          <div class="log-row"><span class="log-time">09:38:54</span><span class="log-level info">INFO</span><span class="log-msg">Agent reconciled: Tunde Adeyemi, Jibowu Park, ₦185,500 cash — completed</span></div>
+          <div class="log-row"><span class="log-time">09:37:20</span><span class="log-level info">INFO</span><span class="log-msg">Operator registered: YTC Motors, Kano State — pending KYC verification</span></div>
+          <div class="log-row"><span class="log-time">09:35:08</span><span class="log-level info">INFO</span><span class="log-msg">Booking confirmed: Fatima Bello, Kano→Abuja, ₦5,000</span></div>
+          <div class="log-row"><span class="log-time">09:33:45</span><span class="log-level info">INFO</span><span class="log-msg">Payment processed: NR-20251225-1839, bank transfer, ₦8,500 — success</span></div>
+          <div class="log-row"><span class="log-time">09:31:22</span><span class="log-level warn">WARN</span><span class="log-msg">API latency spike: /api/v1/routes/search P95=2.5s, traffic +340% vs baseline</span></div>
+          <div class="log-row"><span class="log-time">09:30:05</span><span class="log-level info">INFO</span><span class="log-msg">Booking cancelled: NR-20251225-1835, Chisom Okafor, Onitsha→Enugu — refund initiated</span></div>
+          <div class="log-row"><span class="log-time">09:28:30</span><span class="log-level info">INFO</span><span class="log-msg">Wallet topped up: usr-emeka, +₦50,000 via Paystack card</span></div>
+          <div class="log-row"><span class="log-time">09:25:12</span><span class="log-level warn">WARN</span><span class="log-msg">GPS device offline: LSD-481-KA, no signal for 15 minutes, location: Kaduna Bypass</span></div>
+          <div class="log-row"><span class="log-time">09:22:44</span><span class="log-level info">INFO</span><span class="log-msg">Admin login: Chidi Okeke, IP 192.168.1.100 — authenticated</span></div>
+          <div class="log-row"><span class="log-time">09:20:18</span><span class="log-level info">INFO</span><span class="log-msg">KYC approved: Star Line Ltd, Lagos — 20 buses, all docs verified</span></div>
+          <div class="log-row"><span class="log-time">09:15:00</span><span class="log-level info">INFO</span><span class="log-msg">System health check: all services operational, 0 alerts</span></div>
         </div>
       </div>
     </div>
@@ -335,13 +760,151 @@
   hamburger.addEventListener('click', toggleSidebar);
   overlay.addEventListener('click', toggleSidebar);
 
-  // Sidebar item active state
-  document.querySelectorAll('.sb-item').forEach(item => {
+  // ── View switching ──
+  const viewNames = {
+    overview: 'overview', livefeed: 'live feed', routemap: 'route map',
+    transactions: 'transactions', operators: 'operators', agents: 'agents',
+    users: 'users', kyc: 'kyc queue', alerts: 'alerts', fleet: 'fleet tracking',
+    cargo: 'cargo', announcements: 'announcements', config: 'config',
+    security: 'security', audit: 'audit logs'
+  };
+
+  document.querySelectorAll('.sb-item[data-view]').forEach(item => {
     item.addEventListener('click', () => {
+      const view = item.dataset.view;
       document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
       item.classList.add('active');
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      const target = document.getElementById('view-' + view);
+      if (target) target.classList.add('active');
+      document.getElementById('bcSection').textContent = viewNames[view] || view;
+      if (window.innerWidth <= 768) toggleSidebar();
     });
   });
+
+  // ── KYC actions ──
+  function approveKYC(btn) {
+    const row = btn.closest('.kyc-row');
+    const status = row.querySelector('.kyc-status');
+    status.className = 'kyc-status kyc-approved';
+    status.textContent = 'Approved';
+    btn.textContent = 'DONE';
+    btn.style.background = 'var(--dim)';
+    btn.style.color = 'var(--muted)';
+    btn.style.cursor = 'default';
+    btn.onclick = null;
+    const rejectBtn = row.querySelector('.kyc-btn[style*="background:var(--red)"]');
+    if (rejectBtn) rejectBtn.remove();
+  }
+
+  function rejectKYC(btn) {
+    const row = btn.closest('.kyc-row');
+    const status = row.querySelector('.kyc-status');
+    status.className = 'kyc-status';
+    status.style.cssText = 'background:var(--red-pale);color:var(--red);border:1px solid rgba(239,68,68,0.3);font-family:IBM Plex Mono,monospace;font-size:10px;padding:3px 8px;border-radius:3px;font-weight:700;text-transform:uppercase;text-align:center;';
+    status.textContent = 'Rejected';
+    btn.textContent = 'DONE';
+    btn.style.background = 'var(--dim)';
+    btn.style.color = 'var(--muted)';
+    btn.style.cursor = 'default';
+    btn.onclick = null;
+    const approveBtn = row.querySelector('.kyc-btn[style*="background:var(--green)"]');
+    if (approveBtn) approveBtn.remove();
+  }
+
+  // ── Announcements ──
+  function showNewAnnouncement() {
+    document.getElementById('newAnnouncementForm').style.display = 'block';
+    document.getElementById('newAnnouncementForm').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function postAnnouncement() {
+    const title = document.getElementById('annTitle').value.trim();
+    const body = document.getElementById('annBody').value.trim();
+    if (!title || !body) { alert('Please fill in both title and message.'); return; }
+    const list = document.getElementById('announcementList');
+    const card = document.createElement('div');
+    card.className = 'announcement-card';
+    card.innerHTML = '<h4>' + title + '</h4><div class="ann-meta">Posted by Admin · Just now · <span class="status-badge active">Active</span></div><p style="font-size:13px;color:var(--text);">' + body + '</p>';
+    list.insertBefore(card, list.firstChild);
+    document.getElementById('newAnnouncementForm').style.display = 'none';
+    document.getElementById('annTitle').value = '';
+    document.getElementById('annBody').value = '';
+  }
+
+  // ── Feed filter ──
+  function filterFeed(query) {
+    const type = document.getElementById('feedTypeFilter').value;
+    document.querySelectorAll('#feedContainer .feed-item').forEach(item => {
+      const text = item.textContent.toLowerCase();
+      const itemType = item.dataset.type;
+      const matchesType = type === 'all' || itemType === type;
+      const matchesSearch = !query || text.includes(query.toLowerCase());
+      item.style.display = matchesType && matchesSearch ? '' : 'none';
+    });
+  }
+
+  // ── Transaction filter ──
+  function filterTransactions(query) {
+    const method = document.getElementById('txMethodFilter').value;
+    const status = document.getElementById('txStatusFilter').value;
+    document.querySelectorAll('#txBody tr').forEach(row => {
+      const text = row.textContent.toLowerCase();
+      const rowMethod = row.dataset.method;
+      const rowStatus = row.dataset.status;
+      const matchesMethod = method === 'all' || rowMethod === method;
+      const matchesStatus = status === 'all' || rowStatus === status;
+      const matchesSearch = !query || text.includes(query.toLowerCase());
+      row.style.display = matchesMethod && matchesStatus && matchesSearch ? '' : 'none';
+    });
+  }
+
+  // ── Operator filter ──
+  function filterOperators(query) {
+    document.querySelectorAll('#opBody tr').forEach(row => {
+      row.style.display = !query || row.textContent.toLowerCase().includes(query.toLowerCase()) ? '' : 'none';
+    });
+  }
+
+  // ── Live data fetch ──
+  async function fetchAdminData() {
+    try {
+      const [healthRes, payStatsRes, walletRes] = await Promise.all([
+        fetch('http://localhost:3000/health').catch(() => null),
+        fetch('http://localhost:3000/api/v1/payments/stats/all').catch(() => null),
+        fetch('http://localhost:3000/api/v1/wallet/usr-chidi').catch(() => null),
+      ]);
+
+      if (healthRes && healthRes.ok) {
+        const health = await healthRes.json();
+        const indicator = document.querySelector('.live-indicator span');
+        if (indicator) indicator.textContent = `LIVE — ${health.phase}`;
+      }
+
+      if (payStatsRes && payStatsRes.ok) {
+        const payStats = (await payStatsRes.json()).data;
+        document.querySelectorAll('.metric-block').forEach(el => {
+          const lbl = el.querySelector('.metric-lbl')?.textContent?.trim();
+          const valEl = el.querySelector('.metric-val');
+          if (!lbl || !valEl) return;
+          if (lbl.includes('GMV')) valEl.textContent = '₦' + (payStats.totalRevenueKobo / 100000).toFixed(1) + 'M';
+          if (lbl.includes('Failed')) valEl.textContent = payStats.failedPayments;
+        });
+      }
+
+      if (walletRes && walletRes.ok) {
+        const wallet = (await walletRes.json()).data;
+        const chip = document.querySelector('.admin-chip');
+        if (chip) chip.textContent = `👤 ${wallet.name} · ₦${(wallet.availableKobo / 100).toLocaleString()} wallet`;
+      }
+    } catch (e) {
+      console.log('Admin dashboard running with demo data');
+    }
+  }
+  fetchAdminData();
+  setInterval(fetchAdminData, 30000);
 </script>
+<script>window.__I18N_CONFIG__ = { localePath: '/shared/i18n/' }</script>
+<script src="/shared/js/i18n.js"></script>
 </body>
 </html>

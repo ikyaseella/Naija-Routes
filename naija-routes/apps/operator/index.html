@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard — Naija Routes Operator Portal</title>
   <link rel="stylesheet" href="css/operator.css">
+  <link rel="stylesheet" href="/shared/css/i18n.css">
 </head>
 <body>
 
@@ -14,30 +15,39 @@
 <!-- SIDEBAR -->
 <nav class="sidebar" id="sidebar">
   <div class="sidebar-logo">
-    <div class="sidebar-logo-text">🚌 NaijaRoutes</div>
-    <div class="sidebar-logo-sub">Operator Portal</div>
+    <div class="sidebar-logo-text">🚌 <span data-i18n="nav.logo">NaijaRoutes</span></div>
+    <div class="sidebar-logo-sub" data-i18n="operator.portal_label">Operator Portal</div>
   </div>
 
   <div class="sidebar-section">
-    <div class="sidebar-section-label">Operations</div>
-    <a href="index.html" class="nav-item active"><span class="nav-icon">📊</span> Dashboard</a>
-    <a href="bookings.html" class="nav-item"><span class="nav-icon">🎫</span> Bookings <span class="nav-badge">8</span></a>
-    <a href="#" class="nav-item"><span class="nav-icon">🗓</span> Schedules</a>
-    <a href="#" class="nav-item"><span class="nav-icon">🚌</span> Fleet</a>
-    <a href="#" class="nav-item"><span class="nav-icon">👤</span> Drivers</a>
+    <div class="sidebar-section-label" data-i18n="operator.operations">Operations</div>
+    <a href="index.html" class="nav-item active"><span class="nav-icon">📊</span> <span data-i18n="nav.dashboard">Dashboard</span></a>
+    <a href="bookings.html" class="nav-item"><span class="nav-icon">🎫</span> <span data-i18n="nav.bookings">Bookings</span> <span class="nav-badge">8</span></a>
+    <a href="schedules.html" class="nav-item"><span class="nav-icon">🗓</span> <span data-i18n="nav.schedules">Schedules</span></a>
+    <a href="fleet.html" class="nav-item"><span class="nav-icon">🚌</span> <span data-i18n="nav.fleet">Fleet</span></a>
+    <a href="drivers.html" class="nav-item"><span class="nav-icon">👤</span> <span data-i18n="nav.drivers">Drivers</span></a>
   </div>
   <div class="sidebar-section">
-    <div class="sidebar-section-label">Routes &amp; Revenue</div>
-    <a href="routes.html" class="nav-item"><span class="nav-icon">🗺</span> Routes</a>
-    <a href="#" class="nav-item"><span class="nav-icon">📈</span> Analytics</a>
-    <a href="#" class="nav-item"><span class="nav-icon">💳</span> Payouts</a>
-    <a href="#" class="nav-item"><span class="nav-icon">⭐</span> Reviews</a>
+    <div class="sidebar-section-label" data-i18n="operator.routes_revenue">Routes &amp; Revenue</div>
+    <a href="routes.html" class="nav-item"><span class="nav-icon">🗺</span> <span data-i18n="nav.routes">Routes</span></a>
+    <a href="analytics.html" class="nav-item"><span class="nav-icon">📈</span> <span data-i18n="nav.analytics">Analytics</span></a>
+    <a href="payouts.html" class="nav-item"><span class="nav-icon">💳</span> <span data-i18n="nav.payouts">Payouts</span></a>
+    <a href="reviews.html" class="nav-item"><span class="nav-icon">⭐</span> <span data-i18n="nav.reviews">Reviews</span></a>
   </div>
   <div class="sidebar-section">
-    <div class="sidebar-section-label">Account</div>
-    <a href="#" class="nav-item"><span class="nav-icon">🏢</span> Company Profile</a>
-    <a href="#" class="nav-item"><span class="nav-icon">🔔</span> Notifications</a>
-    <a href="#" class="nav-item"><span class="nav-icon">⚙</span> Settings</a>
+    <div class="sidebar-section-label" data-i18n="operator.account">Account</div>
+    <a href="company-profile.html" class="nav-item"><span class="nav-icon">🏢</span> <span data-i18n="nav.company_profile">Company Profile</span></a>
+    <a href="notifications.html" class="nav-item"><span class="nav-icon">🔔</span> <span data-i18n="nav.notifications">Notifications</span></a>
+    <a href="settings.html" class="nav-item"><span class="nav-icon">⚙</span> <span data-i18n="nav.settings">Settings</span></a>
+  </div>
+  <div class="sidebar__item" style="margin-top:auto;padding:12px 20px;border-top:1px solid rgba(255,255,255,0.1)">
+    <select class="language-switcher__select" onchange="I18N.setLanguage(this.value)" style="background:transparent;color:inherit;width:100%;border:1px solid rgba(255,255,255,0.2);padding:6px 10px;border-radius:6px;font-size:13px">
+      <option value="en">English</option>
+      <option value="yo">Yoruba</option>
+      <option value="ha">Hausa</option>
+      <option value="ig">Igbo</option>
+      <option value="pcm">Pidgin</option>
+    </select>
   </div>
 </nav>
 
@@ -52,7 +62,7 @@
   <!-- DESKTOP TOPBAR -->
   <div class="topbar">
     <div class="topbar-left">
-      <div class="page-title">Dashboard Overview</div>
+      <div class="page-title" data-i18n="operator.dashboard_overview">Dashboard Overview</div>
       <div class="date-badge">📅 Wednesday, 25 December 2025</div>
     </div>
     <div class="topbar-right">
@@ -73,7 +83,7 @@
     <!-- KPI CARDS -->
     <div class="kpi-grid">
       <div class="kpi-card green">
-        <div class="kpi-label">Revenue Today</div>
+        <div class="kpi-label" data-i18n="operator.revenue_today">Revenue Today</div>
         <div class="kpi-val green">₦428,000</div>
         <div class="kpi-change up">↑ +18% vs yesterday</div>
         <div class="kpi-sparkline" style="color:var(--green)">
@@ -86,7 +96,7 @@
         </div>
       </div>
       <div class="kpi-card gold">
-        <div class="kpi-label">Bookings Today</div>
+        <div class="kpi-label" data-i18n="operator.bookings_today">Bookings Today</div>
         <div class="kpi-val gold">84</div>
         <div class="kpi-change up">↑ +22 vs yesterday</div>
         <div class="kpi-sparkline" style="color:var(--gold)">
@@ -99,7 +109,7 @@
         </div>
       </div>
       <div class="kpi-card blue">
-        <div class="kpi-label">Occupancy Rate</div>
+        <div class="kpi-label" data-i18n="operator.occupancy_rate">Occupancy Rate</div>
         <div class="kpi-val blue">87%</div>
         <div class="kpi-change up">↑ +5% this week</div>
         <div class="kpi-sparkline" style="color:var(--blue)">
@@ -112,7 +122,7 @@
         </div>
       </div>
       <div class="kpi-card red">
-        <div class="kpi-label">Cancellations</div>
+        <div class="kpi-label" data-i18n="operator.cancellations">Cancellations</div>
         <div class="kpi-val red">3</div>
         <div class="kpi-change down">↑ +1 vs yesterday</div>
         <div class="kpi-sparkline" style="color:var(--red)">
@@ -131,7 +141,7 @@
       <!-- Revenue Chart -->
       <div class="chart-card">
         <div class="card-header">
-          <div class="card-title">Revenue — Last 7 Days</div>
+          <div class="card-title" data-i18n="operator.revenue_chart">Revenue — Last 7 Days</div>
           <div class="card-period-btns">
             <button class="period-btn">7D</button>
             <button class="period-btn active">30D</button>
@@ -154,21 +164,21 @@
         <!-- Fleet Status -->
         <div class="chart-card">
           <div class="card-header">
-            <div class="card-title">Fleet Status</div>
-            <span style="font-size:12px;color:var(--muted);">12 vehicles</span>
+            <div class="card-title" data-i18n="operator.fleet_status">Fleet Status</div>
+            <span style="font-size:12px;color:var(--muted);"><span data-i18n="operator.vehicles_count"></span> 12</span>
           </div>
           <div style="display:flex;gap:12px;margin-bottom:16px;">
             <div style="flex:1;text-align:center;background:var(--green-l);border-radius:8px;padding:12px;">
               <div style="font-size:24px;font-weight:800;color:var(--green);">8</div>
-              <div style="font-size:11px;color:var(--green);font-weight:700;">On Route</div>
+              <div style="font-size:11px;color:var(--green);font-weight:700;" data-i18n="operator.on_route">On Route</div>
             </div>
             <div style="flex:1;text-align:center;background:var(--gold-l);border-radius:8px;padding:12px;">
               <div style="font-size:24px;font-weight:800;color:var(--gold);">3</div>
-              <div style="font-size:11px;color:var(--gold);font-weight:700;">Parked</div>
+              <div style="font-size:11px;color:var(--gold);font-weight:700;" data-i18n="operator.parked">Parked</div>
             </div>
             <div style="flex:1;text-align:center;background:var(--red-l);border-radius:8px;padding:12px;">
               <div style="font-size:24px;font-weight:800;color:var(--red);">1</div>
-              <div style="font-size:11px;color:var(--red);font-weight:700;">Maint.</div>
+              <div style="font-size:11px;color:var(--red);font-weight:700;" data-i18n="operator.maintenance">Maint.</div>
             </div>
           </div>
           <div class="fleet-grid">
@@ -181,10 +191,10 @@
 
         <!-- Payout Summary -->
         <div class="payout-card">
-          <div class="payout-title">Pending Settlement</div>
+          <div class="payout-title" data-i18n="operator.pending_settlement">Pending Settlement</div>
           <div class="payout-amount">₦1,284,000</div>
-          <div class="payout-detail">Period: Dec 18–24, 2025 · 420 bookings</div>
-          <button class="payout-btn">Request Payout →</button>
+          <div class="payout-detail"><span data-i18n="operator.period_label">Period:</span> Dec 18–24, 2025 · 420 <span data-i18n="operator.bookings_count">bookings</span></div>
+          <button class="payout-btn" data-i18n="operator.request_payout">Request Payout →</button>
         </div>
       </div>
     </div>
@@ -207,5 +217,7 @@
     overlay.classList.remove('open');
   });
 </script>
+<script>window.__I18N_CONFIG__ = { localePath: '/shared/i18n/' }</script>
+<script src="/shared/js/i18n.js"></script>
 </body>
 </html>
