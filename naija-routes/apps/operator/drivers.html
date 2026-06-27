@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -6,17 +6,7 @@
   <title>Drivers — Naija Routes Operator Portal</title>
   <link rel="stylesheet" href="css/operator.css">
   <link rel="stylesheet" href="/shared/css/i18n.css">
-  <style>
-    .dr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
-    .dr-card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 16px; display: flex; align-items: center; gap: 16px; }
-    .dr-avatar { width: 48px; height: 48px; border-radius: 50%; background: var(--light); display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 800; color: var(--muted); flex-shrink: 0; }
-    .dr-info { flex: 1; }
-    .dr-name { font-weight: 700; font-size: 15px; }
-    .dr-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
-    .dr-stats { display: flex; gap: 16px; margin-top: 6px; }
-    .dr-stat { font-size: 12px; }
-    .dr-stat strong { color: var(--text); }
-  </style>
+  
 </head>
 <body>
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
@@ -41,7 +31,7 @@
     <a href="settings.html" class="nav-item"><span class="nav-icon">⚙</span> <span data-i18n="nav.settings">Settings</span></a>
   </div>
   <div class="sidebar__item" style="margin-top:auto;padding:12px 20px;border-top:1px solid rgba(255,255,255,0.1)">
-    <select class="language-switcher__select" onchange="I18N.setLanguage(this.value)" style="background:transparent;color:inherit;width:100%;border:1px solid rgba(255,255,255,0.2);padding:6px 10px;border-radius:6px;font-size:13px">
+    <select class="language-switcher__select" onchange="I18N.setLanguage(this.value)">
       <option value="en">English</option><option value="yo">Yoruba</option><option value="ha">Hausa</option><option value="ig">Igbo</option><option value="pcm">Pidgin</option>
     </select>
   </div>

@@ -1,0 +1,126 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Naija Routes Wallet — Manage your wallet balance, top up, and view transactions.">
+<title>Wallet — Naija Routes</title>
+<link rel="stylesheet" href="css/theme-deep-roots.css">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="/shared/css/i18n.css">
+
+</head>
+<body>
+
+<div class="design-label">🎨 Naija Routes · Wallet</div>
+
+<nav>
+  <a href="index.html" class="nav-logo" style="text-decoration:none;">🚌 <span data-i18n="nav.logo">NaijaRoutes</span></a>
+  <div class="nav-links">
+    <a href="index.html" data-i18n="nav.routes">Routes</a>
+    <a href="cargo.html" data-i18n="nav.cargo">Cargo</a>
+    <a href="tracking.html" data-i18n="nav.track_bus">Track Bus</a>
+    <a href="wallet.html" class="active" data-i18n="nav.wallet">Wallet</a>
+    <a href="insurance.html" data-i18n="nav.insurance">Insurance</a>
+    <a href="ussd.html" data-i18n="nav.ussd">USSD</a>
+    <a href="corporate.html" data-i18n="nav.corporate">Corporate</a>
+    <div class="nav__item" data-i18n-language-container>
+      <select class="language-switcher__select" onchange="I18N.setLanguage(this.value)">
+        <option value="en">English</option>
+        <option value="yo">Yoruba</option>
+        <option value="ha">Hausa</option>
+        <option value="ig">Igbo</option>
+        <option value="pcm">Pidgin</option>
+      </select>
+    </div>
+  </div>
+  <button class="nav-cta" data-i18n="nav.sign_in">Sign in</button>
+</nav>
+
+<div class="wallet-error" id="walletError"></div>
+<div class="wallet-success" id="walletSuccess"></div>
+
+<div class="wallet-layout">
+
+  <div class="wallet-balance-card">
+    <div class="wallet-label" data-i18n="wallet.current_balance">Current Balance</div>
+    <div class="wallet-amount" id="walletBalance">₦0.00</div>
+    <div class="wallet-ref" id="walletUserId">User: —</div>
+    <div class="wallet-actions">
+      <button class="primary" onclick="switchWalletTab('topup')" data-i18n="wallet.top_up">+ Top Up</button>
+      <button onclick="switchWalletTab('transactions')" data-i18n="wallet.view_history">📋 History</button>
+      <button onclick="refreshWallet()" data-i18n="wallet.refresh">🔄 Refresh</button>
+    </div>
+  </div>
+
+  <div class="wallet-tabs">
+    <button class="wallet-tab active" data-wtab="balance" onclick="switchWalletTab('balance')" data-i18n="wallet.tab_balance">Balance</button>
+    <button class="wallet-tab" data-wtab="topup" onclick="switchWalletTab('topup')" data-i18n="wallet.tab_topup">Top Up</button>
+    <button class="wallet-tab" data-wtab="transactions" onclick="switchWalletTab('transactions')" data-i18n="wallet.tab_transactions">History</button>
+  </div>
+
+  <div class="wallet-panel active" id="wpanel-balance">
+    <div class="panel" style="background:var(--color-white);border:1px solid var(--color-slate-200);border-radius:var(--radius-xl);padding:var(--space-6);">
+      <h3 style="margin:0 0 var(--space-3);font-size:var(--text-base);" data-i18n="wallet.balance_overview">Balance Overview</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);">
+        <div style="background:var(--color-slate-50);border-radius:var(--radius-md);padding:var(--space-4);">
+          <div style="font-size:var(--text-xs);color:var(--color-slate-500);text-transform:uppercase;letter-spacing:0.05em;" data-i18n="wallet.available">Available</div>
+          <div style="font-size:var(--text-xl);font-weight:var(--weight-extrabold);color:var(--color-primary);" id="walletAvailable">₦0.00</div>
+        </div>
+        <div style="background:var(--color-slate-50);border-radius:var(--radius-md);padding:var(--space-4);">
+          <div style="font-size:var(--text-xs);color:var(--color-slate-500);text-transform:uppercase;letter-spacing:0.05em;" data-i18n="wallet.total_topups">Total Top-ups</div>
+          <div style="font-size:var(--text-xl);font-weight:var(--weight-extrabold);color:var(--color-primary);" id="walletTotalTopups">₦0.00</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wallet-panel" id="wpanel-topup">
+    <div class="panel" style="background:var(--color-white);border:1px solid var(--color-slate-200);border-radius:var(--radius-xl);padding:var(--space-6);">
+      <h3 style="margin:0 0 var(--space-3);font-size:var(--text-base);" data-i18n="wallet.top_up_title">Top Up Your Wallet</h3>
+      <div class="quick-amounts">
+        <button class="quick-amount" onclick="selectAmount(this, 100000)">₦1,000</button>
+        <button class="quick-amount" onclick="selectAmount(this, 500000)">₦5,000</button>
+        <button class="quick-amount" onclick="selectAmount(this, 1000000)">₦10,000</button>
+        <button class="quick-amount" onclick="selectAmount(this, 2000000)">₦20,000</button>
+        <button class="quick-amount" onclick="selectAmount(this, 5000000)">₦50,000</button>
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-i18n="wallet.custom_amount">Custom Amount (₦)</label>
+        <input type="number" id="topupAmount" class="form-input" min="100" placeholder="e.g. 2500" style="width:100%;">
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-i18n="wallet.payment_method">Payment Method</label>
+        <select id="topupMethod" class="form-input" style="width:100%;">
+          <option value="bank_transfer" data-i18n="wallet.method_bank">Bank Transfer</option>
+          <option value="card" data-i18n="wallet.method_card">Card Payment</option>
+          <option value="ussd" data-i18n="wallet.method_ussd">USSD Banking</option>
+        </select>
+      </div>
+      <button class="btn btn-primary" onclick="submitTopup()" data-i18n="wallet.fund_wallet">💰 Fund Wallet</button>
+    </div>
+  </div>
+
+  <div class="wallet-panel" id="wpanel-transactions">
+    <div class="panel" style="background:var(--color-white);border:1px solid var(--color-slate-200);border-radius:var(--radius-xl);padding:var(--space-6);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-4);">
+        <h3 style="margin:0;font-size:var(--text-base);" data-i18n="wallet.transaction_history">Transaction History</h3>
+        <select id="txFilter" onchange="renderTransactions()" style="padding:6px 10px;border:1px solid var(--color-slate-200);border-radius:var(--radius-md);font-size:var(--text-xs);">
+          <option value="all" data-i18n="wallet.filter_all">All</option>
+          <option value="credit" data-i18n="wallet.filter_credit">Top-ups</option>
+          <option value="debit" data-i18n="wallet.filter_debit">Payments</option>
+        </select>
+      </div>
+      <div id="txList"><p style="color:var(--color-slate-400);font-size:var(--text-sm);" data-i18n="common.loading">Loading...</p></div>
+    </div>
+  </div>
+
+</div>
+
+<script type="module" src="/js/modules/wallet.js"></script>
+<script>window.__I18N_CONFIG__ = { localePath: '/shared/i18n/' }</script>
+<script src="/shared/js/i18n.js"></script>
+</body>
+</html>

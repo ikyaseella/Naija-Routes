@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -6,14 +6,7 @@
   <title>Company Profile — Naija Routes Operator Portal</title>
   <link rel="stylesheet" href="css/operator.css">
   <link rel="stylesheet" href="/shared/css/i18n.css">
-  <style>
-    .cp-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    .cp-field { margin-bottom: 12px; }
-    .cp-field label { display: block; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; font-weight: 700; }
-    .cp-field input, .cp-field textarea { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; background: var(--white); }
-    .cp-field input:focus, .cp-field textarea:focus { outline: none; border-color: var(--green); }
-    .cp-field textarea { resize: vertical; min-height: 80px; }
-  </style>
+  
 </head>
 <body>
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
@@ -38,7 +31,7 @@
     <a href="settings.html" class="nav-item"><span class="nav-icon">⚙</span> <span data-i18n="nav.settings">Settings</span></a>
   </div>
   <div class="sidebar__item" style="margin-top:auto;padding:12px 20px;border-top:1px solid rgba(255,255,255,0.1)">
-    <select class="language-switcher__select" onchange="I18N.setLanguage(this.value)" style="background:transparent;color:inherit;width:100%;border:1px solid rgba(255,255,255,0.2);padding:6px 10px;border-radius:6px;font-size:13px">
+    <select class="language-switcher__select" onchange="I18N.setLanguage(this.value)">
       <option value="en">English</option><option value="yo">Yoruba</option><option value="ha">Hausa</option><option value="ig">Igbo</option><option value="pcm">Pidgin</option>
     </select>
   </div>

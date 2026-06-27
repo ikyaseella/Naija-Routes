@@ -1,0 +1,52 @@
+/**
+ * Naija Routes — USSD Simulator Page Styles
+ * Shared CSS · Referenced via /shared/css/ussd.css
+ */
+body {
+  background: var(--green-deep);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 0;
+}
+
+.phone { width: 360px; background: #111; border-radius: 40px; padding: 16px; box-shadow: 0 30px 60px rgba(0,0,0,0.6); }
+.phone-screen { background: #1a1a2e; border-radius: 32px; overflow: hidden; min-height: 580px; display: flex; flex-direction: column; }
+
+.ussd-header { background: #16213e; padding: 16px 20px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.ussd-header .signal { display: flex; gap: 2px; align-items: flex-end; height: 12px; }
+.ussd-header .signal div { width: 3px; background: #4ade80; border-radius: 1px; }
+.ussd-header .signal div:nth-child(1) { height: 4px; }
+.ussd-header .signal div:nth-child(2) { height: 7px; }
+.ussd-header .signal div:nth-child(3) { height: 10px; }
+.ussd-header .carrier { color: #ccc; font-size: 12px; font-weight: 600; flex: 1; }
+.ussd-header .battery { color: #4ade80; font-size: 12px; }
+
+.ussd-body { padding: 20px; flex: 1; display: flex; flex-direction: column; }
+.dial-code { background: #0f3460; border-radius: 8px; padding: 10px 16px; text-align: center; margin-bottom: 16px; font-size: 18px; font-weight: 700; color: #4ade80; font-family: 'Courier New', monospace; letter-spacing: 2px; }
+.ussd-dialog { background: #0f3460; border-radius: 12px; padding: 16px; margin-bottom: 12px; color: #e0e0e0; font-family: 'Courier New', monospace; font-size: 14px; line-height: 1.6; white-space: pre-wrap; min-height: 60px; }
+.ussd-reply { background: #1a3a5c; border-radius: 8px; padding: 12px 16px; color: #4ade80; font-family: 'Courier New', monospace; font-size: 13px; margin-bottom: 12px; display: none; }
+
+.ussd-input-area { display: flex; gap: 8px; margin-top: auto; }
+.ussd-input { flex: 1; background: #16213e; border: 1px solid #0f3460; color: #fff; padding: 12px 16px; border-radius: 8px; font-size: 16px; font-family: 'Courier New', monospace; outline: none; }
+.ussd-input:focus { border-color: #4ade80; }
+.ussd-send { background: #4ade80; color: #000; border: none; width: 48px; height: 48px; border-radius: 8px; font-size: 20px; cursor: pointer; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+.ussd-send:hover { background: #22c55e; }
+.ussd-send:disabled { background: #333; color: #666; cursor: not-allowed; }
+
+.ussd-controls { display: flex; gap: 8px; margin-top: 12px; }
+.ussd-btn { flex: 1; padding: 8px; border: 1px solid rgba(255,255,255,0.2); background: transparent; color: #ccc; border-radius: 6px; font-size: 12px; cursor: pointer; text-align: center; transition: background 0.2s; }
+.ussd-btn:hover { background: rgba(255,255,255,0.1); }
+.ussd-btn.danger { border-color: #ef4444; color: #ef4444; }
+
+.ussd-footer { display: flex; justify-content: space-between; padding: 8px 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 10px; color: #666; font-family: 'Courier New', monospace; }
+.ussd-nav { text-align: center; padding: 12px; }
+.ussd-nav a { color: #4ade80; text-decoration: none; font-size: 13px; }
+.ussd-nav a:hover { text-decoration: underline; }
+
+@media (max-width: 480px) {
+  .phone { width: 100%; border-radius: 0; padding: 0; }
+  .phone-screen { border-radius: 0; min-height: 100vh; }
+}

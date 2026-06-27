@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -11,249 +11,7 @@
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="/shared/css/i18n.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <style>
-    body {
-      background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
-      min-height: 100vh;
-    }
-
-    .page-wrapper {
-      max-width: 520px;
-      margin: 0 auto;
-      padding: var(--space-6) var(--space-4) var(--space-12);
-    }
-
-    /* Success Banner */
-    .success-banner {
-      text-align: center;
-      margin-bottom: var(--space-6);
-    }
-
-    .success-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: var(--space-2);
-      background: rgba(22, 163, 74, 0.15);
-      border: 1px solid rgba(22, 163, 74, 0.4);
-      color: #4ade80;
-      padding: var(--space-2) var(--space-5);
-      border-radius: var(--radius-full);
-      font-weight: var(--weight-bold);
-      font-size: var(--text-sm);
-      margin-bottom: var(--space-3);
-    }
-
-    .success-title {
-      color: var(--color-white);
-      font-family: var(--font-display);
-      font-size: var(--text-4xl);
-      margin-bottom: var(--space-2);
-    }
-
-    .success-sub {
-      color: var(--color-slate-400);
-      font-size: var(--text-sm);
-    }
-
-    /* The Ticket Card */
-    .ticket {
-      background: var(--color-white);
-      border-radius: var(--radius-2xl);
-      overflow: visible; /* Allow circles to protrude */
-      box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-      position: relative;
-    }
-
-    /* Notch cutouts */
-    .ticket-notch {
-      position: absolute;
-      width: 36px;
-      height: 36px;
-      background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
-      border-radius: 50%;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 2;
-    }
-
-    .ticket-notch-left { left: -18px; }
-    .ticket-notch-right { right: -18px; }
-
-    .ticket-divider-line {
-      border: none;
-      border-top: 2px dashed var(--color-slate-300);
-      margin: 0 var(--space-6);
-    }
-
-    /* Ticket Header */
-    .ticket-top {
-      background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dd) 100%);
-      border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
-      padding: var(--space-6);
-      text-align: center;
-      color: var(--color-white);
-    }
-
-    .operator-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: var(--space-2);
-      background: rgba(255,255,255,0.15);
-      padding: var(--space-1) var(--space-4);
-      border-radius: var(--radius-full);
-      font-size: var(--text-sm);
-      margin-bottom: var(--space-3);
-    }
-
-    .ticket-operator-name {
-      font-family: var(--font-display);
-      font-size: var(--text-2xl);
-      margin-bottom: 4px;
-    }
-
-    .ticket-vehicle {
-      font-size: var(--text-sm);
-      opacity: 0.75;
-    }
-
-    /* Route section */
-    .route-section {
-      padding: var(--space-6);
-    }
-
-    .route-cities {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .city-block { text-align: center; }
-
-    .city-code {
-      font-family: var(--font-display);
-      font-size: 2.5rem;
-      font-weight: var(--weight-bold);
-      color: var(--color-slate-900);
-      line-height: 1;
-    }
-
-    .city-name {
-      font-size: var(--text-xs);
-      color: var(--color-slate-500);
-      margin-top: 4px;
-    }
-
-    .route-arrow {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      flex: 1;
-      padding: 0 var(--space-4);
-    }
-
-    .arrow-line {
-      width: 100%;
-      height: 2px;
-      background: linear-gradient(to right, var(--color-primary), var(--color-gold));
-      position: relative;
-    }
-
-    .arrow-line::after {
-      content: '▶';
-      position: absolute;
-      right: -8px;
-      top: -8px;
-      font-size: 10px;
-      color: var(--color-gold);
-    }
-
-    .arrow-duration {
-      font-size: var(--text-xs);
-      color: var(--color-slate-500);
-      background: var(--color-slate-50);
-      padding: 2px 8px;
-      border-radius: var(--radius-full);
-      border: 1px solid var(--color-slate-200);
-    }
-
-    /* Details grid */
-    .details-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--space-4);
-      padding: 0 var(--space-6) var(--space-5);
-    }
-
-    .detail-item { }
-
-    .detail-label {
-      font-size: var(--text-xs);
-      text-transform: uppercase;
-      letter-spacing: 0.07em;
-      color: var(--color-slate-400);
-      margin-bottom: 4px;
-    }
-
-    .detail-value {
-      font-weight: var(--weight-bold);
-      color: var(--color-slate-900);
-    }
-
-    /* Seat display */
-    .seat-band {
-      background: var(--color-gold-l);
-      padding: var(--space-3) var(--space-6);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-top: 1px solid var(--color-gold-l);
-      border-bottom: 1px solid var(--color-gold-l);
-    }
-
-    .seat-label-txt {
-      font-size: var(--text-sm);
-      color: var(--color-gold-d);
-      font-weight: var(--weight-semibold);
-    }
-
-    .seat-number-big {
-      font-family: var(--font-display);
-      font-size: var(--text-4xl);
-      color: var(--color-gold-d);
-      line-height: 1;
-    }
-
-    /* QR section */
-    .qr-section {
-      padding: var(--space-6);
-      text-align: center;
-    }
-
-    .qr-wrap {
-      display: inline-block;
-      padding: var(--space-4);
-      background: var(--color-white);
-      border: 2px solid var(--color-slate-200);
-      border-radius: var(--radius-xl);
-      margin-bottom: var(--space-3);
-    }
-
-    .qr-hash {
-      font-family: var(--font-mono);
-      font-size: var(--text-xs);
-      color: var(--color-slate-500);
-      letter-spacing: 0.1em;
-    }
-
-    /* Action Buttons */
-    .action-buttons {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--space-3);
-      margin-top: var(--space-6);
-    }
-  </style>
+  
 </head>
 <body>
 
@@ -405,37 +163,65 @@
   </div>
 
   <script>
-    // Read URL params
     const params = new URLSearchParams(window.location.search);
-    const seatNo = params.get('seat') || '3C';
-    const passengerName = decodeURIComponent(params.get('name') || 'Emeka Okonkwo');
-    const price = parseInt(params.get('price') || '12500');
-    const operator = decodeURIComponent(params.get('operator') || 'GUO Transport');
-    const paymentRef = params.get('payment_ref');
-    const paymentMethod = params.get('payment_method');
+    const bookingId = params.get('bookingId');
+    const BASE = '/api/v1';
 
-    // Generate a secure-looking booking reference
-    const refSuffix = Math.random().toString(36).substring(2, 8).toUpperCase();
-    const bookingRef = `NR-${refSuffix}`;
-    const qrHash = `NR-TICKET-${refSuffix}-HASH`;
-
-    // Populate ticket
-    document.getElementById('ticketOperator').textContent = operator;
-    document.getElementById('ticketOperatorFull').textContent = operator;
-    document.getElementById('ticketPassenger').textContent = passengerName;
-    document.getElementById('ticketRef').textContent = bookingRef;
-    document.getElementById('ticketAmount').textContent = `₦${price.toLocaleString()}`;
-    document.getElementById('ticketSeat').textContent = seatNo;
-    if (paymentRef) document.getElementById('ticketPaymentRef').textContent = paymentRef;
-    if (paymentMethod) {
-      const methodNames = { wallet: 'Wallet', card: 'Card', bank_transfer: 'Bank Transfer' };
-      document.getElementById('ticketPaymentMethod').textContent = methodNames[paymentMethod] || paymentMethod;
+    function setLoadingState() {
+      document.getElementById('ticketPassenger').textContent = 'Loading...';
+      document.getElementById('ticketRef').textContent = 'NR-—';
+      document.getElementById('ticketSeat').textContent = '—';
     }
-    document.getElementById('qrHashDisplay').textContent = qrHash;
 
-    // Position the notches at the divider line
-    // The notches appear at the halfway mark where the dashed line is
-    // We use JS to set the position after the card renders
+    function populateTicket(data) {
+      document.getElementById('ticketOperator').textContent = data.operator || 'NaijaRoutes';
+      document.getElementById('ticketOperatorFull').textContent = data.operator || 'NaijaRoutes';
+      document.getElementById('ticketPassenger').textContent = data.passengerName || 'Passenger';
+      document.getElementById('ticketRef').textContent = data.ref || 'NR-' + bookingId?.slice(-6)?.toUpperCase() || 'NR-TICKET';
+      document.getElementById('ticketAmount').textContent = data.amountNaira ? `₦${data.amountNaira}` : '₦—';
+      document.getElementById('ticketSeat').textContent = data.seats || '—';
+      if (data.departureTime) document.querySelector('.detail-value:first-child').textContent = formatTime(data.departureTime);
+      if (data.route) {
+        const parts = data.route.split(' → ');
+        if (parts.length === 2) {
+          document.getElementById('ticketFromCode').textContent = parts[0].substring(0, 3).toUpperCase();
+          document.getElementById('ticketFromName').textContent = parts[0];
+          document.getElementById('ticketToCode').textContent = parts[1].substring(0, 3).toUpperCase();
+          document.getElementById('ticketToName').textContent = parts[1];
+        }
+      }
+      if (data.qrCodeHash) {
+        document.getElementById('qrHashDisplay').textContent = data.qrCodeHash;
+        generateQR(data.qrCodeHash);
+      }
+    }
+
+    function formatTime(t) {
+      if (!t) return '—';
+      const [h, m] = t.split(':').map(Number);
+      const ampm = h >= 12 ? 'PM' : 'AM';
+      const h12 = h % 12 || 12;
+      return `${h12}:${String(m).padStart(2, '0')} ${ampm}`;
+    }
+
+    function generateQR(text) {
+      const container = document.getElementById("qrcode");
+      container.innerHTML = '';
+      if (typeof QRCode !== 'undefined') {
+        new QRCode(container, {
+          text,
+          width: 180, height: 180,
+          colorDark: "#0F172A", colorLight: "#ffffff",
+          correctLevel: QRCode.CorrectLevel.H,
+        });
+      } else {
+        const img = document.createElement('img');
+        img.src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(text)}`;
+        img.alt = 'QR Code';
+        container.appendChild(img);
+      }
+    }
+
     function positionNotches() {
       const divider = document.querySelector('.ticket-divider-line');
       const card = document.getElementById('ticketCard');
@@ -446,18 +232,35 @@
       }
     }
 
-    // Generate QR Code
-    new QRCode(document.getElementById("qrcode"), {
-      text: qrHash,
-      width: 180,
-      height: 180,
-      colorDark: "#0F172A",
-      colorLight: "#ffffff",
-      correctLevel: QRCode.CorrectLevel.H
-    });
+    async function loadTicket() {
+      setLoadingState();
 
-    window.addEventListener('load', positionNotches);
-    window.addEventListener('resize', positionNotches);
+      if (!bookingId) {
+        populateTicket({
+          passengerName: decodeURIComponent(params.get('name') || 'Passenger'),
+          operator: decodeURIComponent(params.get('operator') || 'NaijaRoutes'),
+          amountNaira: params.get('price') ? parseInt(params.get('price')).toLocaleString() : '—',
+          seats: params.get('seat') || '—',
+        });
+        window.addEventListener('load', positionNotches);
+        return;
+      }
+
+      try {
+        const res = await fetch(`${BASE}/bookings/${bookingId}`);
+        const json = await res.json();
+        if (json.success) {
+          populateTicket(json.data);
+        }
+      } catch (err) {
+        console.error('Failed to load booking:', err);
+      }
+
+      window.addEventListener('load', positionNotches);
+      window.addEventListener('resize', positionNotches);
+    }
+
+    loadTicket();
   </script>
   <script>
   window.__I18N_CONFIG__ = { localePath: '/shared/i18n/' };

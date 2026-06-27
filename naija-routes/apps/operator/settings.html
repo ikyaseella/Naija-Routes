@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -6,17 +6,7 @@
   <title>Settings — Naija Routes Operator Portal</title>
   <link rel="stylesheet" href="css/operator.css">
   <link rel="stylesheet" href="/shared/css/i18n.css">
-  <style>
-    .st-section { margin-bottom: 24px; }
-    .st-section h3 { font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 12px; }
-    .st-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
-    .st-row:last-child { border-bottom: none; }
-    .st-row .st-desc { font-size: 12px; color: var(--muted); }
-    .toggle { width: 40px; height: 22px; border-radius: 11px; border: none; cursor: pointer; position: relative; background: var(--border); transition: background .2s; }
-    .toggle.on { background: var(--green); }
-    .toggle::after { content: ''; position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; border-radius: 50%; background: white; transition: transform .2s; }
-    .toggle.on::after { transform: translateX(18px); }
-  </style>
+  
 </head>
 <body>
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
@@ -41,7 +31,7 @@
     <a href="settings.html" class="nav-item active"><span class="nav-icon">⚙</span> <span data-i18n="nav.settings">Settings</span></a>
   </div>
   <div class="sidebar__item" style="margin-top:auto;padding:12px 20px;border-top:1px solid rgba(255,255,255,0.1)">
-    <select class="language-switcher__select" onchange="I18N.setLanguage(this.value)" style="background:transparent;color:inherit;width:100%;border:1px solid rgba(255,255,255,0.2);padding:6px 10px;border-radius:6px;font-size:13px">
+    <select class="language-switcher__select" onchange="I18N.setLanguage(this.value)">
       <option value="en">English</option><option value="yo">Yoruba</option><option value="ha">Hausa</option><option value="ig">Igbo</option><option value="pcm">Pidgin</option>
     </select>
   </div>

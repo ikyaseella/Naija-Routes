@@ -7,40 +7,9 @@
   <link rel="stylesheet" href="css/theme-deep-roots.css">
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/base.css">
-  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="/shared/css/components.css">
+  <link rel="stylesheet" href="/shared/css/ussd.css">
   <link rel="stylesheet" href="/shared/css/i18n.css">
-  <style>
-    body { background: var(--color-slate-900); min-height: 100vh; display: flex; align-items: center; justify-content: center; }
-    .phone { width: 360px; background: #111; border-radius: 40px; padding: 16px; box-shadow: 0 30px 60px rgba(0,0,0,0.6); }
-    .phone-screen { background: #1a1a2e; border-radius: 32px; overflow: hidden; min-height: 580px; display: flex; flex-direction: column; }
-    .ussd-header { background: #16213e; padding: 16px 20px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); }
-    .ussd-header .signal { display: flex; gap: 2px; align-items: flex-end; height: 12px; }
-    .ussd-header .signal div { width: 3px; background: #4ade80; border-radius: 1px; }
-    .ussd-header .signal div:nth-child(1) { height: 4px; }
-    .ussd-header .signal div:nth-child(2) { height: 7px; }
-    .ussd-header .signal div:nth-child(3) { height: 10px; }
-    .ussd-header .carrier { color: #ccc; font-size: 12px; font-weight: 600; flex: 1; }
-    .ussd-header .battery { color: #4ade80; font-size: 12px; }
-    .ussd-body { padding: 20px; flex: 1; display: flex; flex-direction: column; }
-    .ussd-dialog { background: #0f3460; border-radius: 12px; padding: 16px; margin-bottom: 12px; color: #e0e0e0; font-family: 'Courier New', monospace; font-size: 14px; line-height: 1.6; white-space: pre-wrap; min-height: 60px; }
-    .ussd-input-area { display: flex; gap: 8px; margin-top: auto; }
-    .ussd-input { flex: 1; background: #16213e; border: 1px solid #0f3460; color: #fff; padding: 12px 16px; border-radius: 8px; font-size: 16px; font-family: 'Courier New', monospace; outline: none; }
-    .ussd-input:focus { border-color: #4ade80; }
-    .ussd-send { background: #4ade80; color: #000; border: none; width: 48px; height: 48px; border-radius: 8px; font-size: 20px; cursor: pointer; font-weight: 700; display: flex; align-items: center; justify-content: center; }
-    .ussd-send:hover { background: #22c55e; }
-    .ussd-send:disabled { background: #333; color: #666; cursor: not-allowed; }
-    .ussd-reply { background: #1a3a5c; border-radius: 8px; padding: 12px 16px; color: #4ade80; font-family: 'Courier New', monospace; font-size: 13px; margin-bottom: 12px; display: none; }
-    .ussd-controls { display: flex; gap: 8px; margin-top: 12px; }
-    .ussd-btn { flex: 1; padding: 8px; border: 1px solid rgba(255,255,255,0.2); background: transparent; color: #ccc; border-radius: 6px; font-size: 12px; cursor: pointer; text-align: center; }
-    .ussd-btn:hover { background: rgba(255,255,255,0.1); }
-    .ussd-btn.danger { border-color: #ef4444; color: #ef4444; }
-    .ussd-footer { display: flex; justify-content: space-between; padding: 8px 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 10px; color: #666; font-family: 'Courier New', monospace; }
-    .ussd-nav { text-align: center; padding: 12px; }
-    .ussd-nav a { color: #4ade80; text-decoration: none; font-size: 13px; }
-    .ussd-nav a:hover { text-decoration: underline; }
-    .dial-code { background: #0f3460; border-radius: 8px; padding: 10px 16px; text-align: center; margin-bottom: 16px; font-size: 18px; font-weight: 700; color: #4ade80; font-family: 'Courier New', monospace; letter-spacing: 2px; }
-    @media (max-width: 480px) { .phone { width: 100%; border-radius: 0; padding: 0; } .phone-screen { border-radius: 0; min-height: 100vh; } }
-  </style>
 </head>
 <body>
 
@@ -83,102 +52,7 @@
   </div>
 </div>
 
-<script>
-  let sessionId = null;
-  let msisdn = '0803' + Math.floor(10000000 + Math.random() * 90000000);
-  let waiting = false;
-
-  function appendDialog(text) {
-    const el = document.getElementById('ussdDialog');
-    el.textContent = text;
-  }
-
-  function showReply(text) {
-    const el = document.getElementById('ussdReply');
-    el.textContent = '→ ' + text;
-    el.style.display = 'block';
-    setTimeout(() => el.style.display = 'none', 3000);
-  }
-
-  async function startSession() {
-    document.getElementById('startBtn').style.display = 'none';
-    document.getElementById('backBtn').style.display = 'inline-block';
-    document.getElementById('endBtn').style.display = 'inline-block';
-    document.getElementById('ussdInput').disabled = false;
-    document.getElementById('ussdSend').disabled = false;
-    document.getElementById('ussdInput').focus();
-    document.getElementById('dialCode').textContent = '📞 *347# · Connected';
-    waiting = false;
-
-    sessionId = 'ussd-' + Date.now();
-    try {
-      const res = await fetch(`http://localhost:3000/api/v1/ussd/webhook`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sessionId, msisdn, input: '' }),
-      });
-      const data = await res.json();
-      appendDialog(data.text);
-      waiting = !data.release;
-    } catch (e) {
-      appendDialog('Connection error. Make sure API is running on port 3000.');
-    }
-  }
-
-  async function sendInput(value) {
-    const input = value || document.getElementById('ussdInput').value.trim();
-    if (!input) return;
-    document.getElementById('ussdInput').value = '';
-
-    if (!waiting) {
-      showReply('Session ended. Press Start to begin a new session.');
-      return;
-    }
-
-    showReply('You: ' + input);
-
-    try {
-      const res = await fetch(`http://localhost:3000/api/v1/ussd/webhook`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sessionId, msisdn, input }),
-      });
-      const data = await res.json();
-      appendDialog(data.text);
-      waiting = !data.release;
-      if (data.release) {
-        document.getElementById('dialCode').textContent = '📞 *347# · Session ended';
-        document.getElementById('ussdInput').disabled = true;
-        document.getElementById('ussdSend').disabled = true;
-        document.getElementById('startBtn').style.display = 'inline-block';
-        document.getElementById('startBtn').textContent = '↻ New Session';
-        document.getElementById('backBtn').style.display = 'none';
-        document.getElementById('endBtn').style.display = 'none';
-      }
-    } catch (e) {
-      appendDialog('Connection lost. Press Start to retry.');
-      waiting = false;
-    }
-  }
-
-  function endSession() {
-    waiting = false;
-    sessionId = null;
-    appendDialog('Session ended by user.\n\nDial *347# to start again.');
-    document.getElementById('dialCode').textContent = '📞 *347#';
-    document.getElementById('ussdInput').disabled = true;
-    document.getElementById('ussdSend').disabled = true;
-    document.getElementById('startBtn').style.display = 'inline-block';
-    document.getElementById('startBtn').textContent = '▶ Start';
-    document.getElementById('backBtn').style.display = 'none';
-    document.getElementById('endBtn').style.display = 'none';
-  }
-
-  document.getElementById('ussdInput').addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') sendInput();
-  });
-  document.getElementById('ussdSend').addEventListener('click', () => sendInput());
-</script>
+<script type="module" src="/js/modules/ussd.js"></script>
 <script>window.__I18N_CONFIG__ = { localePath: '/shared/i18n/' }</script>
 <script src="/shared/js/i18n.js"></script>
 </body>

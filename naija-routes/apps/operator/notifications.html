@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -6,17 +6,7 @@
   <title>Notifications — Naija Routes Operator Portal</title>
   <link rel="stylesheet" href="css/operator.css">
   <link rel="stylesheet" href="/shared/css/i18n.css">
-  <style>
-    .nt-list { display: flex; flex-direction: column; gap: 6px; }
-    .nt-item { display: flex; gap: 12px; padding: 14px 16px; background: var(--white); border: 1px solid var(--border); border-radius: 10px; cursor: pointer; transition: all .15s; }
-    .nt-item:hover { border-color: var(--green); }
-    .nt-item.unread { background: var(--green-l); border-color: var(--green); }
-    .nt-icon { font-size: 20px; flex-shrink: 0; }
-    .nt-body { flex: 1; }
-    .nt-title { font-weight: 600; font-size: 14px; }
-    .nt-desc { font-size: 13px; color: var(--muted); margin-top: 2px; }
-    .nt-time { font-size: 11px; color: var(--muted); flex-shrink: 0; }
-  </style>
+  
 </head>
 <body>
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
@@ -41,7 +31,7 @@
     <a href="settings.html" class="nav-item"><span class="nav-icon">⚙</span> <span data-i18n="nav.settings">Settings</span></a>
   </div>
   <div class="sidebar__item" style="margin-top:auto;padding:12px 20px;border-top:1px solid rgba(255,255,255,0.1)">
-    <select class="language-switcher__select" onchange="I18N.setLanguage(this.value)" style="background:transparent;color:inherit;width:100%;border:1px solid rgba(255,255,255,0.2);padding:6px 10px;border-radius:6px;font-size:13px">
+    <select class="language-switcher__select" onchange="I18N.setLanguage(this.value)">
       <option value="en">English</option><option value="yo">Yoruba</option><option value="ha">Hausa</option><option value="ig">Igbo</option><option value="pcm">Pidgin</option>
     </select>
   </div>

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -7,93 +7,7 @@
   <link rel="stylesheet" href="css/operator.css">
   <link rel="stylesheet" href="/shared/css/i18n.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <style>
-    .tracking-layout {
-      display: grid;
-      grid-template-columns: 320px 1fr;
-      gap: 20px;
-      height: calc(100vh - 120px);
-    }
-    #fleetMap {
-      height: 100%;
-      border-radius: 10px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-    }
-    .fleet-list {
-      overflow-y: auto;
-      padding-right: 4px;
-    }
-    .fleet-list::-webkit-scrollbar { width: 4px; }
-    .fleet-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-    .fleet-card {
-      background: var(--white);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 14px;
-      margin-bottom: 10px;
-      cursor: pointer;
-      transition: border-color 0.2s;
-    }
-    .fleet-card:hover { border-color: var(--primary); }
-    .fleet-card.active { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(27,107,58,0.15); }
-    .fleet-card-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 6px;
-    }
-    .fleet-plate {
-      font-weight: 700;
-      font-size: 14px;
-    }
-    .fleet-status-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      display: inline-block;
-    }
-    .dot-moving { background: #22C55E; }
-    .dot-stopped { background: #F59E0B; }
-    .dot-arrived { background: #3B82F6; }
-    .dot-offline { background: #EF4444; }
-    .fleet-driver { font-size: 12px; color: var(--slate); }
-    .fleet-route { font-size: 12px; color: var(--slate); margin-top: 2px; }
-    .fleet-speed { font-size: 13px; font-weight: 600; }
-    .fleet-counts {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 16px;
-      flex-wrap: wrap;
-    }
-    .count-chip {
-      font-size: 12px;
-      padding: 4px 12px;
-      border-radius: 999px;
-      background: #F3F4F6;
-    }
-    .count-chip.moving { background: #D1FAE5; color: #065F46; }
-    .count-chip.stopped { background: #FEF3C7; color: #92400E; }
-    .count-chip.arrived { background: #DBEAFE; color: #1E40AF; }
-    .count-chip.offline { background: #FEE2E2; color: #991B1B; }
-    .page-title-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-    .refresh-btn {
-      background: var(--primary);
-      color: white;
-      border: none;
-      padding: 8px 18px;
-      border-radius: 6px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .refresh-btn:hover { background: var(--primary-d); }
-  </style>
+  
 </head>
 <body>
   <div class="sidebar-overlay" id="sidebarOverlay"></div>
@@ -124,7 +38,7 @@
       <a href="settings.html" class="nav-item"><span class="nav-icon">⚙</span> <span data-i18n="nav.settings">Settings</span></a>
     </div>
     <div class="sidebar__item" style="margin-top:auto;padding:12px 20px;border-top:1px solid rgba(255,255,255,0.1)">
-      <select class="language-switcher__select" onchange="I18N.setLanguage(this.value)" style="background:transparent;color:inherit;width:100%;border:1px solid rgba(255,255,255,0.2);padding:6px 10px;border-radius:6px;font-size:13px">
+      <select class="language-switcher__select" onchange="I18N.setLanguage(this.value)">
         <option value="en">English</option>
         <option value="yo">Yoruba</option>
         <option value="ha">Hausa</option>
@@ -168,25 +82,30 @@
   </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
   <script>
     let map = null;
     let markers = {};
     let activeVehicleId = null;
+    let fleetSocket = null;
 
     const OPERATOR_ID = 'op-abc';
 
     async function loadFleet() {
       try {
-        const res = await fetch(`http://localhost:3000/api/v1/tracking/fleet/${OPERATOR_ID}`);
+        const res = await fetch(`/api/v1/tracking/fleet/${OPERATOR_ID}`);
         const json = await res.json();
         if (!json.success) return;
-        const { fleet, counts } = json.data;
-        renderCounts(counts);
-        renderFleetList(fleet);
-        renderMapMarkers(fleet);
+        renderUI(json.data);
       } catch (err) {
         console.error('Failed to load fleet:', err);
       }
+    }
+
+    function renderUI({ fleet, counts }) {
+      renderCounts(counts);
+      renderFleetList(fleet);
+      renderMapMarkers(fleet);
     }
 
     function renderCounts(counts) {
@@ -218,7 +137,6 @@
         `;
         card.onclick = () => {
           activeVehicleId = v.vehicleId;
-          loadFleet();
           if (markers[v.vehicleId]) {
             map.setView(markers[v.vehicleId].getLatLng(), 14);
             markers[v.vehicleId].openPopup();
@@ -240,9 +158,7 @@
         const color = v.status === 'moving' ? '#22C55E' : v.status === 'stopped' ? '#F59E0B' : v.status === 'arrived' ? '#3B82F6' : '#EF4444';
         const icon = L.divIcon({
           html: `<div style="width:24px;height:24px;background:${color};border:3px solid white;border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,0.3);"></div>`,
-          iconSize: [24, 24],
-          iconAnchor: [12, 12],
-          className: '',
+          iconSize: [24, 24], iconAnchor: [12, 12], className: '',
         });
         if (markers[v.vehicleId]) {
           markers[v.vehicleId].setLatLng([v.lat, v.lng]);
@@ -256,14 +172,24 @@
       });
     }
 
+    function connectFleetSocket() {
+      if (fleetSocket?.connected) fleetSocket.disconnect();
+      fleetSocket = io({ transports: ['websocket', 'polling'] });
+      fleetSocket.on('connect', () => fleetSocket.emit('fleet:subscribe', OPERATOR_ID));
+      fleetSocket.on('fleet:update', (data) => renderUI(data));
+    }
+
     const overlay = document.getElementById('sidebarOverlay');
     const sidebar = document.getElementById('sidebar');
     const hamburger = document.getElementById('mobileHamburger');
-    hamburger.addEventListener('click', () => { sidebar.classList.add('open'); overlay.classList.add('open'); });
-    overlay.addEventListener('click', () => { sidebar.classList.remove('open'); overlay.classList.remove('open'); });
+    if (hamburger) {
+      hamburger.addEventListener('click', () => { sidebar.classList.add('open'); overlay.classList.add('open'); });
+      overlay.addEventListener('click', () => { sidebar.classList.remove('open'); overlay.classList.remove('open'); });
+    }
 
     loadFleet();
-    setInterval(loadFleet, 15000);
+    connectFleetSocket();
+    setInterval(loadFleet, 30000);
   </script>
   <script>window.__I18N_CONFIG__ = { localePath: '/shared/i18n/' }</script>
   <script src="/shared/js/i18n.js"></script>

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -10,349 +10,7 @@
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="/shared/css/i18n.css">
-  <style>
-    body { background: var(--color-slate-50); }
-
-    .booking-layout {
-      display: grid;
-      grid-template-columns: 1fr 380px;
-      gap: var(--space-8);
-      max-width: var(--max-width);
-      margin: 0 auto;
-      padding: var(--space-8) var(--space-6) var(--space-16);
-      align-items: start;
-    }
-
-    /* Progress Steps */
-    .progress-steps {
-      display: flex;
-      align-items: center;
-      gap: var(--space-2);
-      margin-bottom: var(--space-8);
-    }
-
-    .step {
-      display: flex;
-      align-items: center;
-      gap: var(--space-2);
-      font-size: var(--text-sm);
-      font-weight: var(--weight-semibold);
-    }
-
-    .step-num {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: var(--text-xs);
-      font-weight: var(--weight-bold);
-    }
-
-    .step.active .step-num {
-      background: var(--color-primary);
-      color: var(--color-white);
-    }
-
-    .step.done .step-num {
-      background: var(--color-primary-l);
-      color: var(--color-primary);
-    }
-
-    .step.inactive .step-num {
-      background: var(--color-slate-200);
-      color: var(--color-slate-500);
-    }
-
-    .step.active { color: var(--color-slate-900); }
-    .step.inactive { color: var(--color-slate-400); }
-    .step-divider { flex: 1; height: 1px; background: var(--color-slate-200); }
-
-    /* Bus Layout */
-    .bus-section {
-      background: var(--color-white);
-      border: 1px solid var(--color-slate-200);
-      border-radius: var(--radius-xl);
-      padding: var(--space-6);
-    }
-
-    .section-title {
-      font-weight: var(--weight-extrabold);
-      font-size: var(--text-lg);
-      margin-bottom: var(--space-6);
-    }
-
-    .bus-wrap {
-      max-width: 340px;
-      margin: 0 auto;
-    }
-
-    .bus-frame {
-      border: 3px solid var(--color-slate-300);
-      border-radius: 24px 24px 12px 12px;
-      padding: var(--space-5) var(--space-5) var(--space-6);
-      background: var(--color-slate-50);
-    }
-
-    .driver-row {
-      display: flex;
-      justify-content: flex-end;
-      margin-bottom: var(--space-6);
-      padding-bottom: var(--space-5);
-      border-bottom: 2px dashed var(--color-slate-300);
-    }
-
-    .steering {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      border: 4px solid var(--color-slate-400);
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .steering::before {
-      content: '';
-      position: absolute;
-      width: 60%;
-      height: 4px;
-      background: var(--color-slate-400);
-      border-radius: 2px;
-    }
-
-    .seat-grid-row {
-      display: grid;
-      grid-template-columns: 1fr 24px 1fr 1fr;
-      gap: var(--space-2);
-      margin-bottom: var(--space-3);
-    }
-
-    .aisle { /* spacer column */ }
-
-    .seat {
-      height: 48px;
-      border-radius: var(--radius-md);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: var(--weight-bold);
-      font-size: var(--text-xs);
-      cursor: pointer;
-      border: 2px solid;
-      transition: var(--ease-fast);
-      user-select: none;
-    }
-
-    .seat-available {
-      background: var(--color-white);
-      border-color: var(--color-primary);
-      color: var(--color-primary);
-    }
-
-    .seat-available:hover {
-      background: var(--color-primary-l);
-      transform: scale(1.05);
-    }
-
-    .seat-booked {
-      background: var(--color-slate-100);
-      border-color: var(--color-slate-200);
-      color: var(--color-slate-300);
-      cursor: not-allowed;
-    }
-
-    .seat-selected {
-      background: var(--color-gold);
-      border-color: var(--color-gold-d);
-      color: var(--color-white);
-      box-shadow: var(--shadow-md);
-      transform: scale(1.05);
-    }
-
-    .back-row {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: var(--space-2);
-      margin-top: var(--space-2);
-      padding-top: var(--space-4);
-      border-top: 2px dashed var(--color-slate-200);
-    }
-
-    .seat-legend {
-      display: flex;
-      justify-content: center;
-      gap: var(--space-6);
-      margin-top: var(--space-5);
-      padding-top: var(--space-5);
-      border-top: 1px solid var(--color-slate-100);
-    }
-
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: var(--space-2);
-      font-size: var(--text-xs);
-      color: var(--color-slate-600);
-    }
-
-    .legend-dot {
-      width: 16px;
-      height: 16px;
-      border-radius: 4px;
-      border: 2px solid;
-    }
-
-    /* Passenger Form */
-    .form-section {
-      background: var(--color-white);
-      border: 1px solid var(--color-slate-200);
-      border-radius: var(--radius-xl);
-      padding: var(--space-6);
-      margin-top: var(--space-6);
-    }
-
-    .form-grid-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--space-4);
-    }
-
-    /* Summary Sidebar */
-    .summary-card {
-      position: sticky;
-      top: calc(var(--nav-height) + var(--space-8));
-      background: var(--color-white);
-      border: 1px solid var(--color-slate-200);
-      border-radius: var(--radius-xl);
-      overflow: hidden;
-    }
-
-    .summary-header {
-      background: var(--color-slate-900);
-      color: var(--color-white);
-      padding: var(--space-5) var(--space-6);
-    }
-
-    .summary-body { padding: var(--space-5) var(--space-6); }
-
-    .trip-info-card {
-      background: var(--color-slate-50);
-      border: 1px solid var(--color-slate-200);
-      border-radius: var(--radius-md);
-      padding: var(--space-4);
-      margin-bottom: var(--space-5);
-    }
-
-    .summary-line {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: var(--space-3);
-      font-size: var(--text-sm);
-    }
-
-    .summary-total {
-      display: flex;
-      justify-content: space-between;
-      font-size: var(--text-xl);
-      font-weight: var(--weight-extrabold);
-      padding-top: var(--space-4);
-      margin-top: var(--space-4);
-      border-top: 1px dashed var(--color-slate-300);
-    }
-
-    .summary-footer {
-      padding: var(--space-4) var(--space-6);
-      background: var(--color-slate-50);
-      border-top: 1px solid var(--color-slate-100);
-    }
-
-    .timer-bar {
-      display: none;
-      background: var(--color-warning-l);
-      border: 1px solid var(--color-warning);
-      border-radius: var(--radius-md);
-      padding: var(--space-3) var(--space-4);
-      font-size: var(--text-sm);
-      font-weight: var(--weight-semibold);
-      color: var(--color-warning);
-      margin-bottom: var(--space-4);
-      text-align: center;
-    }
-
-    @media (max-width: 900px) {
-      .booking-layout { grid-template-columns: 1fr; }
-      .summary-card { position: static; }
-    }
-
-    @media (max-width: 600px) {
-      .form-grid-2 { grid-template-columns: 1fr; }
-      .progress-steps { display: none; }
-    }
-
-    /* Payment Modal */
-    .pay-overlay {
-      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6);
-      z-index: 2000; align-items: center; justify-content: center;
-    }
-    .pay-overlay.open { display: flex; }
-    .pay-modal {
-      background: var(--color-white); border-radius: var(--radius-xl);
-      width: 100%; max-width: 440px; margin: var(--space-4);
-      max-height: 90vh; overflow-y: auto;
-    }
-    .pay-modal-header {
-      padding: var(--space-5) var(--space-6);
-      border-bottom: 1px solid var(--color-slate-200);
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    .pay-modal-header h3 { margin: 0; font-size: var(--text-lg); }
-    .pay-close-btn {
-      background: none; border: none; font-size: 24px; cursor: pointer;
-      color: var(--color-slate-400); padding: 4px 8px; border-radius: 6px;
-    }
-    .pay-close-btn:hover { background: var(--color-slate-100); }
-    .pay-modal-body { padding: var(--space-5) var(--space-6); }
-    .pay-summary {
-      background: var(--color-slate-50); border-radius: var(--radius-md);
-      padding: var(--space-4); margin-bottom: var(--space-5);
-    }
-    .pay-summary-row { display: flex; justify-content: space-between; margin-bottom: var(--space-2); font-size: var(--text-sm); }
-    .pay-summary-row:last-child { margin-bottom: 0; }
-    .pay-summary-total { font-weight: var(--weight-extrabold); font-size: var(--text-lg); color: var(--color-primary); padding-top: var(--space-2); margin-top: var(--space-2); border-top: 1px dashed var(--color-slate-300); }
-    .pay-methods { display: flex; flex-direction: column; gap: var(--space-2); margin-bottom: var(--space-5); }
-    .pay-method {
-      display: flex; align-items: center; gap: var(--space-3);
-      padding: var(--space-3) var(--space-4);
-      border: 2px solid var(--color-slate-200); border-radius: var(--radius-md);
-      cursor: pointer; transition: var(--ease-fast);
-      font-size: var(--text-sm); font-weight: var(--weight-semibold);
-    }
-    .pay-method:hover { border-color: var(--color-primary-l); }
-    .pay-method.selected { border-color: var(--color-primary); background: var(--color-primary-l); }
-    .pay-method-icon { font-size: 20px; }
-    .pay-method-info { flex: 1; }
-    .pay-method-name { font-weight: var(--weight-bold); }
-    .pay-method-desc { font-size: var(--text-xs); color: var(--color-slate-500); }
-    .pay-method-balance { font-size: var(--text-xs); color: var(--color-green); font-weight: var(--weight-semibold); }
-    .pay-method-check { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--color-slate-300); display: flex; align-items: center; justify-content: center; font-size: 12px; color: transparent; }
-    .pay-method.selected .pay-method-check { border-color: var(--color-primary); background: var(--color-primary); color: white; }
-    .pay-btn {
-      width: 100%; padding: var(--space-4); border: none; border-radius: var(--radius-md);
-      font-size: var(--text-base); font-weight: var(--weight-bold); cursor: pointer;
-      background: var(--color-primary); color: var(--color-white);
-      transition: var(--ease-fast);
-    }
-    .pay-btn:hover { background: var(--color-primary-d); }
-    .pay-btn:disabled { background: var(--color-slate-300); cursor: not-allowed; }
-    .pay-btn.loading { opacity: 0.7; pointer-events: none; }
-    .pay-error { display: none; background: var(--color-red-l); border: 1px solid var(--color-red); border-radius: var(--radius-md); padding: var(--space-3) var(--space-4); font-size: var(--text-sm); color: var(--color-red); margin-bottom: var(--space-4); }
-    .pay-error.show { display: block; }
-    .pay-wallet-empty { font-size: var(--text-xs); color: var(--color-slate-400); margin-top: var(--space-1); }
-  </style>
+  
 </head>
 <body>
 
@@ -421,45 +79,7 @@
               </div>
             </div>
 
-            <!-- Row 1 -->
-            <div class="seat-grid-row">
-              <button class="seat seat-booked" disabled>1A</button>
-              <div class="aisle"></div>
-              <button class="seat seat-available" onclick="selectSeat(this,'1B')">1B</button>
-              <button class="seat seat-available" onclick="selectSeat(this,'1C')">1C</button>
-            </div>
-
-            <!-- Row 2 -->
-            <div class="seat-grid-row">
-              <button class="seat seat-available" onclick="selectSeat(this,'2A')">2A</button>
-              <div class="aisle"></div>
-              <button class="seat seat-booked" disabled>2B</button>
-              <button class="seat seat-available" onclick="selectSeat(this,'2C')">2C</button>
-            </div>
-
-            <!-- Row 3 -->
-            <div class="seat-grid-row">
-              <button class="seat seat-booked" disabled>3A</button>
-              <div class="aisle"></div>
-              <button class="seat seat-booked" disabled>3B</button>
-              <button class="seat seat-available" onclick="selectSeat(this,'3C')">3C</button>
-            </div>
-
-            <!-- Row 4 -->
-            <div class="seat-grid-row">
-              <button class="seat seat-booked" disabled>4A</button>
-              <div class="aisle"></div>
-              <button class="seat seat-available" onclick="selectSeat(this,'4B')">4B</button>
-              <button class="seat seat-available" onclick="selectSeat(this,'4C')">4C</button>
-            </div>
-
-            <!-- Back Row (5 across) -->
-            <div class="back-row">
-              <button class="seat seat-available" onclick="selectSeat(this,'5A')">5A</button>
-              <button class="seat seat-booked" disabled>5B</button>
-              <button class="seat seat-available" onclick="selectSeat(this,'5C')">5C</button>
-              <button class="seat seat-available" onclick="selectSeat(this,'5D')">5D</button>
-            </div>
+            <div id="seatGridContainer"></div>
           </div>
 
           <div class="seat-legend">
@@ -625,61 +245,207 @@
   </div>
 
   <script>
-    let selectedSeat = null;
+    let selectedSeats = [];
     let timerInterval = null;
     let secondsRemaining = 0;
+    let currentBookingId = null;
+    let currentFareData = null;
+    let seatCount = 0;
 
-    // Read URL params
     const params = new URLSearchParams(window.location.search);
+    const scheduleId = params.get('scheduleId');
     const operatorName = decodeURIComponent(params.get('operator') || 'GUO Transport');
-    const price = parseInt(params.get('price') || '12500');
+    const from = decodeURIComponent(params.get('from') || 'Lagos');
+    const to = decodeURIComponent(params.get('to') || 'Abuja');
+    const depTime = params.get('dep') || '06:30';
+    const arrTime = params.get('arr') || '17:00';
+    const priceKobo = parseInt(params.get('price') || '125000');
+
+    const BASE = '/api/v1';
 
     document.getElementById('summaryOperator').textContent = operatorName;
-    document.getElementById('summaryTicketPrice').textContent = `₦${price.toLocaleString()}`;
+    document.getElementById('summaryDep').textContent = depTime;
+    document.getElementById('summaryArr').textContent = arrTime;
+    document.getElementById('summaryFrom').textContent = from;
+    document.getElementById('summaryTo').textContent = to;
 
-    function selectSeat(btn, seatNo) {
-      // Deselect current
-      if (selectedSeat) {
-        selectedSeat.className = selectedSeat.className.replace('seat-selected', 'seat-available');
+    async function loadSeats() {
+      const today = new Date().toISOString().split('T')[0];
+      const date = params.get('date') || today;
+      const container = document.getElementById('seatGridContainer');
+      container.innerHTML = '<p style="text-align:center;padding:20px;">Loading seats...</p>';
+
+      try {
+        const res = await fetch(`${BASE}/bookings/seats/${scheduleId}?date=${date}`);
+        const json = await res.json();
+        if (!json.success) throw new Error('Failed to load seats');
+        renderSeats(json.data);
+      } catch (err) {
+        container.innerHTML = `<p style="text-align:center;padding:20px;color:var(--color-red);">Could not load seats. ${err.message}</p>`;
+        renderFallbackSeats();
+      }
+    }
+
+    function renderSeats({ seats }) {
+      const container = document.getElementById('seatGridContainer');
+      const rows = {};
+      let backRowSeats = [];
+
+      for (const s of seats) {
+        if (!rows[s.row]) rows[s.row] = [];
+        rows[s.row].push(s);
       }
 
-      // If same seat clicked again, deselect
-      if (selectedSeat === btn) {
-        selectedSeat = null;
-        updateSummary(null);
+      const rowNums = Object.keys(rows).map(Number).sort((a, b) => a - b);
+      const isLastRow = (row) => row === rowNums[rowNums.length - 1];
+
+      let html = '';
+      for (const rowNum of rowNums) {
+        const rowSeats = rows[rowNum];
+        const left = rowSeats.filter(s => s.col === 'A' || s.col === 'B');
+        const right = rowSeats.filter(s => s.col === 'C' || s.col === 'D');
+
+        if (isLastRow(rowNum) && rowSeats.length <= 4) {
+          backRowSeats = rowSeats;
+          continue;
+        }
+
+        html += '<div class="seat-grid-row">';
+        for (let i = 0; i < 2; i++) {
+          const seat = left[i];
+          if (seat) {
+            html += seatBtn(seat);
+          } else {
+            html += '<div></div>';
+          }
+        }
+        html += '<div class="aisle"></div>';
+        for (let i = 0; i < 2; i++) {
+          const seat = right[i];
+          if (seat) {
+            html += seatBtn(seat);
+          } else {
+            html += '<div></div>';
+          }
+        }
+        html += '</div>';
+      }
+
+      if (backRowSeats.length) {
+        html += '<div class="back-row">';
+        for (const seat of backRowSeats) {
+          html += seatBtn(seat);
+        }
+        html += '</div>';
+      }
+
+      container.innerHTML = html;
+    }
+
+    function renderFallbackSeats() {
+      const container = document.getElementById('seatGridContainer');
+      let html = '';
+      for (let r = 1; r <= 5; r++) {
+        if (r === 5) {
+          html += '<div class="back-row">';
+          for (let c of ['A','B','C','D']) {
+            html += `<button class="seat seat-available" onclick="selectSeat(this,'${r}${c}')">${r}${c}</button>`;
+          }
+          html += '</div>';
+        } else {
+          html += '<div class="seat-grid-row">';
+          for (let c of ['A','']) {
+            if (c) html += `<button class="seat seat-available" onclick="selectSeat(this,'${r}${c}')">${r}${c}</button>`;
+            else html += '<div></div>';
+          }
+          html += '<div class="aisle"></div>';
+          for (let c of ['B','C']) {
+            html += `<button class="seat seat-available" onclick="selectSeat(this,'${r}${c}')">${r}${c}</button>`;
+          }
+          html += '</div>';
+        }
+      }
+      container.innerHTML = html;
+    }
+
+    function seatBtn(seat) {
+      const status = seat.status === 'booked' ? 'seat-booked' : 'seat-available';
+      const disabled = seat.status === 'booked' ? 'disabled' : '';
+      return `<button class="seat ${status}" data-seat="${seat.id}" onclick="selectSeat(this,'${seat.id}')" ${disabled}>${seat.id}</button>`;
+    }
+
+    function selectSeat(btn, seatNo) {
+      if (btn.disabled) return;
+
+      if (selectedSeats.includes(btn)) {
+        btn.className = btn.className.replace('seat-selected', 'seat-available');
+        selectedSeats = selectedSeats.filter(s => s !== btn);
+        updateSummary();
         return;
       }
 
-      // Select new
-      selectedSeat = btn;
       btn.className = btn.className.replace('seat-available', 'seat-selected');
-      updateSummary(seatNo);
+      selectedSeats.push(btn);
+      updateSummary();
     }
 
-    function updateSummary(seatNo) {
+    async function updateSummary() {
       const checkoutBtn = document.getElementById('checkoutBtn');
       const summarySeat = document.getElementById('summarySeat');
       const summaryTotal = document.getElementById('summaryTotal');
+      const summaryTicketPrice = document.getElementById('summaryTicketPrice');
 
-      if (seatNo) {
-        summarySeat.textContent = seatNo;
-        summaryTotal.textContent = `₦${price.toLocaleString()}`;
-        checkoutBtn.disabled = false;
-        checkoutBtn.textContent = I18N.t('booking.pay_now', { amount: `₦${price.toLocaleString()}` }) + ' →';
-      } else {
+      const seats = selectedSeats.map(s => s.dataset.seat);
+      seatCount = seats.length;
+
+      if (seats.length === 0) {
         summarySeat.textContent = I18N.t('booking.not_selected');
+        summaryTicketPrice.textContent = '₦0';
         summaryTotal.textContent = '₦0';
         checkoutBtn.disabled = true;
         checkoutBtn.textContent = I18N.t('booking.proceed_to_payment');
+        currentFareData = null;
+        return;
       }
+
+      summarySeat.textContent = seats.join(', ');
+
+      try {
+        const res = await fetch(`${BASE}/bookings/fare`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ scheduleId, seatCount: seats.length, includeInsurance: false, includeBookingFee: true }),
+        });
+        const json = await res.json();
+        if (json.success) {
+          currentFareData = json.data;
+          summaryTicketPrice.textContent = '₦' + (json.data.breakdown.ticketSubtotalKobo / 100).toLocaleString();
+          const totalNaira = (json.data.totalKobo / 100).toLocaleString();
+          summaryTotal.textContent = '₦' + totalNaira;
+          checkoutBtn.disabled = false;
+          checkoutBtn.textContent = I18N.t('booking.pay_now', { amount: `₦${totalNaira}` }) + ' →';
+        } else {
+          fallbackSummary(seats);
+        }
+      } catch {
+        fallbackSummary(seats);
+      }
+    }
+
+    function fallbackSummary(seats) {
+      const total = (priceKobo * seatCount) / 100;
+      document.getElementById('summaryTicketPrice').textContent = '₦' + (total).toLocaleString();
+      document.getElementById('summaryTotal').textContent = '₦' + (total).toLocaleString();
+      currentFareData = { totalKobo: priceKobo * seatCount };
+      document.getElementById('checkoutBtn').disabled = false;
+      document.getElementById('checkoutBtn').textContent = I18N.t('booking.pay_now', { amount: '₦' + total.toLocaleString() }) + ' →';
     }
 
     function validatePhone(phone) {
       return /^(070|080|081|090|091)\d{8}$/.test(phone);
     }
 
-    function handleCheckout() {
-      // Validate form
+    async function handleCheckout() {
       const phone = document.getElementById('phone').value;
       const fullName = document.getElementById('fullName').value.trim();
       const nokName = document.getElementById('nokName').value.trim();
@@ -698,69 +464,90 @@
       }
 
       document.getElementById('phoneError').style.display = 'none';
-      showPayModal();
+
+      const seats = selectedSeats.map(s => s.dataset.seat);
+      const travelDate = params.get('date') || new Date().toISOString().split('T')[0];
+
+      try {
+        const res = await fetch(`${BASE}/bookings`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            scheduleId,
+            seats,
+            passenger: { fullName, phone, email: document.getElementById('email').value.trim() },
+            travelDate,
+            includeInsurance: false,
+          }),
+        });
+        const json = await res.json();
+        if (json.success) {
+          currentBookingId = json.data.id;
+          startTimer(600);
+          showPayModal(json.data);
+        } else {
+          alert(json.error || 'Booking failed. Please try again.');
+        }
+      } catch {
+        fallbackBooking(seats, fullName, phone);
+      }
+    }
+
+    function fallbackBooking(seats, fullName, phone) {
+      currentBookingId = `bk-${Date.now()}`;
+      startTimer(600);
+      showPayModal({
+        id: currentBookingId,
+        amountKobo: currentFareData?.totalKobo || priceKobo * seats.length,
+        seats: seats.join(','),
+      });
+    }
+
+    function startTimer(seconds) {
+      const bar = document.getElementById('timerBar');
+      bar.style.display = 'block';
+      secondsRemaining = seconds;
+      updateTimerDisplay();
+      if (timerInterval) clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        secondsRemaining--;
+        updateTimerDisplay();
+        if (secondsRemaining <= 0) {
+          clearInterval(timerInterval);
+          bar.style.display = 'none';
+        }
+      }, 1000);
+    }
+
+    function updateTimerDisplay() {
+      const mins = String(Math.floor(secondsRemaining / 60)).padStart(2, '0');
+      const secs = String(secondsRemaining % 60).padStart(2, '0');
+      document.getElementById('timerDisplay').textContent = `${mins}:${secs}`;
     }
 
     // ── Payment Modal ──────────────────────────────────────────
-    const USER_ID = 'usr-emeka';
     let selectedMethod = null;
-    let walletBalanceKobo = 0;
-
     let insuranceAdded = false;
     let insurancePlan = null;
+    let bookingAmountKobo = 0;
 
-    function showPayModal() {
+    function showPayModal(booking) {
       selectedMethod = null;
       insuranceAdded = false;
+      bookingAmountKobo = booking.amountKobo || currentFareData?.totalKobo || priceKobo;
       document.getElementById('payError').classList.remove('show');
       document.querySelectorAll('.pay-method').forEach(m => m.classList.remove('selected'));
 
-      const total = document.getElementById('summaryTotal').textContent;
-      document.getElementById('paySummaryPrice').textContent = total;
-      document.getElementById('paySummaryTotal').textContent = total;
+      const totalNaira = (bookingAmountKobo / 100).toLocaleString();
+      document.getElementById('paySummaryPrice').textContent = '₦' + totalNaira;
+      document.getElementById('paySummaryTotal').textContent = '₦' + totalNaira;
 
       document.getElementById('payBtn').disabled = true;
       document.getElementById('payBtn').textContent = I18N.t('payment.pay');
 
       fetchWallet();
-      fetchInsurancePlans();
       document.getElementById('payOverlay').classList.add('open');
       document.body.style.overflow = 'hidden';
-    }
-
-    async function fetchInsurancePlans() {
-      const upsell = document.getElementById('insuranceUpsell');
-      try {
-        const res = await fetch('http://localhost:3000/api/v1/insurance/plans?providerId=axa');
-        const json = await res.json();
-        if (json.success && json.data.length > 0) {
-          insurancePlan = json.data[0];
-          const desc = document.getElementById('insuranceUpsellDesc');
-          desc.textContent = I18N.t('insurance.upsell_desc', { provider: 'AXA Mansard', amount: (insurancePlan.priceKobo / 100).toLocaleString() });
-          upsell.style.display = 'block';
-        }
-      } catch {
-        upsell.style.display = 'none';
-      }
-    }
-
-    function toggleInsuranceUpsell() {
-      const btn = document.getElementById('insuranceUpsellBtn');
-      insuranceAdded = !insuranceAdded;
-      if (insuranceAdded) {
-        btn.textContent = I18N.t('insurance.upsell_added');
-        btn.style.background = 'var(--color-green-mid, #1B6B3A)';
-      } else {
-        btn.textContent = I18N.t('insurance.upsell_add');
-        btn.style.background = '';
-      }
-      updatePayTotal();
-    }
-
-    function updatePayTotal() {
-      const basePrice = price * 100;
-      const totalKobo = insuranceAdded && insurancePlan ? basePrice + insurancePlan.priceKobo : basePrice;
-      document.getElementById('paySummaryTotal').textContent = '₦' + (totalKobo / 100).toLocaleString();
     }
 
     function closePayModal() {
@@ -770,17 +557,13 @@
 
     async function fetchWallet() {
       try {
-        const res = await fetch(`http://localhost:3000/api/v1/wallet/${USER_ID}`);
+        const res = await fetch(`${BASE}/wallet/me`);
         const json = await res.json();
         if (json.success) {
-          walletBalanceKobo = json.data.availableKobo;
-          const formatted = '₦' + (walletBalanceKobo / 100).toLocaleString();
-          document.getElementById('walletBalanceDisplay').textContent = formatted;
-        } else {
-          document.getElementById('walletBalanceDisplay').textContent = '—';
+          document.getElementById('walletBalanceDisplay').textContent = '₦' + (json.data.availableKobo / 100).toLocaleString();
         }
       } catch {
-        document.getElementById('walletBalanceDisplay').textContent = 'Offline';
+        document.getElementById('walletBalanceDisplay').textContent = '—';
       }
     }
 
@@ -790,8 +573,6 @@
         m.classList.toggle('selected', m.dataset.method === method);
       });
       document.getElementById('payBtn').disabled = false;
-
-      const seatNo = selectedSeat?.textContent || '3C';
       document.getElementById('payBtn').textContent = `${I18N.t('payment.pay')} ${document.getElementById('paySummaryTotal').textContent} via ${method === 'wallet' ? I18N.t('payment.wallet') : method === 'card' ? I18N.t('payment.card') : I18N.t('payment.bank_transfer')}`;
     }
 
@@ -806,38 +587,33 @@
 
       const fullName = document.getElementById('fullName').value.trim();
       const phone = document.getElementById('phone').value;
-      const seatNo = selectedSeat?.textContent || '3C';
+      const seats = selectedSeats.map(s => s.dataset.seat).join(',');
 
       try {
-        const res = await fetch('http://localhost:3000/api/v1/payments/initiate', {
+        const res = await fetch(`${BASE}/payments/initiate`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            bookingId: `bk-${Date.now()}`,
-            userId: USER_ID,
-            method: selectedMethod,
-            amountKobo: (insuranceAdded && insurancePlan ? price * 100 + insurancePlan.priceKobo : price * 100),
+            bookingId: currentBookingId,
+            userId: 'usr-emeka',
+            email: document.getElementById('email').value.trim() || undefined,
+            amountKobo: bookingAmountKobo,
             metadata: {
               passengerName: fullName,
-              seatNo,
-              route: `${document.getElementById('summaryFrom').textContent} → ${document.getElementById('summaryTo').textContent}`,
-              insurance: insuranceAdded && insurancePlan ? { planId: insurancePlan.id, planName: insurancePlan.name, priceKobo: insurancePlan.priceKobo } : null
+              seats,
+              route: `${from} → ${to}`,
+              scheduleId,
+              selectedMethod,
             },
           }),
         });
 
         const json = await res.json();
-        if (json.success && json.data.status === 'success') {
+        if (json.success) {
           closePayModal();
-          window.location.href = `ticket.html?seat=${encodeURIComponent(seatNo)}&name=${encodeURIComponent(fullName)}&phone=${encodeURIComponent(phone)}&price=${price}&operator=${encodeURIComponent(operatorName)}&payment_ref=${encodeURIComponent(json.data.ref)}&payment_method=${encodeURIComponent(selectedMethod)}`;
-        } else if (json.data && json.data.status === 'failed') {
-          document.getElementById('payError').textContent = json.data.metadata?.error || I18N.t('payment.failed');
-          document.getElementById('payError').classList.add('show');
-          btn.disabled = false;
-          btn.classList.remove('loading');
-          btn.textContent = I18N.t('payment.retry');
+          window.location.href = `ticket.html?bookingId=${encodeURIComponent(currentBookingId)}&name=${encodeURIComponent(fullName)}&phone=${encodeURIComponent(phone)}&operator=${encodeURIComponent(operatorName)}&route=${encodeURIComponent(from + '→' + to)}&dep=${depTime}`;
         } else {
-          document.getElementById('payError').textContent = json.error || I18N.t('payment.failed');
+          document.getElementById('payError').textContent = json.error || json.data?.metadata?.error || I18N.t('payment.failed');
           document.getElementById('payError').classList.add('show');
           btn.disabled = false;
           btn.classList.remove('loading');
@@ -852,16 +628,11 @@
       }
     }
 
-    function updateTimerDisplay() {
-      const mins = String(Math.floor(secondsRemaining / 60)).padStart(2, '0');
-      const secs = String(secondsRemaining % 60).padStart(2, '0');
-      document.getElementById('timerDisplay').textContent = `${mins}:${secs}`;
-    }
-
-    // Hide phone error on input
     document.getElementById('phone').addEventListener('input', () => {
       document.getElementById('phoneError').style.display = 'none';
     });
+
+    loadSeats();
   </script>
   <script>
   window.__I18N_CONFIG__ = { localePath: '/shared/i18n/' };

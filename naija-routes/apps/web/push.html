@@ -1,0 +1,173 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Naija Routes Push Notifications — Enable or disable push notifications for booking updates, trip alerts, and more.">
+<title>Notifications — Naija Routes</title>
+<link rel="stylesheet" href="css/theme-deep-roots.css">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="/shared/css/i18n.css">
+
+</head>
+<body>
+
+<div class="design-label">🔔 Naija Routes · Push Notifications</div>
+
+<nav>
+  <a href="index.html" class="nav-logo" style="text-decoration:none;">🚌 <span data-i18n="nav.logo">NaijaRoutes</span></a>
+  <div class="nav-links">
+    <a href="index.html" data-i18n="nav.routes">Routes</a>
+    <a href="tracking.html" data-i18n="nav.track_bus">Track Bus</a>
+    <a href="wallet.html" data-i18n="nav.wallet">Wallet</a>
+    <a href="cargo.html" data-i18n="nav.cargo">Cargo</a>
+    <a href="insurance.html" data-i18n="nav.insurance">Insurance</a>
+    <a href="ussd.html" data-i18n="nav.ussd">USSD</a>
+    <a href="whatsapp.html" data-i18n="nav.whatsapp">WhatsApp</a>
+    <a href="push.html" class="active" data-i18n="nav.notifications">Notifications</a>
+    <div class="nav__item" data-i18n-language-container>
+      <select class="language-switcher__select" onchange="I18N.setLanguage(this.value)">
+        <option value="en">English</option>
+        <option value="yo">Yoruba</option>
+        <option value="ha">Hausa</option>
+        <option value="ig">Igbo</option>
+        <option value="pcm">Pidgin</option>
+      </select>
+    </div>
+  </div>
+  <button class="nav-cta" data-i18n="nav.sign_in">Sign in</button>
+</nav>
+
+<div class="push-layout">
+  <div class="push-hero">
+    <div class="icon">🔔</div>
+    <h1>Push Notifications</h1>
+    <p>Get notified about booking confirmations, departure reminders, delay alerts, and promotional offers.</p>
+  </div>
+
+  <div id="pushNotSupported" class="not-supported" style="display:none;">
+    <div class="icon">📵</div>
+    <h2>Not Supported</h2>
+    <p>Push notifications are not supported on this browser. Please use a modern browser like Chrome, Firefox, or Edge.</p>
+  </div>
+
+  <div id="pushContent" style="display:none;">
+    <div class="push-card">
+      <h2>🔔 Notification Status</h2>
+      <div class="push-status-row">
+        <span class="label">Status</span>
+        <span class="value" id="pushStatus">Checking...</span>
+      </div>
+      <div class="push-status-row">
+        <span class="label">Browser Support</span>
+        <span class="value" id="browserSupport">-</span>
+      </div>
+      <div style="margin-top:var(--space-4);text-align:center;">
+        <button class="btn btn-primary" id="pushToggle" onclick="handleToggle()">Enable Notifications</button>
+      </div>
+    </div>
+
+    <div class="push-card">
+      <h2>⚙️ Notification Preferences</h2>
+      <div class="push-preferences">
+        <div class="pref-item">
+          <div class="info"><strong>Booking Confirmation</strong><span>Get notified when your booking is confirmed</span></div>
+          <button class="toggle on" data-pref="bookingConfirmation" onclick="togglePref(this)"></button>
+        </div>
+        <div class="pref-item">
+          <div class="info"><strong>Departure Reminder</strong><span>Get reminded before your trip departs</span></div>
+          <button class="toggle on" data-pref="departureReminder" onclick="togglePref(this)"></button>
+        </div>
+        <div class="pref-item">
+          <div class="info"><strong>Delay Alerts</strong><span>Receive alerts if your trip is delayed</span></div>
+          <button class="toggle on" data-pref="delayAlert" onclick="togglePref(this)"></button>
+        </div>
+        <div class="pref-item">
+          <div class="info"><strong>Payment Receipts</strong><span>Get receipt notifications after payments</span></div>
+          <button class="toggle on" data-pref="paymentReceipts" onclick="togglePref(this)"></button>
+        </div>
+        <div class="pref-item">
+          <div class="info"><strong>Promotions</strong><span>Receive promotional offers and discounts</span></div>
+          <button class="toggle" data-pref="promotionEnabled" onclick="togglePref(this)"></button>
+        </div>
+        <div class="pref-item">
+          <div class="info"><strong>KYC Updates</strong><span>Get notified about KYC verification status</span></div>
+          <button class="toggle" data-pref="kycUpdates" onclick="togglePref(this)"></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="push-card">
+      <h2>📋 Recent Notifications</h2>
+      <div id="logList" class="log-list">
+        <p style="text-align:center;color:var(--color-slate-400);padding:var(--space-4);font-size:var(--text-sm);">Loading...</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="/js/modules/push.js"></script>
+<script>window.__I18N_CONFIG__ = { localePath: '/shared/i18n/' }</script>
+<script src="/shared/js/i18n.js"></script>
+<script>
+let supported = false;
+
+async function handleToggle() {
+  if (!supported) return;
+  const btn = document.getElementById('pushToggle');
+  const isSubscribed = btn.textContent === 'Disable Notifications';
+  if (isSubscribed) {
+    const result = await unsubscribe();
+    if (!result.success) alert('Failed to unsubscribe: ' + (result.reason || 'Unknown error'));
+  } else {
+    const result = await subscribe();
+    if (!result.success) alert('Failed to subscribe: ' + (result.reason || 'Please allow notifications in your browser settings.'));
+  }
+}
+
+async function togglePref(el) {
+  el.classList.toggle('on');
+  try {
+    const res = await fetch('/api/v1/notifications/settings');
+    const data = await res.json();
+    const settings = data.data || {};
+    settings[el.dataset.pref] = el.classList.contains('on');
+    await fetch('/api/v1/notifications/settings', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(settings),
+    });
+  } catch { /* ignore */ }
+}
+
+(async () => {
+  const result = await initPush();
+  supported = result.supported;
+  document.getElementById('browserSupport').textContent = supported ? '✅ Supported' : '❌ Not supported';
+  if (supported) {
+    document.getElementById('pushContent').style.display = 'block';
+  } else {
+    document.getElementById('pushNotSupported').style.display = 'block';
+  }
+  const logs = await getLogs(10);
+  const container = document.getElementById('logList');
+  if (logs.length === 0) {
+    container.innerHTML = '<p style="text-align:center;color:var(--color-slate-400);padding:var(--space-4);font-size:var(--text-sm);">No notifications yet.</p>';
+  } else {
+    container.innerHTML = logs.map(l =>
+      `<div class="log-item">
+        <div class="log-title">${l.title || 'Untitled'}</div>
+        <div class="log-body">${l.body || ''}</div>
+        <div class="log-time">${l.sent_at ? new Date(l.sent_at).toLocaleString() : ''}</div>
+      </div>`
+    ).join('');
+  }
+})();
+
+window.handleToggle = handleToggle;
+window.togglePref = togglePref;
+</script>
+</body>
+</html>
