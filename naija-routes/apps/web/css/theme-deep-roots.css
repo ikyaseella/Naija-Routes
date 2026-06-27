@@ -83,21 +83,6 @@ nav {
   display: flex;
   align-items: center;
 }
-.language-switcher__select {
-  background: transparent;
-  color: rgba(255,255,255,0.75);
-  border: 1px solid rgba(255,255,255,0.3);
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-family: 'Inter', sans-serif;
-  cursor: pointer;
-}
-.language-switcher__select option {
-  background: var(--green-deep);
-  color: var(--white);
-}
-
 /* ── FOOTER ───────────────────────────────── */
 footer {
   background: var(--green-deep);

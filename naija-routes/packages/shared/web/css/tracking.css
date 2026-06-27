@@ -1,0 +1,36 @@
+/**
+ * Naija Routes — Track Bus Page Styles
+ * Shared CSS · Referenced via /shared/css/tracking.css
+ */
+body { background: var(--green-deep); }
+
+.tracking-hero { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+.tracking-hero h1 { font-family: 'Syne', sans-serif; font-size: 2.25rem; color: var(--white); margin-bottom: 8px; }
+.tracking-hero .sub { color: rgba(255,255,255,0.65); font-size: 14px; margin-bottom: 24px; }
+
+.tracking-lookup { display: flex; gap: 12px; max-width: 500px; margin-bottom: 32px; }
+.tracking-lookup input { flex: 1; padding: 12px 16px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.1); color: var(--white); font-size: 14px; outline: none; }
+.tracking-lookup input::placeholder { color: rgba(255,255,255,0.4); }
+.tracking-lookup input:focus { border-color: var(--gold); }
+.tracking-lookup button { padding: 12px 24px; background: var(--gold); border: none; border-radius: 8px; font-weight: 700; color: var(--green-deep); cursor: pointer; font-size: 14px; transition: opacity 0.2s; }
+.tracking-lookup button:hover { opacity: 0.9; }
+
+#trackingMap { height: 400px; border-radius: 12px; overflow: hidden; border: 2px solid rgba(255,255,255,0.15); margin-bottom: 24px; }
+
+.tracking-info { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px; }
+.info-card { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 10px; padding: 16px; text-align: center; backdrop-filter: blur(4px); }
+.info-card .val { font-size: 24px; font-weight: 800; color: var(--gold); }
+.info-card .lbl { font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 4px; }
+
+.status-badge { display: inline-block; padding: 4px 12px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+.status-badge.moving { background: #D1FAE5; color: #065F46; }
+.status-badge.stopped { background: #FEF3C7; color: #92400E; }
+.status-badge.arrived { background: #DBEAFE; color: #1E40AF; }
+.status-badge.offline { background: #FEE2E2; color: #991B1B; }
+
+.tracking-share { text-align: center; padding: 20px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 10px; margin-top: 16px; }
+.tracking-share input { width: 100%; max-width: 400px; padding: 10px; border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; background: rgba(0,0,0,0.3); color: rgba(255,255,255,0.8); font-size: 13px; text-align: center; margin-top: 8px; }
+
+.empty-state { text-align: center; padding: 60px 20px; color: rgba(255,255,255,0.5); }
+.empty-state .big-icon { font-size: 48px; margin-bottom: 16px; }
+.load-spinner { text-align: center; padding: 60px; color: rgba(255,255,255,0.5); }

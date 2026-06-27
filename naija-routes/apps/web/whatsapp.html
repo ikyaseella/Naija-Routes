@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Naija Routes WhatsApp Bot — Book trips, track buses, check routes and more via WhatsApp.">
+<title>WhatsApp Bot — Naija Routes</title>
+<link rel="stylesheet" href="css/theme-deep-roots.css">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="/shared/css/i18n.css">
+
+</head>
+<body>
+
+<div class="design-label">💬 Naija Routes · WhatsApp Bot</div>
+
+<nav>
+  <a href="index.html" class="nav-logo" style="text-decoration:none;">🚌 <span data-i18n="nav.logo">NaijaRoutes</span></a>
+  <div class="nav-links">
+    <a href="index.html" data-i18n="nav.routes">Routes</a>
+    <a href="tracking.html" data-i18n="nav.track_bus">Track Bus</a>
+    <a href="wallet.html" data-i18n="nav.wallet">Wallet</a>
+    <a href="cargo.html" data-i18n="nav.cargo">Cargo</a>
+    <a href="insurance.html" data-i18n="nav.insurance">Insurance</a>
+    <a href="ussd.html" data-i18n="nav.ussd">USSD</a>
+    <a href="whatsapp.html" class="active" data-i18n="nav.whatsapp">WhatsApp</a>
+    <a href="corporate.html" data-i18n="nav.corporate">Corporate</a>
+    <div class="nav__item" data-i18n-language-container>
+      <select class="language-switcher__select" onchange="I18N.setLanguage(this.value)">
+        <option value="en">English</option>
+        <option value="yo">Yoruba</option>
+        <option value="ha">Hausa</option>
+        <option value="ig">Igbo</option>
+        <option value="pcm">Pidgin</option>
+      </select>
+    </div>
+  </div>
+  <button class="nav-cta" data-i18n="nav.sign_in">Sign in</button>
+</nav>
+
+<div class="wa-layout">
+  <div class="wa-header">
+    <div class="wa-header-icon">💬</div>
+    <div class="wa-header-text">
+      <h2>Naija Routes Bot</h2>
+      <p>● Online — Typically replies instantly</p>
+    </div>
+  </div>
+
+  <div class="wa-chat" id="waChat">
+    <div class="wa-empty" id="waEmpty">
+      <div class="wa-empty-icon">💬</div>
+      <h3 style="margin:0;color:var(--color-slate-500);font-size:var(--text-base);">Naija Routes WhatsApp Bot</h3>
+      <p>Book trips, track buses, check routes, and manage your wallet — all via chat. Tap "Start" to begin.</p>
+      <button class="btn btn-primary" onclick="startWAChat()" id="waStartBtn" style="margin-top:var(--space-2);">▶ Start Chat</button>
+      <button class="btn" onclick="sendPredefined('1')" style="margin-top:var(--space-2);background:var(--color-slate-200);color:var(--color-slate-700);padding:var(--space-2) var(--space-4);font-size:var(--text-sm);border-radius:var(--radius-full);border:none;cursor:pointer;">Quick: Book Trip</button>
+    </div>
+    <div class="wa-typing" id="waTyping"><span></span><span></span><span></span></div>
+  </div>
+
+  <div class="wa-input-area">
+    <input type="text" id="waInput" placeholder="Type a message..." disabled onkeydown="if(event.key==='Enter') sendWAMessage()">
+    <button id="waSendBtn" disabled onclick="sendWAMessage()">➤</button>
+  </div>
+</div>
+
+<script type="module" src="/js/modules/whatsapp.js"></script>
+<script>window.__I18N_CONFIG__ = { localePath: '/shared/i18n/' }</script>
+<script src="/shared/js/i18n.js"></script>
+</body>
+</html>

@@ -6,62 +6,6 @@
   <title>Admin Dashboard — Naija Routes</title>
   <link rel="stylesheet" href="css/admin.css">
   <link rel="stylesheet" href="/shared/css/i18n.css">
-  <style>
-    .view { display: none; }
-    .view.active { display: block; }
-    .tb-wrap { overflow-x: auto; }
-    .tb { width: 100%; border-collapse: collapse; font-size: 12px; }
-    .tb th { text-align: left; padding: 8px 12px; font-family: 'IBM Plex Mono',monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); border-bottom: 1px solid var(--border); }
-    .tb td { padding: 8px 12px; border-bottom: 1px solid var(--border); }
-    .tb tr:hover { background: var(--surface2); }
-    .status-badge { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 10px; font-weight: 700; font-family: 'IBM Plex Mono',monospace; }
-    .status-badge.active { background: var(--green-pale); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
-    .status-badge.pending { background: var(--gold-pale); color: var(--gold); border: 1px solid rgba(234,179,8,0.3); }
-    .status-badge.suspended { background: var(--red-pale); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
-    .search-bar { display: flex; gap: 8px; margin-bottom: 16px; }
-    .search-bar input { flex: 1; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; background: var(--surface); color: var(--text); font-size: 13px; font-family: inherit; }
-    .search-bar input:focus { outline: none; border-color: var(--green); }
-    .search-bar button { padding: 8px 16px; border: none; border-radius: 6px; background: var(--green); color: var(--bg); font-weight: 700; font-size: 12px; cursor: pointer; font-family: 'IBM Plex Mono',monospace; }
-    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .form-group { margin-bottom: 12px; }
-    .form-group label { display: block; font-size: 11px; color: var(--muted); margin-bottom: 4px; font-family: 'IBM Plex Mono',monospace; text-transform: uppercase; letter-spacing: 1px; }
-    .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; background: var(--surface); color: var(--text); font-size: 13px; font-family: inherit; }
-    .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--green); }
-    .form-group textarea { resize: vertical; min-height: 80px; }
-    .btn-primary { padding: 8px 20px; border: none; border-radius: 6px; background: var(--green); color: var(--bg); font-weight: 700; font-size: 12px; cursor: pointer; font-family: 'IBM Plex Mono',monospace; }
-    .btn-primary:hover { opacity: 0.9; }
-    .alerts-list { display: flex; flex-direction: column; gap: 8px; }
-    .alert-card { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); font-size: 13px; }
-    .alert-card.critical { border-color: rgba(239,68,68,0.3); background: var(--red-pale); }
-    .alert-card.warning { border-color: rgba(234,179,8,0.3); background: var(--gold-pale); }
-    .alert-card.info { border-color: rgba(59,130,246,0.3); background: var(--blue-pale); }
-    .alert-icon { font-size: 20px; flex-shrink: 0; }
-    .alert-body { flex: 1; }
-    .alert-body strong { display: block; margin-bottom: 2px; }
-    .alert-time { font-size: 10px; color: var(--muted); font-family: 'IBM Plex Mono',monospace; }
-    .empty-state { text-align: center; padding: 48px 16px; color: var(--muted); font-size: 14px; }
-    .split-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    .config-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
-    .config-row:last-child { border-bottom: none; }
-    .toggle { width: 36px; height: 20px; border-radius: 10px; border: none; cursor: pointer; position: relative; background: var(--dim); transition: background .2s; }
-    .toggle.on { background: var(--green); }
-    .toggle::after { content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: white; transition: transform .2s; }
-    .toggle.on::after { transform: translateX(16px); }
-    .security-card { padding: 16px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); margin-bottom: 12px; }
-    .security-card h4 { margin-bottom: 8px; font-size: 14px; }
-    .log-row { padding: 8px 0; border-bottom: 1px solid var(--border); display: flex; gap: 12px; font-size: 12px; font-family: 'IBM Plex Mono',monospace; }
-    .log-row .log-time { color: var(--muted); flex-shrink: 0; width: 70px; }
-    .log-row .log-level { flex-shrink: 0; width: 50px; font-weight: 700; }
-    .log-row .log-level.info { color: var(--blue); }
-    .log-row .log-level.warn { color: var(--gold); }
-    .log-row .log-level.error { color: var(--red); }
-    .log-row .log-msg { color: var(--text); }
-    .announcement-card { padding: 16px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); margin-bottom: 12px; }
-    .announcement-card h4 { margin-bottom: 4px; }
-    .announcement-card .ann-meta { font-size: 11px; color: var(--muted); margin-bottom: 8px; }
-    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-    @media (max-width: 768px) { .split-panel, .form-grid, .grid-3 { grid-template-columns: 1fr; } }
-  </style>
 </head>
 <body>
 
@@ -97,11 +41,16 @@
   <div class="sb-section">
     <div class="sb-section-lbl" data-i18n="admin.system">System</div>
     <button class="sb-item" data-view="config" data-i18n="nav.config">⚙️ Config</button>
+    <button class="sb-item" data-view="payments" data-i18n="nav.payments">💳 Payment Gateways</button>
+    <button class="sb-item" data-view="whatsapp" data-i18n="nav.whatsapp_bot">💬 WhatsApp Bot</button>
+    <button class="sb-item" data-view="sms" data-i18n="nav.sms">📱 SMS (Termii)</button>
+    <button class="sb-item" data-view="email" data-i18n="nav.email">📧 Email (Resend)</button>
+    <button class="sb-item" data-view="push" data-i18n="nav.push_notifications">🔔 Push Notifications</button>
     <button class="sb-item" data-view="security" data-i18n="nav.security">🔒 Security</button>
     <button class="sb-item" data-view="audit" data-i18n="nav.audit_logs">📁 Audit Logs</button>
   </div>
   <div class="sidebar__item" style="margin-top:auto;padding:12px 16px;border-top:1px solid rgba(255,255,255,0.08)">
-    <select class="language-switcher__select" onchange="I18N.setLanguage(this.value)" style="background:transparent;color:#fff;width:100%;border:1px solid rgba(255,255,255,0.2);padding:6px 10px;border-radius:6px;font-size:12px">
+    <select class="language-switcher__select" onchange="I18N.setLanguage(this.value)">
       <option value="en">English</option>
       <option value="yo">Yoruba</option>
       <option value="ha">Hausa</option>
@@ -489,11 +438,11 @@
         </select>
       </div>
       <div class="panel">
-        <div class="kyc-row"><div><div class="kyc-name">Rimbo Transport Ltd</div><div class="kyc-detail">Abuja · 12 buses · CAC ✓ · NIN ✓ · Bank ✓ · TIN ✓ · Insurance ✓</div></div><div class="kyc-status kyc-pending">Pending</div><div style="font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace;">2h ago</div><div><button class="kyc-btn" style="background:var(--green);" onclick="approveKYC(this)">APPROVE</button><button class="kyc-btn" style="background:var(--red);margin-left:6px;" onclick="rejectKYC(this)">REJECT</button></div></div>
-        <div class="kyc-row"><div><div class="kyc-name">YTC Motors</div><div class="kyc-detail">Kano · 8 buses · CAC ✓ · NIN pending · Bank pending</div></div><div class="kyc-status kyc-pending">Pending</div><div style="font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace;">4h ago</div><div><button class="kyc-btn" style="background:var(--green);" onclick="approveKYC(this)">APPROVE</button><button class="kyc-btn" style="background:var(--red);margin-left:6px;" onclick="rejectKYC(this)">REJECT</button></div></div>
-        <div class="kyc-row"><div><div class="kyc-name">Eagle Express Transport</div><div class="kyc-detail">Enugu · 5 buses · All docs submitted</div></div><div class="kyc-status kyc-pending">Pending</div><div style="font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace;">6h ago</div><div><button class="kyc-btn" style="background:var(--green);" onclick="approveKYC(this)">APPROVE</button><button class="kyc-btn" style="background:var(--red);margin-left:6px;" onclick="rejectKYC(this)">REJECT</button></div></div>
-        <div class="kyc-row"><div><div class="kyc-name">Star Line Ltd</div><div class="kyc-detail">Lagos · 20 buses · Docs complete</div></div><div class="kyc-status kyc-approved">Approved</div><div style="font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace;">1d ago</div><div><button class="kyc-btn" style="background:var(--dim);color:var(--muted);cursor:default;">DONE</button></div></div>
-        <div class="kyc-row"><div><div class="kyc-name">Chisco Transport</div><div class="kyc-detail">PH · 30 buses · Legacy operator migration</div></div><div class="kyc-status kyc-pending">Pending</div><div style="font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace;">8h ago</div><div><button class="kyc-btn" style="background:var(--green);" onclick="approveKYC(this)">APPROVE</button><button class="kyc-btn" style="background:var(--red);margin-left:6px;" onclick="rejectKYC(this)">REJECT</button></div></div>
+        <div class="kyc-row" data-submission-id="sub-001"><div><div class="kyc-name">Rimbo Transport Ltd</div><div class="kyc-detail">Abuja · 12 buses · CAC ✓ · NIN ✓ · Bank ✓ · TIN ✓ · Insurance ✓</div></div><div class="kyc-status kyc-pending">Pending</div><div style="font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace;">2h ago</div><div><button class="kyc-btn" style="background:var(--green);" onclick="approveKYC(this)">APPROVE</button><button class="kyc-btn" style="background:var(--red);margin-left:6px;" onclick="rejectKYC(this)">REJECT</button></div></div>
+        <div class="kyc-row" data-submission-id="sub-002"><div><div class="kyc-name">YTC Motors</div><div class="kyc-detail">Kano · 8 buses · CAC ✓ · NIN pending · Bank pending</div></div><div class="kyc-status kyc-pending">Pending</div><div style="font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace;">4h ago</div><div><button class="kyc-btn" style="background:var(--green);" onclick="approveKYC(this)">APPROVE</button><button class="kyc-btn" style="background:var(--red);margin-left:6px;" onclick="rejectKYC(this)">REJECT</button></div></div>
+        <div class="kyc-row" data-submission-id="sub-003"><div><div class="kyc-name">Eagle Express Transport</div><div class="kyc-detail">Enugu · 5 buses · All docs submitted</div></div><div class="kyc-status kyc-pending">Pending</div><div style="font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace;">6h ago</div><div><button class="kyc-btn" style="background:var(--green);" onclick="approveKYC(this)">APPROVE</button><button class="kyc-btn" style="background:var(--red);margin-left:6px;" onclick="rejectKYC(this)">REJECT</button></div></div>
+        <div class="kyc-row" data-submission-id="sub-004"><div><div class="kyc-name">Star Line Ltd</div><div class="kyc-detail">Lagos · 20 buses · Docs complete</div></div><div class="kyc-status kyc-approved">Approved</div><div style="font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace;">1d ago</div><div><button class="kyc-btn" style="background:var(--dim);color:var(--muted);cursor:default;">DONE</button></div></div>
+        <div class="kyc-row" data-submission-id="sub-005"><div><div class="kyc-name">Chisco Transport</div><div class="kyc-detail">PH · 30 buses · Legacy operator migration</div></div><div class="kyc-status kyc-pending">Pending</div><div style="font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace;">8h ago</div><div><button class="kyc-btn" style="background:var(--green);" onclick="approveKYC(this)">APPROVE</button><button class="kyc-btn" style="background:var(--red);margin-left:6px;" onclick="rejectKYC(this)">REJECT</button></div></div>
       </div>
     </div>
 
@@ -668,6 +617,280 @@
       </div>
     </div>
 
+    <!-- ═══ VIEW: PAYMENT GATEWAYS ═══ -->
+    <div class="view" id="view-payments">
+      <div class="panel-head" style="margin-bottom:16px;background:var(--surface);border-radius:8px;border:1px solid var(--border);">
+        <span>💳 Payment Gateway Configuration</span>
+      </div>
+      <div class="split-panel">
+        <div class="panel">
+          <div class="panel-head">Paystack</div>
+          <div style="padding:16px;">
+            <div class="config-row"><span>Enabled</span><button class="toggle" id="psEnabled" onclick="togglePaystack(this)"></button></div>
+            <div class="config-row"><span>Public Key</span><input type="text" id="psPublicKey" placeholder="pk_test_..." style="padding:6px 10px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);color:var(--text);font-size:12px;width:260px;text-align:right;font-family:'IBM Plex Mono',monospace;"></div>
+            <div class="config-row"><span>Secret Key</span><input type="password" id="psSecretKey" placeholder="sk_test_..." style="padding:6px 10px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);color:var(--text);font-size:12px;width:260px;text-align:right;font-family:'IBM Plex Mono',monospace;"></div>
+            <div class="config-row" style="border-bottom:none;"><span>Webhook Secret</span><input type="password" id="psWebhookSecret" placeholder="whsec_..." style="padding:6px 10px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);color:var(--text);font-size:12px;width:260px;text-align:right;font-family:'IBM Plex Mono',monospace;"></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head">Flutterwave</div>
+          <div style="padding:16px;">
+            <div class="config-row"><span>Enabled</span><button class="toggle" id="fwEnabled" onclick="toggleFlutterwave(this)"></button></div>
+            <div class="config-row"><span>Public Key</span><input type="text" id="fwPublicKey" placeholder="FLWPUBK-..." style="padding:6px 10px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);color:var(--text);font-size:12px;width:260px;text-align:right;font-family:'IBM Plex Mono',monospace;"></div>
+            <div class="config-row" style="border-bottom:none;"><span>Secret Key</span><input type="password" id="fwSecretKey" placeholder="FLWSECK-..." style="padding:6px 10px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);color:var(--text);font-size:12px;width:260px;text-align:right;font-family:'IBM Plex Mono',monospace;"></div>
+          </div>
+        </div>
+      </div>
+      <div class="split-panel" style="margin-top:16px;">
+        <div class="panel">
+          <div class="panel-head">Default Provider</div>
+          <div style="padding:16px;">
+            <div class="config-row" style="border-bottom:none;">
+              <span>Primary Gateway</span>
+              <select id="pmtPrimaryProvider" style="padding:6px 10px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);color:var(--text);font-size:12px;">
+                <option value="paystack">Paystack</option>
+                <option value="flutterwave">Flutterwave</option>
+              </select>
+            </div>
+            <div class="config-row" style="border-bottom:none;">
+              <span>Transaction Fee (%)</span>
+              <input type="number" id="pmtFeePercent" value="1.5" min="0" max="10" step="0.1" style="padding:6px 10px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);color:var(--text);font-size:12px;width:80px;text-align:right;">
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head">Connection Status</div>
+          <div style="padding:16px;">
+            <div class="config-row"><span>Paystack</span><span id="psStatus" style="color:var(--muted);">○ Not configured</span></div>
+            <div class="config-row" style="border-bottom:none;"><span>Flutterwave</span><span id="fwStatus" style="color:var(--muted);">○ Not configured</span></div>
+            <button class="btn-secondary" onclick="testPaystackConnection()" style="margin-top:12px;margin-right:8px;">Test Paystack</button>
+            <button class="btn-secondary" onclick="testFlutterwaveConnection()">Test Flutterwave</button>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px;">
+        <button class="btn-primary" onclick="savePaymentSettings()">💾 Save Payment Settings</button>
+        <button style="padding:8px 20px;border:1px solid var(--border);border-radius:6px;background:var(--surface2);color:var(--text);font-weight:700;font-size:12px;cursor:pointer;" onclick="resetPaymentSettings()">Reset</button>
+      </div>
+    </div>
+
+    <!-- ═══ VIEW: WHATSAPP BOT ═══ -->
+    <div class="view" id="view-whatsapp">
+      <div class="panel-head" style="margin-bottom:16px;background:var(--surface);border-radius:8px;border:1px solid var(--border);">
+        <span data-i18n="nav.whatsapp_bot">💬 WhatsApp Bot Configuration</span>
+      </div>
+      <div class="split-panel">
+        <div class="panel">
+          <div class="panel-head">Connection Settings</div>
+          <div style="padding:16px;">
+            <div class="config-row"><span>Enabled</span><button class="toggle" id="waEnabled" onclick="toggleWA(this)"></button></div>
+            <div class="config-row"><span>Provider</span><select id="waProvider" style="padding:6px 10px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);color:var(--text);font-size:12px;"><option value="twilio">Twilio</option><option value="waba">WhatsApp Business API</option></select></div>
+            <div class="config-row"><span>Account SID</span><input type="text" id="waAccountSid" placeholder="AC..." style="padding:6px 10px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);color:var(--text);font-size:12px;width:220px;text-align:right;"></div>
+            <div class="config-row"><span>Auth Token</span><input type="password" id="waAuthToken" placeholder="Enter token" style="padding:6px 10px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);color:var(--text);font-size:12px;width:220px;text-align:right;"></div>
+            <div class="config-row"><span>WhatsApp Number</span><input type="text" id="waPhone" placeholder="+14155238886" style="padding:6px 10px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);color:var(--text);font-size:12px;width:220px;text-align:right;"></div>
+            <div class="config-row" style="border-bottom:none;"><span>Business Name</span><input type="text" id="waBusinessName" value="Naija Routes" style="padding:6px 10px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);color:var(--text);font-size:12px;width:220px;text-align:right;"></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head">Behaviour</div>
+          <div style="padding:16px;">
+            <div class="config-row"><span>Auto-Reply Enabled</span><button class="toggle on" id="waAutoReply" onclick="toggleWA(this)"></button></div>
+            <div class="config-row"><span>Working Hours Only</span><button class="toggle" id="waWorkHours" onclick="toggleWA(this)"></button></div>
+            <div class="config-row"><span>Hours Start</span><input type="time" id="waWorkStart" value="08:00" style="padding:6px 10px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);color:var(--text);font-size:12px;width:100px;text-align:right;"></div>
+            <div class="config-row"><span>Hours End</span><input type="time" id="waWorkEnd" value="20:00" style="padding:6px 10px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);color:var(--text);font-size:12px;width:100px;text-align:right;"></div>
+            <div class="config-row"><span>Escalate to Support</span><button class="toggle on" id="waEscalate" onclick="toggleWA(this)"></button></div>
+            <div class="config-row" style="border-bottom:none;"><span>Support Phone</span><input type="text" id="waSupportPhone" value="+2348012345678" style="padding:6px 10px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);color:var(--text);font-size:12px;width:180px;text-align:right;"></div>
+          </div>
+        </div>
+      </div>
+      <div class="panel" style="margin-top:16px;">
+        <div class="panel-head">Greeting Message</div>
+        <div style="padding:16px;">
+          <div class="form-group"><textarea id="waGreeting" rows="6" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font-size:13px;font-family:'IBM Plex Mono',monospace;">Welcome to Naija Routes! 🚌
+Reply with:
+1. Book Trip
+2. Track Trip
+3. Routes
+4. Wallet
+5. Help
+0. Exit</textarea></div>
+        </div>
+      </div>
+      <div class="panel" style="margin-top:16px;">
+        <div class="panel-head">Test the Bot</div>
+        <div style="padding:16px;">
+          <div style="display:flex;gap:8px;margin-bottom:12px;">
+            <input type="text" id="waTestInput" placeholder="Type a message (e.g., 1, 'book', 'Lagos')" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font-size:13px;">
+            <button class="btn-primary" onclick="testWhatsApp()">Send</button>
+          </div>
+          <div id="waTestResult" style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:12px;font-size:13px;font-family:'IBM Plex Mono',monospace;min-height:60px;white-space:pre-wrap;color:var(--muted);">Response will appear here...</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px;">
+        <button class="btn-primary" onclick="saveWASettings()">💾 Save WhatsApp Settings</button>
+        <button style="padding:8px 20px;border:1px solid var(--border);border-radius:6px;background:var(--surface2);color:var(--text);font-weight:700;font-size:12px;cursor:pointer;" onclick="resetWASettings()">Reset to Defaults</button>
+      </div>
+    </div>
+
+    <!-- ═══ VIEW: SMS CONFIG ═══ -->
+    <div class="view" id="view-sms">
+      <div class="panel-head" style="margin-bottom:16px;background:var(--surface);border-radius:8px;border:1px solid var(--border);">
+        <span>📱 SMS (Termii) Configuration</span>
+      </div>
+      <div class="split-panel">
+        <div class="panel">
+          <div class="panel-head">Connection Settings</div>
+          <div style="padding:16px;">
+            <div class="config-row"><span>Enabled</span><button class="toggle" id="smsEnabled" onclick="toggleSMS(this)"></button></div>
+            <div class="config-row"><span>API Key</span><input type="password" id="smsApiKey" placeholder="Termii API Key" style="padding:6px 10px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);color:var(--text);font-size:12px;width:260px;text-align:right;"></div>
+            <div class="config-row" style="border-bottom:none;"><span>Sender ID</span><input type="text" id="smsSenderId" value="N-Routes" style="padding:6px 10px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);color:var(--text);font-size:12px;width:160px;text-align:right;"></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head">SMS Events</div>
+          <div style="padding:16px;">
+            <div class="config-row"><span>Booking Confirmation</span><button class="toggle on" id="smsBooking" onclick="toggleSMS(this)"></button></div>
+            <div class="config-row"><span>Departure Reminder</span><button class="toggle on" id="smsDeparture" onclick="toggleSMS(this)"></button></div>
+            <div class="config-row"><span>Delay Alerts</span><button class="toggle on" id="smsDelay" onclick="toggleSMS(this)"></button></div>
+            <div class="config-row"><span>Payment Receipts</span><button class="toggle on" id="smsPayment" onclick="toggleSMS(this)"></button></div>
+            <div class="config-row" style="border-bottom:none;"><span>Verification Codes</span><button class="toggle on" id="smsVerify" onclick="toggleSMS(this)"></button></div>
+          </div>
+        </div>
+      </div>
+      <div class="split-panel" style="margin-top:16px;">
+        <div class="panel">
+          <div class="panel-head">Send Test SMS</div>
+          <div style="padding:16px;">
+            <div class="form-group"><label>Phone Number</label><input type="text" id="smsTestPhone" placeholder="+2348012345678" style="width:100%;"></div>
+            <div class="form-group"><label>Message</label><textarea id="smsTestMsg" rows="3" style="width:100%;">Test SMS from Naija Routes admin</textarea></div>
+            <button class="btn-primary" onclick="sendTestSMS()">📨 Send Test SMS</button>
+            <div id="smsTestResult" style="margin-top:8px;font-size:12px;color:var(--muted);"></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head">Account Info</div>
+          <div style="padding:16px;">
+            <div class="config-row"><span>Balance</span><span id="smsBalance" style="color:var(--muted);">Click to check</span></div>
+            <div class="config-row" style="border-bottom:none;"><span>Status</span><span id="smsStatus" style="color:var(--green);font-weight:600;">● Configured</span></div>
+            <button class="btn-secondary" onclick="checkSMSBalance()" style="margin-top:12px;">Check Balance</button>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px;">
+        <button class="btn-primary" onclick="saveSMSSettings()">💾 Save SMS Settings</button>
+      </div>
+    </div>
+
+    <!-- ═══ VIEW: EMAIL (RESEND) ═══ -->
+    <div class="view" id="view-email">
+      <div class="panel-head" style="margin-bottom:16px;background:var(--surface);border-radius:8px;border:1px solid var(--border);">
+        <span>📧 Email (Resend) Configuration</span>
+      </div>
+      <div class="split-panel">
+        <div class="panel">
+          <div class="panel-head">Connection Settings</div>
+          <div style="padding:16px;">
+            <div class="config-row"><span>Enabled</span><button class="toggle" id="emEnabled" onclick="toggleEmail(this)"></button></div>
+            <div class="config-row"><span>API Key</span><input type="password" id="emApiKey" placeholder="re_..." style="padding:6px 10px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);color:var(--text);font-size:12px;width:260px;text-align:right;font-family:'IBM Plex Mono',monospace;"></div>
+            <div class="config-row"><span>From Email</span><input type="email" id="emFromEmail" value="noreply@naijaroutes.com" style="padding:6px 10px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);color:var(--text);font-size:12px;width:200px;text-align:right;"></div>
+            <div class="config-row" style="border-bottom:none;"><span>From Name</span><input type="text" id="emFromName" value="Naija Routes" style="padding:6px 10px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);color:var(--text);font-size:12px;width:180px;text-align:right;"></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head">Email Events</div>
+          <div style="padding:16px;">
+            <div class="config-row"><span>Booking Confirmation</span><button class="toggle on" id="emBooking" onclick="toggleEmail(this)"></button></div>
+            <div class="config-row"><span>Payment Receipts</span><button class="toggle on" id="emPayment" onclick="toggleEmail(this)"></button></div>
+            <div class="config-row"><span>Departure Reminder</span><button class="toggle on" id="emDeparture" onclick="toggleEmail(this)"></button></div>
+            <div class="config-row"><span>KYC Updates</span><button class="toggle on" id="emKYC" onclick="toggleEmail(this)"></button></div>
+            <div class="config-row" style="border-bottom:none;"><span>OTP / Login Codes</span><button class="toggle on" id="emOTP" onclick="toggleEmail(this)"></button></div>
+          </div>
+        </div>
+      </div>
+      <div class="split-panel" style="margin-top:16px;">
+        <div class="panel">
+          <div class="panel-head">Send Test Email</div>
+          <div style="padding:16px;">
+            <div class="form-group"><label>Recipient Email</label><input type="email" id="emTestTo" placeholder="you@example.com" style="width:100%;"></div>
+            <button class="btn-primary" onclick="sendTestEmail()" style="margin-top:8px;">📨 Send Test</button>
+            <div id="emTestResult" style="margin-top:8px;font-size:12px;color:var(--muted);"></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head">Status</div>
+          <div style="padding:16px;">
+            <div class="config-row"><span>Resend API</span><span id="emStatus" style="color:var(--muted);">○ Not configured</span></div>
+            <div class="config-row" style="border-bottom:none;"><span>Available Templates</span><span style="color:var(--muted);">5 templates</span></div>
+            <button class="btn-secondary" onclick="testEmailConnection()" style="margin-top:12px;">Test Connection</button>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px;">
+        <button class="btn-primary" onclick="saveEmailSettings()">💾 Save Email Settings</button>
+        <button style="padding:8px 20px;border:1px solid var(--border);border-radius:6px;background:var(--surface2);color:var(--text);font-weight:700;font-size:12px;cursor:pointer;" onclick="resetEmailSettings()">Reset</button>
+      </div>
+    </div>
+
+    <!-- ═══ VIEW: PUSH NOTIFICATIONS ═══ -->
+    <div class="view" id="view-push">
+      <div class="panel-head" style="margin-bottom:16px;background:var(--surface);border-radius:8px;border:1px solid var(--border);">
+        <span data-i18n="nav.push_notifications">🔔 Push Notifications Configuration</span>
+      </div>
+      <div class="split-panel">
+        <div class="panel">
+          <div class="panel-head">Firebase / Provider Settings</div>
+          <div style="padding:16px;">
+            <div class="config-row"><span>Enabled</span><button class="toggle" id="pnEnabled" onclick="togglePN(this)"></button></div>
+            <div class="config-row"><span>Provider</span><select id="pnProvider" style="padding:6px 10px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);color:var(--text);font-size:12px;"><option value="firebase">Firebase Cloud Messaging</option><option value="onesignal">OneSignal</option></select></div>
+            <div class="config-row"><span>Server Key</span><input type="password" id="pnServerKey" placeholder="AAA..." style="padding:6px 10px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);color:var(--text);font-size:12px;width:300px;text-align:right;"></div>
+            <div class="config-row" style="border-bottom:none;"><span>Sender ID</span><input type="text" id="pnSenderId" placeholder="123456789" style="padding:6px 10px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);color:var(--text);font-size:12px;width:200px;text-align:right;"></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head">Default Branding</div>
+          <div style="padding:16px;">
+            <div class="config-row"><span>Default Title</span><input type="text" id="pnTitle" value="Naija Routes" style="padding:6px 10px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);color:var(--text);font-size:12px;width:180px;text-align:right;"></div>
+            <div class="config-row" style="border-bottom:none;"><span>Notification Icon URL</span><input type="text" id="pnIcon" value="/icons/logo.png" style="padding:6px 10px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);color:var(--text);font-size:12px;width:260px;text-align:right;"></div>
+          </div>
+        </div>
+      </div>
+      <div class="panel" style="margin-top:16px;">
+        <div class="panel-head">Notification Events</div>
+        <div style="padding:16px;">
+          <div class="config-row"><span>Booking Confirmation</span><button class="toggle on" id="pnBooking" onclick="togglePN(this)"></button></div>
+          <div class="config-row"><span>Departure Reminder</span><button class="toggle on" id="pnDeparture" onclick="togglePN(this)"></button></div>
+          <div class="config-row"><span>Reminder Before (minutes)</span><input type="number" id="pnReminderMin" value="60" min="15" max="1440" style="padding:6px 10px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);color:var(--text);font-size:12px;width:80px;text-align:right;"></div>
+          <div class="config-row"><span>Delay / Disruption Alerts</span><button class="toggle on" id="pnDelay" onclick="togglePN(this)"></button></div>
+          <div class="config-row"><span>Promotions & Offers</span><button class="toggle on" id="pnPromo" onclick="togglePN(this)"></button></div>
+          <div class="config-row"><span>KYC Status Updates</span><button class="toggle on" id="pnKYC" onclick="togglePN(this)"></button></div>
+          <div class="config-row" style="border-bottom:none;"><span>Payment Receipts</span><button class="toggle on" id="pnPayment" onclick="togglePN(this)"></button></div>
+        </div>
+      </div>
+      <div class="split-panel" style="margin-top:16px;">
+        <div class="panel">
+          <div class="panel-head">Send Test Notification</div>
+          <div style="padding:16px;">
+            <div class="form-group"><label>Title</label><input type="text" id="pnTestTitle" value="Test Notification" style="width:100%;"></div>
+            <div class="form-group"><label>Body</label><input type="text" id="pnTestBody" value="This is a test from Naija Routes admin" style="width:100%;"></div>
+            <div class="form-group"><label>Target</label><select id="pnTestTarget" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font-size:13px;"><option value="all">All Devices</option><option value="android">Android</option><option value="ios">iOS</option><option value="web">Web</option></select></div>
+            <button class="btn-primary" onclick="sendTestPush()" style="margin-top:8px;">📨 Send Test</button>
+            <div id="pnTestResult" style="margin-top:8px;font-size:12px;color:var(--muted);"></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head">Registered Devices</div>
+          <div style="padding:16px;">
+            <div id="pnDeviceStats" style="margin-bottom:12px;font-size:12px;color:var(--muted);">Loading device stats...</div>
+            <div id="pnDeviceList" style="max-height:200px;overflow-y:auto;font-size:11px;font-family:'IBM Plex Mono',monospace;"></div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px;">
+        <button class="btn-primary" onclick="savePNSettings()">💾 Save Push Settings</button>
+        <button style="padding:8px 20px;border:1px solid var(--border);border-radius:6px;background:var(--surface2);color:var(--text);font-weight:700;font-size:12px;cursor:pointer;" onclick="resetPNSettings()">Reset to Defaults</button>
+      </div>
+    </div>
+
     <!-- ═══ VIEW: SECURITY ═══ -->
     <div class="view" id="view-security">
       <div class="panel-head" style="margin-bottom:16px;background:var(--surface);border-radius:8px;border:1px solid var(--border);">
@@ -746,164 +969,7 @@
   </div>
 </div>
 
-<script>
-  const hamburger = document.getElementById('mobileHamburger');
-  const sidebar = document.getElementById('sidebar');
-  const overlay = document.getElementById('sidebarOverlay');
-
-  function toggleSidebar() {
-    sidebar.classList.toggle('open');
-    overlay.classList.toggle('open');
-    document.body.style.overflow = sidebar.classList.contains('open') ? 'hidden' : '';
-  }
-
-  hamburger.addEventListener('click', toggleSidebar);
-  overlay.addEventListener('click', toggleSidebar);
-
-  // ── View switching ──
-  const viewNames = {
-    overview: 'overview', livefeed: 'live feed', routemap: 'route map',
-    transactions: 'transactions', operators: 'operators', agents: 'agents',
-    users: 'users', kyc: 'kyc queue', alerts: 'alerts', fleet: 'fleet tracking',
-    cargo: 'cargo', announcements: 'announcements', config: 'config',
-    security: 'security', audit: 'audit logs'
-  };
-
-  document.querySelectorAll('.sb-item[data-view]').forEach(item => {
-    item.addEventListener('click', () => {
-      const view = item.dataset.view;
-      document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
-      item.classList.add('active');
-      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-      const target = document.getElementById('view-' + view);
-      if (target) target.classList.add('active');
-      document.getElementById('bcSection').textContent = viewNames[view] || view;
-      if (window.innerWidth <= 768) toggleSidebar();
-    });
-  });
-
-  // ── KYC actions ──
-  function approveKYC(btn) {
-    const row = btn.closest('.kyc-row');
-    const status = row.querySelector('.kyc-status');
-    status.className = 'kyc-status kyc-approved';
-    status.textContent = 'Approved';
-    btn.textContent = 'DONE';
-    btn.style.background = 'var(--dim)';
-    btn.style.color = 'var(--muted)';
-    btn.style.cursor = 'default';
-    btn.onclick = null;
-    const rejectBtn = row.querySelector('.kyc-btn[style*="background:var(--red)"]');
-    if (rejectBtn) rejectBtn.remove();
-  }
-
-  function rejectKYC(btn) {
-    const row = btn.closest('.kyc-row');
-    const status = row.querySelector('.kyc-status');
-    status.className = 'kyc-status';
-    status.style.cssText = 'background:var(--red-pale);color:var(--red);border:1px solid rgba(239,68,68,0.3);font-family:IBM Plex Mono,monospace;font-size:10px;padding:3px 8px;border-radius:3px;font-weight:700;text-transform:uppercase;text-align:center;';
-    status.textContent = 'Rejected';
-    btn.textContent = 'DONE';
-    btn.style.background = 'var(--dim)';
-    btn.style.color = 'var(--muted)';
-    btn.style.cursor = 'default';
-    btn.onclick = null;
-    const approveBtn = row.querySelector('.kyc-btn[style*="background:var(--green)"]');
-    if (approveBtn) approveBtn.remove();
-  }
-
-  // ── Announcements ──
-  function showNewAnnouncement() {
-    document.getElementById('newAnnouncementForm').style.display = 'block';
-    document.getElementById('newAnnouncementForm').scrollIntoView({ behavior: 'smooth' });
-  }
-
-  function postAnnouncement() {
-    const title = document.getElementById('annTitle').value.trim();
-    const body = document.getElementById('annBody').value.trim();
-    if (!title || !body) { alert('Please fill in both title and message.'); return; }
-    const list = document.getElementById('announcementList');
-    const card = document.createElement('div');
-    card.className = 'announcement-card';
-    card.innerHTML = '<h4>' + title + '</h4><div class="ann-meta">Posted by Admin · Just now · <span class="status-badge active">Active</span></div><p style="font-size:13px;color:var(--text);">' + body + '</p>';
-    list.insertBefore(card, list.firstChild);
-    document.getElementById('newAnnouncementForm').style.display = 'none';
-    document.getElementById('annTitle').value = '';
-    document.getElementById('annBody').value = '';
-  }
-
-  // ── Feed filter ──
-  function filterFeed(query) {
-    const type = document.getElementById('feedTypeFilter').value;
-    document.querySelectorAll('#feedContainer .feed-item').forEach(item => {
-      const text = item.textContent.toLowerCase();
-      const itemType = item.dataset.type;
-      const matchesType = type === 'all' || itemType === type;
-      const matchesSearch = !query || text.includes(query.toLowerCase());
-      item.style.display = matchesType && matchesSearch ? '' : 'none';
-    });
-  }
-
-  // ── Transaction filter ──
-  function filterTransactions(query) {
-    const method = document.getElementById('txMethodFilter').value;
-    const status = document.getElementById('txStatusFilter').value;
-    document.querySelectorAll('#txBody tr').forEach(row => {
-      const text = row.textContent.toLowerCase();
-      const rowMethod = row.dataset.method;
-      const rowStatus = row.dataset.status;
-      const matchesMethod = method === 'all' || rowMethod === method;
-      const matchesStatus = status === 'all' || rowStatus === status;
-      const matchesSearch = !query || text.includes(query.toLowerCase());
-      row.style.display = matchesMethod && matchesStatus && matchesSearch ? '' : 'none';
-    });
-  }
-
-  // ── Operator filter ──
-  function filterOperators(query) {
-    document.querySelectorAll('#opBody tr').forEach(row => {
-      row.style.display = !query || row.textContent.toLowerCase().includes(query.toLowerCase()) ? '' : 'none';
-    });
-  }
-
-  // ── Live data fetch ──
-  async function fetchAdminData() {
-    try {
-      const [healthRes, payStatsRes, walletRes] = await Promise.all([
-        fetch('http://localhost:3000/health').catch(() => null),
-        fetch('http://localhost:3000/api/v1/payments/stats/all').catch(() => null),
-        fetch('http://localhost:3000/api/v1/wallet/usr-chidi').catch(() => null),
-      ]);
-
-      if (healthRes && healthRes.ok) {
-        const health = await healthRes.json();
-        const indicator = document.querySelector('.live-indicator span');
-        if (indicator) indicator.textContent = `LIVE — ${health.phase}`;
-      }
-
-      if (payStatsRes && payStatsRes.ok) {
-        const payStats = (await payStatsRes.json()).data;
-        document.querySelectorAll('.metric-block').forEach(el => {
-          const lbl = el.querySelector('.metric-lbl')?.textContent?.trim();
-          const valEl = el.querySelector('.metric-val');
-          if (!lbl || !valEl) return;
-          if (lbl.includes('GMV')) valEl.textContent = '₦' + (payStats.totalRevenueKobo / 100000).toFixed(1) + 'M';
-          if (lbl.includes('Failed')) valEl.textContent = payStats.failedPayments;
-        });
-      }
-
-      if (walletRes && walletRes.ok) {
-        const wallet = (await walletRes.json()).data;
-        const chip = document.querySelector('.admin-chip');
-        if (chip) chip.textContent = `👤 ${wallet.name} · ₦${(wallet.availableKobo / 100).toLocaleString()} wallet`;
-      }
-    } catch (e) {
-      console.log('Admin dashboard running with demo data');
-    }
-  }
-  fetchAdminData();
-  setInterval(fetchAdminData, 30000);
-</script>
+<script type="module" src="/js/admin.js"></script>
 <script>window.__I18N_CONFIG__ = { localePath: '/shared/i18n/' }</script>
 <script src="/shared/js/i18n.js"></script>
 </body>
